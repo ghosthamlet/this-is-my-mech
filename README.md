@@ -14,18 +14,23 @@ https://m.youtube.com/watch?v=EMgsAD3D948
 
 Thinks he should be the head because he thinks he's got the best
 attacks and the best ideas, and therefore he deserves to tell everyone
-what to do. Major white privilege tech-bro thing going on.
+what to do. Major white privilege tech-bro thing going on. Thinks he's
+a "leader" but only leads because everyone else eventually gets tired
+of arguing with him and lets him win.
 
 ### TURK Bragg (Turquoise Rhino)
 
 Hugely narcissistic. Loves to be in the spotlight and really enjoys
 the attention of the fans, who he'll do anything for. His priority is
-looking good on camera.
+looking good on camera and gaining fans.
 
 ### HANK Rogers (Pink Rhino)
 
 NASA-trained astrophysicist pilot. Not as pushy as the first two, but
-pretty resentful that his brilliance isn't acknowledged.
+pretty resentful that his brilliance isn't acknowledged. He wants to
+replace the targeting system with a new machine-learning blockchain
+system he has been working on, even though the existing targeting
+system works fine.
 
 ### CARRIE Hayes (Purple Rhino)
 
@@ -70,6 +75,16 @@ The expectation is that you'll lose the game several times and have to
 restart before you figure out the right path to victory. Because of
 this, we should find a way to make it so that losing is actually kind
 of funny and doesn't feel like such a bummer.
+
+## Setting
+
+The Rhinocelator home base space station.
+
+* Bridge
+* Quarters
+* Launch bay
+* Mess hall?
+* Repair bay?
 
 ## Art
 
