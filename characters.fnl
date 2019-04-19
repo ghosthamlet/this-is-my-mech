@@ -1,10 +1,17 @@
-(set chars.adam {:x 40 :y 64 :name "Adam"
+(set chars.Adam {:x 40 :y 64 :name "Adam"
                  :spr 290 :portrait 288})
-(set chars.turk {:x -128 :y -128 :name "Turk"
+(set chars.Turk {:x -128 :y -128 :name "Turk"
                  :spr 320 :portrait 322})
-(set chars.hank {:x -128 :y -128 :name "Hank"
+(set chars.Hank {:x -128 :y -128 :name "Hank"
                  :spr 352 :portrait 354})
-(set chars.carrie {:x -128 :y -128 :name "Carrie"
+(set chars.Carrie {:x -128 :y -128 :name "Carrie"
                    :spr 384 :portrait 386})
 
 (local all {})
+
+(fn all.Adam []
+  (say "Check out how cool my uniform is."))
+
+(each [name (pairs chars)] ; set up initial convos for each character
+  (tset convos name (. all name)))
+

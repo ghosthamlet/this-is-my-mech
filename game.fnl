@@ -18,6 +18,20 @@
 (fn lerp [a b t]
   (+ (* a (- 1 t)) (* t b)))
 
+(fn draw-dialog []
+  (when said
+    (rect 0 0 238 44 13)
+    (rectb 1 1 236 42 15)
+    (print said 24 6)
+    (when (and who who.portrait)
+      (print who.name 5 30)
+      (spr who.portrait 5 10 0 1 0 0 2 2))
+    (when choices
+      (each [i ch (ipairs choices)]
+        (when (= i choice)
+          (print ">" 30 (+ 10 (* 8 i))))
+        (print ch 38 (+ 10 (* 8 i)))))))
+
 (fn draw []
   (set cam-x (math.min center-x (lerp cam-x (- center-x x) 0.05)))
   (set cam-y (math.min center-y (lerp cam-y (- center-y y) 0.05)))
@@ -27,7 +41,8 @@
   (each [name c (pairs chars)]
     (when c.spr
       (spr c.spr (+ cam-x c.x) (+ cam-y c.y) 0 1 0 0 1 2)))
-  (spr 258 (+ x cam-x) (+ y cam-y) 0 1 0 0 1 2))
+  (spr 258 (+ x cam-x) (+ y cam-y) 0 1 0 0 1 2)
+  (draw-dialog))
 
 (init)
 
