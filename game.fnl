@@ -54,6 +54,8 @@
     (if (and talking-to (btnp 0)) (choose -1)
         (and talking-to (btnp 1)) (choose 1)
         (not talking-to) (move)))
+  (when (btnp 6) ; press A to jump to launch just for testing, remove later
+    (enter-launch))
   (for [i (# coros) 1 -1]
     (coroutine.resume (. coros i))
     (when (= :dead (coroutine.status (. coros i)))
