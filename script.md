@@ -1,3 +1,7 @@
+# Turk
+
+"Look, for all intensive purposes, I'm screwed here!"
+
 # Hank
 
 * Wants to use machine learning with block chain validation for a new
