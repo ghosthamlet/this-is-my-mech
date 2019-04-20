@@ -49,7 +49,7 @@
 (fn draw []
   (set cam-x (math.min center-x (lerp cam-x (- center-x x) 0.05)))
   (set cam-y (math.min center-y (lerp cam-y (- center-y y) 0.05)))
-  (draw-stars cam-x cam-y)
+  (draw-stars (* cam-x -0.6) (* cam-y -0.6))
   (map (// (- cam-x) 8) (// (- cam-y) 8)
        32 19 (- (% cam-x 8) 8)
        (- (% cam-y 8) 8) 0)
