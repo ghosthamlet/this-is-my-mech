@@ -42,15 +42,20 @@
 (fn draw-monster []
   (spr 268 mx my 0 1 0 0 4 6))
 
+(fn laser [x y]
+  (let [w (- 240 x)]
+    (rect (+ x 30) (+ y 6) w 1 1)
+    (rect (+ x 30) (+ y 7) w 1 9)))
+
 (fn draw-launch []
   (cls)
   (draw-stars scroll-x 0)
   (each [_ other (pairs others)]
     (spr other.spr (// other.x 1) (// other.y 1) 0 1 0 0 4 2)
     (when (< 0 other.laser)
-      (rect (+ other.x 30) (+ other.y 6) (- 240 other.x) 2 1)))
+      (laser other.x other.y)))
   (when (btn 5)
-    (rect (+ lx 30) (+ ly 6) 240 2 1))
+    (laser lx ly))
   (spr 484 lx ly 0 1 0 0 4 2)
   (draw-monster)
   (draw-talk))
@@ -71,8 +76,8 @@
 (fn fly-monster []
   (set mx (+ mx dmx))
   (set my (+ my dmy))
-  (set dmx (+ dmx (* (if (< mx tmx) 0.1 -0.3) (math.random))))
-  (set dmy (+ dmy (* (if (< my tmy) 0.5 -0.2) (math.random)))))
+  (set dmx (+ dmx (* (if (< mx tmx) 0.1 -0.2) (math.random))))
+  (set dmy (+ dmy (* (if (< my tmy) 0.3 -0.1) (math.random)))))
 
 ;; when the game is in launch mode, this becomes the TIC updater
 (fn launch []
