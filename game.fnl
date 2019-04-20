@@ -26,8 +26,12 @@
 (fn move []
   (let [dx (if (btn 2) -1 (btn 3) 1 0)
         dy (if (btn 0) -1 (btn 1) 1 0)]
-    (when (can-move? (+ x dx) (+ y dy 8))
-      (set (x y) (values (+ x dx) (+ y dy))))))
+    (if (can-move? (+ x dx) (+ y dy 8))
+        (set (x y) (values (+ x dx) (+ y dy)))
+        (can-move? (+ x dx) (+ y 8))
+        (set x (+ x dx))
+        (can-move? x (+ y dy 8))
+        (set y (+ y dy)))))
 
 (fn init []
   (set (x y cam-x cam-y) (values (/ center-x 2) center-y center-x center-y)))
