@@ -72,6 +72,7 @@
 (fn main []
   (cls)
   (draw)
+  (when (btnp 6) (trace (.. x " " y))) ; for debug
   (let [talking-to (dialog x y (btnp 4) (btnp 5))]
     (if (and talking-to (btnp 0)) (choose -1)
         (and talking-to (btnp 1)) (choose 1)
