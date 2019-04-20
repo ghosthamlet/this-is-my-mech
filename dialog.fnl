@@ -18,6 +18,14 @@
   (let [x (- a.x b.x) y (- a.y b.y)]
     (math.sqrt (+ (* x x) (* y y)))))
 
+(fn describe [...]
+  (let [prev-who who]
+    (set who nil)
+    (set said (table.concat [...] "\n"))
+    (coroutine.yield)
+    (set who nil)
+    (set said nil)))
+
 (fn say [...]
   (set said (table.concat [...] "\n"))
   (coroutine.yield)
