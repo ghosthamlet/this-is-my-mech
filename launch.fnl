@@ -23,6 +23,14 @@
 (local stars [])
 (for [i 1 32] (table.insert stars [(math.random 480) (math.random 272)]))
 
+(fn draw-talk []
+  (rect 0 0 238 40 13)
+  (rectb 1 1 236 38 15)
+  (let [[who words] launch-talk]
+    (print who 5 26)
+    (print words 32 6)
+    (spr (. others who :portrait) 8 6 0 1 0 0 2 2)))
+
 (fn draw-stars [scroll-x scroll-y]
   (each [_ s (ipairs stars)]
     (let [[sx sy] s]
@@ -40,7 +48,9 @@
       (rect (+ other.x 30) (+ other.y 6) (- 240 other.x) 2 1)))
   (when (btn 5)
     (rect (+ lx 30) (+ ly 6) 240 2 1))
-  (spr 484 lx ly 0 1 0 0 4 2))
+  (spr 484 lx ly 0 1 0 0 4 2)
+  (draw-talk))
+
 (fn fly-others []
   (each [_ other (pairs others)]
     (set other.x (+ other.x other.dx))
@@ -59,6 +69,11 @@
   (when (and (btn 1) (< ly (- 136 16))) (set ly (+ ly 1)))
   (when (and (btn 2) (< 0 lx)) (set lx (- lx 1)))
   (when (and (btn 3) (< lx (- 240 32))) (set lx (+ lx 1)))
+  (when (btnp 4)
+    (table.remove launch-talk 1)
+    (table.remove launch-talk 1)
+    (when (not (. launch-talk 1))
+      (error "game over")))
   (fly-others)
   (draw-launch))
 
