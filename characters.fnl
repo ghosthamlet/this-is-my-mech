@@ -10,12 +10,7 @@
 (local all {})
 
 (fn all.Adam []
-  (say "Check out how cool my uniform is.")
-  (if (= "Yes" (ask "Are you ready to launch?" ["Yes" "No"]))
-      (do (reply "Let's do this!")
-          (say "I was hoping you'd say that!")
-          (enter-launch))
-      (say "OK but don't wait too long.")))
+  (say "Check out how cool my uniform is."))
 
 (fn all.Turk []
   (describe "Turk seems a little agitated.")
@@ -58,6 +53,22 @@
         (= answer "Oh look at the time.")
         (do (say "Uh... all right then, I guess.")
             (describe "He stares at his feet as you leave.")))))
+
+(set chars.mech-adam {:x 257 :y 128})
+(set chars.mech-turk {:x 257 :y 160})
+(set chars.mech-hank {:x 257 :y 192})
+(set chars.mech-carrie {:x 257 :y 224})
+(set chars.mech-nikita {:x 257 :y 256})
+
+(fn all.mech-adam [] (describe "This is Adam's mech."))
+(fn all.mech-turk [] (describe "This is Turk's mech."))
+(fn all.mech-hank [] (describe "This is Hank's mech."))
+(fn all.mech-carrie [] (describe "This is Carrie's mech."))
+(fn all.mech-nikita []
+  (describe "This is your mech.")
+  (when (= "Yes" (ask "Are you ready to launch?" ["Yes" "No"]))
+      (reply "Let's do this!")
+      (enter-launch)))
 
 (each [name (pairs chars)] ; set up initial convos for each character
   (tset convos name (. all name)))

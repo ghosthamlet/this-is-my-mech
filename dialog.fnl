@@ -23,7 +23,7 @@
     (set who nil)
     (set said (table.concat [...] "\n"))
     (coroutine.yield)
-    (set who nil)
+    (set who prev-who)
     (set said nil)))
 
 (fn say [...]
