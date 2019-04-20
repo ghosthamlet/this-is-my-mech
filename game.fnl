@@ -110,7 +110,7 @@
   (print "Emma Bukacek" 92 98)
   (print "press Z" (+ (* 128
                          (- 1 (math.abs (- 1 (math.fmod (/ cam-x 100) 2)))))
-                      32) 124 1)
+                      32) 124 2)
   (for [i 0 5]
     (when (btnp i)
       (set cam-x 96)

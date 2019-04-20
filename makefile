@@ -3,7 +3,9 @@ TIC_GLOBALS=mget,btn,btnp,map,spr,rect,rectb,trace,pix,mset,cls
 
 SRC=header.fnl dialog.fnl launch.fnl characters.fnl game.fnl
 
-run: out.fnl; tic80 mech.tic -code-watch out.fnl
+run: out.fnl
+	ls *fnl | entr make out.fnl &
+	tic80 mech.tic -code-watch out.fnl
 
 out.fnl: $(SRC) ; cat $^ > $@
 
