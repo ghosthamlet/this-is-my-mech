@@ -54,11 +54,11 @@
         (do (say "Uh... all right then, I guess.")
             (describe "He stares at his feet as you leave.")))))
 
-(set chars.mech-adam {:x 257 :y 128})
-(set chars.mech-turk {:x 257 :y 160})
-(set chars.mech-hank {:x 257 :y 192})
-(set chars.mech-carrie {:x 257 :y 224})
-(set chars.mech-nikita {:x 257 :y 256})
+(set chars.mech-adam {:x 240 :y 129 :spr 416 :w 4})
+(set chars.mech-turk {:x 240 :y 161 :spr 448 :w 4})
+(set chars.mech-hank {:x 240 :y 193 :spr 480 :w 4})
+(set chars.mech-carrie {:x 240 :y 225 :spr 452 :w 4})
+(set chars.mech-nikita {:x 240 :y 257 :spr 484 :w 4})
 
 (fn all.mech-adam [] (describe "This is Adam's mech."))
 (fn all.mech-turk [] (describe "This is Turk's mech."))

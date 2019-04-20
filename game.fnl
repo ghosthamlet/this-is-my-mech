@@ -11,7 +11,8 @@
   res)
 
 (fn hit? [px py char]
-  (and (<= char.x px (+ char.x 7)) (<= char.y py (+ char.y 15))))
+  (and (<= char.x px (+ char.x (- (* (or char.w 1) 8) 1)))
+       (<= char.y py (+ char.y (- (* (or char.h 2) 8) 1)))))
 
 (fn can-move-point? [px py]
   (and (= 1 (mget (// px 8) (// py 8)))
@@ -62,7 +63,7 @@
        (- (% cam-y 8) 8) 0)
   (each [name c (pairs chars)]
     (when c.spr
-      (spr c.spr (+ cam-x c.x) (+ cam-y c.y) 0 1 0 0 1 2)))
+      (spr c.spr (+ cam-x c.x) (+ cam-y c.y) 0 1 0 0 (or c.w 1) (or c.h 2))))
   (spr 258 (+ x cam-x) (+ y cam-y) 0 1 0 0 1 2)
   (draw-dialog))
 

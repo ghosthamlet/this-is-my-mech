@@ -15,7 +15,7 @@
 (local convos {})
 
 (fn distance [a b]
-  (let [x (- a.x b.x) y (- a.y b.y)]
+  (let [x (- a.x (if b.w (+ b.x (* b.w 3)) b.x)) y (- a.y b.y)]
     (math.sqrt (+ (* x x) (* y y)))))
 
 (fn describe [...]
