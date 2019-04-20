@@ -78,6 +78,7 @@
     (if (and talking-to (btnp 0)) (choose -1)
         (and talking-to (btnp 1)) (choose 1)
         (not talking-to) (move)))
+  (when (and (btn 4) (btn 5) (btn 6)) (enter-launch)) ; for debugging
   (for [i (# coros) 1 -1]
     (coroutine.resume (. coros i))
     (when (= :dead (coroutine.status (. coros i)))
