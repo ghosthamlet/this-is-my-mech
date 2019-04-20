@@ -18,11 +18,36 @@ what to do. Major white privilege tech-bro thing going on. Thinks he's
 a "leader" but only leads because everyone else eventually gets tired
 of arguing with him and lets him win.
 
+#### Tone
+Leans into buzzwords, e.g. "synergy" and "serverless," and has a penchant for
+condescension. Too matter-of-fact sounding and too proud; however, shows great
+concern for friends underneath his annoying bravado.
+
+#### Song Facts
+* Claims he does the most damage
+
 ### TURK Bragg (Turquoise Rhino)
 
-Hugely narcissistic. Loves to be in the spotlight and really enjoys
-the attention of the fans, who he'll do anything for. His priority is
-looking good on camera and gaining fans.
+Hugely narcissistic. Loves to be in the spotlight and really enjoys the
+attention of the fans, who he'll do anything for. His priority is looking good
+on camera and gaining fans. Unfortunately, a "guaranteed" television pilot that
+he starred in was passed up by every major studio. Despite Turk's appearance of
+fame and fortune, he could actually default on his properties and loans due to
+mismanagement of funds without a steady job. He pretends to befine, but
+ultimately, he wants to increase his brand and image by acting as the head in
+the hopes of scoring more gigs to bring his life stability.
+
+#### Tone
+Cursing and easy word play. Sucker for buzzwords and pop culture. Can get real
+under extreme circumstances, but tends to hide behind fame instead of dealing
+with his problems. Interrupts people. He's a mumpsimus in that he uses eggcorns
+and malapropisms without realizing it.
+
+#### Song Facts
+* Has an agent
+* Is a star of some sort
+  * Movies?
+  * Television?
 
 ### HANK Rogers (Pink Rhino)
 
@@ -30,19 +55,38 @@ NASA-trained astrophysicist pilot. Not as pushy as the first two, but
 pretty resentful that his brilliance isn't acknowledged. He wants to
 replace the targeting system with a new machine-learning blockchain
 system he has been working on, even though the existing targeting
-system works fine.
+system works fine. He met Carrie while working on his dissertation
+(Triangulating Wronskian Block Chains to Boost Plasma Nacelles) and
+together they applied to the Rhino strike team, being the first pair
+ever to be accepted onto the team.
+
+#### Tone
+Has a large vocabulary and isn't afraid to use it, regardless of his audience.
 
 ### CARRIE Hayes (Purple Rhino)
 
-Patient and intelligent but consistently overlooked by her brash
-teammates. She is very talented but has gotten used to just keeping
+Known as the engineer of the group, but is also an adept pilot. She's even a
+chess grandmaster! Her intelligence, kindness, and empathy are consistently
+overlooked by her brash teammates. While close to Hank and Nikita, she often
+disagrees with Adam and Turk. Despite her patience, she's butted her head back a
+few times, but often loses against the two. Despite her talent, she often keeps
 quiet to avoid trouble.
 
-### Player character (Black Rhino)
+#### Tone
+Leans into idioms a lot and quotes cheesy movies. Soft spoken, but chooses
+her words with care.
 
-This is you! We don't have to write characterization for the
-protagonist because their choices are the player's choices; isn't that
-convenient?
+### NIKITA Anand (Black Rhino)
+
+Weapons specialist of the group and amateur comedian. Sardonic as they
+come and sometimes her sharpness gets her into trouble. Graduated top of
+her class at the Rhino Academy, she's one of the newest to the group.
+She immediately got along with Carrie, who was delighted to finally
+have another woman on board. Then by extension of Carrie, Nikita
+also developed a friendship with Hank. She plays into Turk's narcissism
+enough to keep him off her back, but she tends to feel confined by
+Adam's suffocating mentorship.
+
 
 ## Plot
 
