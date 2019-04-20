@@ -4,7 +4,24 @@
 (local (center-x center-y) (values (/ w 2) (/ h 2)))
 (var (x y cam-x cam-y) nil)
 
-(fn can-move? [] true)
+(fn filter [f t]
+  (local res [])
+  (each [_ x (pairs t)]
+    (when (f x) (table.insert res x)))
+  res)
+
+(fn hit? [px py char]
+  (and (<= char.x px (+ char.x 7)) (<= char.y py (+ char.y 15))))
+
+(fn can-move-point? [px py]
+  (and (= 1 (mget (// px 8) (// py 8)))
+       (= 0 (# (filter (partial hit? px py) chars)))))
+
+(fn can-move? [x y]
+  (and (can-move-point? x y)
+       (can-move-point? (+ x 6) y)
+       (can-move-point? x (+ y 7))
+       (can-move-point? (+ x 6) (+ y 7))))
 
 (fn move []
   (let [dx (if (btn 2) -1 (btn 3) 1 0)
