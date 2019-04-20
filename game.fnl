@@ -15,9 +15,6 @@
 (fn init []
   (set (x y cam-x cam-y) (values (/ center-x 2) center-y center-x center-y)))
 
-(fn lerp [a b t]
-  (+ (* a (- 1 t)) (* t b)))
-
 (fn draw-dialog []
   (when said
     (rect 0 0 238 44 13)
@@ -54,8 +51,6 @@
     (if (and talking-to (btnp 0)) (choose -1)
         (and talking-to (btnp 1)) (choose 1)
         (not talking-to) (move)))
-  (when (btnp 6) ; press A to jump to launch just for testing, remove later
-    (enter-launch))
   (for [i (# coros) 1 -1]
     (coroutine.resume (. coros i))
     (when (= :dead (coroutine.status (. coros i)))

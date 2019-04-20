@@ -3,7 +3,7 @@ TIC_GLOBALS=mget,btn,btnp,map,spr,rect,rectb,trace,pix,mset,cls
 
 run: out.fnl; tic80 mech.tic -code-watch out.fnl
 
-out.fnl: header.fnl dialog.fnl characters.fnl launch.fnl game.fnl
+out.fnl: header.fnl dialog.fnl launch.fnl characters.fnl game.fnl
 	cat $^ > $@
 
 check: out.fnl

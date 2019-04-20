@@ -10,7 +10,10 @@
 (local all {})
 
 (fn all.Adam []
-  (say "Check out how cool my uniform is."))
+  (say "Check out how cool my uniform is.")
+  (if (= "Yes" (ask "Are you ready to launch?" ["Yes" "No"]))
+      (enter-launch)
+      (say "OK but don't wait too long.")))
 
 (each [name (pairs chars)] ; set up initial convos for each character
   (tset convos name (. all name)))
