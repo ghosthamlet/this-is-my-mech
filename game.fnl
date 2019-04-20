@@ -38,20 +38,20 @@
 
 (fn draw-dialog []
   (when said
-    (rect 0 0 238 40 13)
-    (rectb 1 1 236 38 15)
+    (rect 0 0 238 42 13)
+    (rectb 1 1 236 40 15)
     (print said 32 6)
     (when (and who who.portrait (not replying))
       (print who.name 5 26)
       (spr who.portrait 8 6 0 1 0 0 2 2))
     (when (and who who.portrait replying)
-      (print "You" 5 26)
+      (print "Nikita" 5 26)
       (spr 256 8 6 0 1 0 0 2 2))
     (when choices
       (each [i ch (ipairs choices)]
         (when (= i choice)
-          (print ">" 30 (+ 10 (* 8 i))))
-        (print ch 38 (+ 10 (* 8 i)))))))
+          (print ">" 30 (+ 8 (* 8 i))))
+        (print ch 38 (+ 8 (* 8 i)))))))
 
 (fn draw []
   (set cam-x (math.min center-x (lerp cam-x (- center-x x) 0.05)))

@@ -20,14 +20,17 @@
 (fn all.Turk []
   ; (describe "He seems agitated.")
   (reply "Hey, Turk.")
-  (say "Nikita!! My favorite person. Make it \nquick; I've got a call with my agent in\n15 minutes.")
+  (say "Nikita!! My favorite person. Make it"
+       "quick; I've got a call with my agent in"
+       "15 minutes.")
   (let [answer (ask "What's up?" ["Agent?" "Carrie" "Bye"])]
-    (match answer
-      "Carrie" (reply "I'd like you to consider letting Carrie be the head. She-")
-      "Agent" (reply "Oooo, agent, eh? What's going\non there?")
-      "Bye" (do
-        (reply "Nevermind. Later.")
-        (describe "He seems relieved you're leaving.")))))
+    (if (= answer "Agent?")
+        (reply "Oooo, agent, eh? What's going\non there?")
+        (= answer "Carrie")
+        (reply "I'd like you to consider letting Carrie be the head. She-")
+        (do
+          (reply "Nevermind. Later.")
+          (describe "He seems relieved you're leaving.")))))
 
 (each [name (pairs chars)] ; set up initial convos for each character
   (tset convos name (. all name)))

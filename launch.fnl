@@ -24,8 +24,8 @@
 (for [i 1 32] (table.insert stars [(math.random 480) (math.random 272)]))
 
 (fn draw-talk []
-  (rect 0 0 238 40 13)
-  (rectb 1 1 236 38 15)
+  (rect 0 0 238 42 13)
+  (rectb 1 1 236 40 15)
   (let [[who words] launch-talk]
     (print who 5 26)
     (print words 32 6)
