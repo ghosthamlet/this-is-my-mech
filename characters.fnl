@@ -18,16 +18,20 @@
       (say "OK but don't wait too long.")))
 
 (fn all.Turk []
-  ; (describe "He seems agitated.")
+  (describe "Turk seems a little agitated.")
   (reply "Hey, Turk.")
   (say "Nikita!! My favorite person. Make it"
        "quick; I've got a call with my agent in"
        "15 minutes.")
   (let [answer (ask "What's up?" ["Agent?" "Carrie" "Bye"])]
     (if (= answer "Agent?")
-        (reply "Oooo, agent, eh? What's going\non there?")
+        (reply "Oooo, agent, eh?"
+               "What's going\non there?")
         (= answer "Carrie")
-        (reply "I'd like you to consider letting Carrie be the head. She-")
+        (do
+          (reply "I'd like you to consider letting Carrie be the head. She-")
+          (say "Let me just stop you right there."
+               "I NEED to be the head."))
         (do
           (reply "Nevermind. Later.")
           (describe "He seems relieved you're leaving.")))))
