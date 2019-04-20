@@ -10,3 +10,8 @@ out.fnl: $(SRC) ; cat $^ > $@
 check: out.fnl ; fennel --globals $(TIC_GLOBALS) --compile $< > /dev/null
 
 count: out.fnl ; cloc $^
+
+# run "export" in TIC80's shell to create mech.tic.html
+upload: mech.tic.html
+	cp $^ index.html
+	butler push index.html technomancy/this-is-my-mech:mech.tic.html
