@@ -99,8 +99,8 @@
   (line 208 32 208 64 5)
 
   (set cam-x (+ cam-x 2))
-  (print "by Emma Bukaceck and" 54 82)
-  (print "Phil Hagelberg" 92 98)
+  (print "by Phil Hagelberg and" 54 82)
+  (print "Emma Bukacek" 92 98)
   (print "press Z" (+ (* 128
                          (- 1 (math.abs (- 1 (math.fmod (/ cam-x 100) 2)))))
                       32) 124 1)
