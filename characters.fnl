@@ -31,4 +31,3 @@
 
 (each [name (pairs chars)] ; set up initial convos for each character
   (tset convos name (. all name)))
-()
