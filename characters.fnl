@@ -12,7 +12,9 @@
 (fn all.Adam []
   (say "Check out how cool my uniform is.")
   (if (= "Yes" (ask "Are you ready to launch?" ["Yes" "No"]))
-      (enter-launch)
+      (do (reply "Let's do this!")
+          (say "I was hoping you'd say that!")
+          (enter-launch))
       (say "OK but don't wait too long.")))
 
 (each [name (pairs chars)] ; set up initial convos for each character

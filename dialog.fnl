@@ -10,6 +10,8 @@
 (var choice nil)
 (var current-talk nil)
 
+(var replying false)
+
 (local convos {})
 
 (fn distance [a b]
@@ -19,6 +21,13 @@
 (fn say [...]
   (set said (table.concat [...] "\n"))
   (coroutine.yield)
+  (set said nil))
+
+(fn reply [...]
+  (set said (table.concat [...] "\n"))
+  (set replying true)
+  (coroutine.yield)
+  (set replying false)
   (set said nil))
 
 (fn ask [q ch]

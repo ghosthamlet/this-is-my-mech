@@ -41,9 +41,12 @@
     (rect 0 0 238 40 13)
     (rectb 1 1 236 38 15)
     (print said 32 6)
-    (when (and who who.portrait)
+    (when (and who who.portrait (not replying))
       (print who.name 5 26)
       (spr who.portrait 8 6 0 1 0 0 2 2))
+    (when (and who who.portrait replying)
+      (print "You" 5 26)
+      (spr 256 8 6 0 1 0 0 2 2))
     (when choices
       (each [i ch (ipairs choices)]
         (when (= i choice)
