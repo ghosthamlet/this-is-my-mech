@@ -32,6 +32,7 @@
 (fn draw []
   (set cam-x (math.min center-x (lerp cam-x (- center-x x) 0.05)))
   (set cam-y (math.min center-y (lerp cam-y (- center-y y) 0.05)))
+  (draw-stars cam-x cam-y)
   (map (// (- cam-x) 8) (// (- cam-y) 8)
        32 19 (- (% cam-x 8) 8)
        (- (% cam-y 8) 8) 0)
@@ -56,4 +57,37 @@
     (when (= :dead (coroutine.status (. coros i)))
       (table.remove coros i))))
 
-(global TIC main)
+(fn intro []
+  (cls)
+  (draw-stars cam-x cam-y)
+  (print "t  h  i  s        i  s        m  y" 24 10)
+  ;; M
+  (line 32 32 32 64 15)
+  (line 32 32 48 48 15)
+  (line 48 48 64 32 15)
+  (line 64 32 64 64 15)
+  ;; E
+  (line 80 32 80 64 15)
+  (line 80 32 112 32 15)
+  (line 80 48 112 48 15)
+  (line 80 64 112 64 15)
+  ;; C
+  (line 128 48 144 32 15)
+  (line 144 32 160 32 15)
+  (line 128 48 144 64 15)
+  (line 144 64 160 64 15)
+  ;; H
+  (line 176 32 176 64 15)
+  (line 176 48 208 48 15)
+  (line 208 32 208 64 15)
+
+  (set cam-x (+ cam-x 2))
+  (print "by Emma Bukaceck and" 54 82)
+  (print "Phil Hagelberg" 92 98)
+  (print "press Z" 46 124 13)
+  (for [i 0 5]
+    (when (btnp i)
+      (set cam-x 96)
+      (global TIC main))))
+
+(global TIC intro)

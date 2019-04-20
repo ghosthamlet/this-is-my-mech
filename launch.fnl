@@ -23,14 +23,17 @@
 (local stars [])
 (for [i 1 32] (table.insert stars [(math.random 480) (math.random 272)]))
 
-(fn draw-launch []
-  (cls)
+(fn draw-stars [scroll-x scroll-y]
   (each [_ s (ipairs stars)]
     (let [[sx sy] s]
       (pix (% (* (- sx scroll-x) 0.5) 240)
-           (% (* sy 0.5) 136) 13)
+           (% (* (- sy scroll-y) 0.5) 136) 13)
       (pix (% (- sx scroll-x) 240)
-           (% sy 136) 15)))
+           (% (- sy scroll-y) 136) 15))))
+
+(fn draw-launch []
+  (cls)
+  (draw-stars scroll-x 0)
   (each [_ other (pairs others)]
     (spr other.spr (// other.x 1) (// other.y 1) 0 1 0 0 4 2)
     (when (< 0 other.laser)
