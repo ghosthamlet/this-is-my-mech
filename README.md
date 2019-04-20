@@ -56,8 +56,8 @@ attack the enemy but cannot join up to form Rhinocelator because they
 can't agree who will form the head, so the team is defeated.
 
 You have to talk to Adam, Turk, and Hank and convince each of them
-that it's time to give Eve a turn leading the group. Finally you have
-to talk to Eve as well to convince her that she has what it takes to
+that it's time to give Carrie a turn leading the group. Finally you have
+to talk to Carrie as well to convince her that she has what it takes to
 lead the team to victory.
 
 ## Gameplay
@@ -115,7 +115,7 @@ The Rhinocelator home base space station.
 ## Writing
 
 We need to come up with how the conversations go among the different
-characters. Obviously the only winning condition is when Eve is the
+characters. Obviously the only winning condition is when Carrie is the
 head, which can only happen when all three of the other pilots agree
 not to try to be the head.
 
@@ -131,7 +131,7 @@ Adam and Turk.
 
 * Adam and Turk just bicker over who's going to form the head
 * Hank makes sarcastic comments
-* Eve tries to get them to stop fighting but can't
+* Carrie tries to get them to stop fighting but can't
 
 ### Convincing Adam
 
