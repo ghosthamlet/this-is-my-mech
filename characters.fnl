@@ -60,10 +60,22 @@
 (set chars.mech-carrie {:x 240 :y 225 :spr 452 :w 4})
 (set chars.mech-nikita {:x 240 :y 257 :spr 484 :w 4})
 
-(fn all.mech-adam [] (describe "This is Adam's mech."))
-(fn all.mech-turk [] (describe "This is Turk's mech."))
-(fn all.mech-hank [] (describe "This is Hank's mech."))
-(fn all.mech-carrie [] (describe "This is Carrie's mech."))
+(fn all.mech-adam []
+  (describe "This is Adam's mech."
+            "He keeps it spotless."))
+(fn all.mech-turk []
+  (describe "This is Turk's mech.")
+  (describe "There is a portrait of Turk taped"
+            "up next to the controls."))
+(fn all.mech-hank []
+  (describe "This is Hank's mech.")
+  (describe "He left a debugger wired into the"
+            "diagnostics port. It appears to be"
+            "downloading trajectory logs."))
+(fn all.mech-carrie []
+  (describe "This is Carrie's mech."
+            "There's evidence of recent repair"
+            "work on the rear flank's armor."))
 (fn all.mech-nikita []
   (describe "This is your mech.")
   (when (= "Yes" (ask "Are you ready to launch?" ["Yes" "No"]))
