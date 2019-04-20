@@ -44,11 +44,15 @@
                    "How well does it work?")
             (say "I'm not sure yet. I want to use it on"
                  "our next mission to find out!"
-                 "It could be pretty revolutionary!"))
+                 "It could be pretty revolutionary!")
+            (reply "Don't you think you should test"
+                   "it in a less dangerous setting?")
+            (say "Come on, Nikita! It'll be fine!"
+                 "Don't be such a spoilsport."))
         (= answer "Maybe later!")
         (say "Sure!")
         (= answer "Oh look at the time.")
-        (do (say "Uh... all right then.")
+        (do (say "Uh... all right then, I guess.")
             (describe "He stares at his feet as you leave.")))))
 
 (each [name (pairs chars)] ; set up initial convos for each character
