@@ -2,10 +2,10 @@
                  :spr 290 :portrait 288})
 (set chars.Turk {:x 152 :y 8 :name "Turk"
                  :spr 322 :portrait 320})
-(set chars.Hank {:x -128 :y -128 :name "Hank"
-                 :spr 352 :portrait 354})
+(set chars.Hank {:x 264 :y 2 :name "Hank"
+                 :spr 354 :portrait 352})
 (set chars.Carrie {:x -128 :y -128 :name "Carrie"
-                   :spr 384 :portrait 386})
+                   :spr 386 :portrait 384})
 
 (local all {})
 
@@ -31,6 +31,25 @@
         (do
           (reply "Nevermind. Later.")
           (describe "He seems relieved you're leaving.")))))
+
+(fn all.Hank []
+  (say "Oh, it's you. Hi Nikita.")
+  (let [answer (ask "Have I told you about my project?"
+                    ["What is it?" "Maybe later!" "Oh look at the time."])]
+    (if (= answer "What is it?")
+        (do (say "I built a new targeting system for"
+                 "Rhinocelator! It uses machine"
+                 "learning algorithms!")
+            (reply "Oh! Interesting."
+                   "How well does it work?")
+            (say "I'm not sure yet. I want to use it on"
+                 "our next mission to find out!"
+                 "It could be pretty revolutionary!"))
+        (= answer "Maybe later!")
+        (say "Sure!")
+        (= answer "Oh look at the time.")
+        (do (say "Uh... all right then.")
+            (describe "He stares at his feet as you leave.")))))
 
 (each [name (pairs chars)] ; set up initial convos for each character
   (tset convos name (. all name)))
