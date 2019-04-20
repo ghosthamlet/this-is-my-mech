@@ -116,4 +116,5 @@
       (set cam-x 96)
       (global TIC main))))
 
+(trace "Press ESC again to see how it was made!")
 (global TIC intro)

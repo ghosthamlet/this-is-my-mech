@@ -79,4 +79,11 @@
 
 (fn enter-launch []
   (set (lx ly scroll-x) (values 0 (/ 136 2) 0))
-  (global TIC launch))
+  (var t -136)
+  (global TIC (fn []
+                (set t (+ t 5))
+                (when (<= 0 t 136)
+                  (launch))
+                (rect 0 t 240 136 15)
+                (when (< 136 t)
+                  (global TIC launch)))))
