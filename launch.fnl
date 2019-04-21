@@ -74,7 +74,7 @@
 (fn fly-monster []
   (set mx (+ mx dmx))
   (set my (+ my dmy))
-  (set dmx (math.min (+ dmx (* (if (< mx tmx) 0.1 -0.2) (math.random))) max-delta))
+  (set dmx (math.min (+ dmx (* (if (< mx tmx) 0.1 -0.1) (math.random))) max-delta))
   (set dmy (math.min (+ dmy (* (if (< my tmy) 0.3 -0.1) (math.random))) max-delta))
   (when attacking?
     (set (tmx tmy) (values lx (- ly 32)))))
@@ -84,7 +84,7 @@
                 (cls)
                 (draw-stars 0 scroll-x)
                 (print "GAME OVER" 32 64 15 true 3)
-                (print "press Z" 190 124 2)
+                (print "press Z to try again" 124 124 2)
                 (set scroll-x (- scroll-x 3))
                 (when (btnp 4) (restart)))))
 
@@ -94,7 +94,8 @@
     (set hits (+ hits 1)))
   (when (= hits 8)
     (set launch-talk [:Nikita "I'm taking damage!"])
-    (set talk-index 1))
+    (set talk-index 1)
+    (set attacking? true))
   (when (= hits 42)
     (game-over)))
 
