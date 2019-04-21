@@ -2,6 +2,10 @@
 
 "Look, for all intensive purposes, I'm screwed here!"
 
+##
+##
+## Gets show purchased
+
 # Hank
 
 - _`IF DISPOSITION >= 0`_
@@ -46,18 +50,17 @@
   * Excitement! `SET HANK SUPPORTS CARRIE`
 
 ### Support
-* Gets amped up with your support
-  * Scorns Carrie's rejections
-    * Defend Carrie Lightly `SET NO SUPPORT HANK` `SET BLOCKCHAIN CONVO OVER`
-      * Apathetic dismissal
-      * -> End
-    * Defend Carrie Harshly `MINUS TWO DISPOSITION` `SET NO SUPPORT HANK` `SET BLOCKCHAIN CONVO OVER`
-      * Accuses you of being dishonest
-      * -> End
-    * Go along with rejection `SET SUPPORT HANK` `SET BLOCKCHAIN CONVO OVER`
-      * -> Support Hank
-    * Silence `SET SUPPORT HANK` `SET BLOCKCHAIN CONVO OVER`
-      * -> Support Hank
+* Gets amped up with your support and scorns Carrie's rejections
+  * Defend Carrie Lightly `SET NO SUPPORT HANK` `SET BLOCKCHAIN CONVO OVER`
+    * Apathetic dismissal
+    * -> End
+  * Defend Carrie Harshly `MINUS TWO DISPOSITION` `SET NO SUPPORT HANK` `SET BLOCKCHAIN CONVO OVER`
+    * Accuses you of being dishonest
+    * -> End
+  * Go along with rejection `SET SUPPORT HANK` `SET BLOCKCHAIN CONVO OVER`
+    * -> End
+  * Silence `SET SUPPORT HANK` `SET BLOCKCHAIN CONVO OVER`
+    * -> End
 
 ### No Support
 * Feels defensive that you don't believe in his idea
