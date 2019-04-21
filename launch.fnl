@@ -24,8 +24,6 @@
 (local stars [])
 (for [i 1 32] (table.insert stars [(math.random 480) (math.random 272)]))
 
-(fn game-over [] (error "game over"))
-
 (fn draw-talk []
   (let [[who words] launch-talk]
     (when words
@@ -81,26 +79,38 @@
         (set other.laser (- (math.random 128) 64))
         (set other.laser (- other.laser 1)))))
 
-(var (tmx tmy dmx dmy attacking) (values 210 48 0 0 nil))
-
-(fn pick-target []
-  (each [_ other (pairs others)]
-    (if (not other.down)
-        (set attacking other)
-        (and other.down (= attacking other))
-        (set attacking nil)))
-  (when (not attacking)
-    (game-over)))
+(var (tmx tmy dmx dmy attacking? hits) (values 210 48 0 0 false 0))
 
 (fn fly-monster []
   (set mx (+ mx dmx))
   (set my (+ my dmy))
   (set dmx (math.min (+ dmx (* (if (< mx tmx) 0.1 -0.2) (math.random))) max-delta))
   (set dmy (math.min (+ dmy (* (if (< my tmy) 0.3 -0.1) (math.random))) max-delta))
-  (when (and attacking attacking.down)
-    (pick-target))
-  (when attacking
-    (set (tmx tmy) (values attacking.x attacking.y))))
+  (when attacking?
+    (set (tmx tmy) (values lx (- ly 32)))))
+
+(fn game-over []
+  (global TIC (fn []
+                (cls)
+                (draw-stars 0 scroll-x)
+                (print "GAME OVER" 32 64 15 true 3)
+                (print "press Z" 190 124 2)
+                (set scroll-x (- scroll-x 3))
+                (when (btnp 4) (restart)))))
+
+(fn hit-check []
+  (when (and (<= mx lx (+ mx 32))
+             (<= my ly (+ my 48)))
+    (set hits (+ hits 1)))
+  (when (= hits 16)
+    (while (. launch-talk 1) (table.remove launch-talk))
+    (table.insert launch-talk :Nikita)
+    (table.insert launch-talk "I'm taking damage!")
+    (table.insert launch-talk :Nikita)
+    (table.insert launch-talk (.. "Our weapons aren't strong enough.\n"
+                                  "We need to form up!")))
+  (when (= hits 32)
+    (game-over)))
 
 ;; when the game is in launch mode, this becomes the TIC updater
 (fn launch []
@@ -113,9 +123,10 @@
     (table.remove launch-talk 1)
     (table.remove launch-talk 1)
     (when (<= (# launch-talk) 2) ; or whatever
-      (pick-target)))
+      (set attacking? true)))
   (fly-others)
   (fly-monster)
+  (hit-check)
   (draw-launch))
 
 (fn enter-launch []

@@ -121,3 +121,4 @@
 
 (trace "Press ESC again to see how it was made!")
 (global TIC intro)
+(set restart (fn [] (init) (global TIC main)))

@@ -6,3 +6,5 @@
 
 (fn lerp [a b t]
   (+ (* a (- 1 t)) (* t b)))
+
+(var restart nil)
