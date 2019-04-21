@@ -1,37 +1,29 @@
 ;; you'll eventually get different sequences here depending on actions so far
-(local launch-talk
-       [:Adam "Yeah! Time to assemble Rhinocelator!"
-        :Adam "Enter standard formation\nso I can form the head."
-        :Turk "What are you talking about?"
-        :Turk "I'm going to form the head this time."
-        :Hank "You formed the head last time."
-        :Turk "That doesn't count!"
-        :Turk "We didn't even have the\ncameras running last time."
-        :Carrie "*sighs deeply*"
-        :Adam "Look out, it's attacking!"])
+(var launch-talk [])
+(var (lx ly scroll-x mx my talk-index) nil)
+(var (tmx tmy dmx dmy attacking? hits) nil)
 
-(var (lx ly scroll-x mx my) nil)
+(local initial-positions {:Adam [100 15] :Turk [-50 40]
+                          :Hank [10 120] :Carrie [-10 100]})
 
-(local others {:Adam {:spr 416 :x 100 :y 15 :dx 0 :dy 0 :oy 15
-                      :laser 0 :portrait 291}
-               :Turk {:spr 448 :x -50 :y 40 :dx 0 :dy 0 :oy 40
-                      :laser 0 :portrait 323}
-               :Hank {:spr 480 :x 10 :y 120 :dx 0 :dy 0 :oy 120
-                      :laser 0 :portrait 355}
-               :Carrie {:spr 452 :x -10 :y 100 :dx 0 :dy 0 :oy 100
-                        :laser 0 :portrait 387}})
+(local others {:Adam {:spr 416 :oy 15 :laser 0 :portrait 291}
+               :Turk {:spr 448 :oy 40 :laser 0 :portrait 323}
+               :Hank {:spr 480 :oy 120 :laser 0 :portrait 355}
+               :Carrie {:spr 452 :oy 100 :laser 0 :portrait 387}})
 
 (local stars [])
 (for [i 1 32] (table.insert stars [(math.random 480) (math.random 272)]))
 
 (fn draw-talk []
-  (let [[who words] launch-talk]
+  (let [who (. launch-talk talk-index)
+        words (. launch-talk (+ talk-index 1))]
     (when words
       (rect 0 0 238 42 13)
       (rectb 1 1 236 40 15)
       (print who 5 26)
       (print words 32 6)
-      (spr (. others who :portrait) 8 6 0 1 0 0 2 2))))
+      (spr (if (= :Nikita who) 259 ; lol this is dumb
+               (. others who :portrait)) 8 6 0 1 0 0 2 2))))
 
 (fn draw-stars [scroll-x scroll-y]
   (each [_ s (ipairs stars)]
@@ -79,8 +71,6 @@
         (set other.laser (- (math.random 128) 64))
         (set other.laser (- other.laser 1)))))
 
-(var (tmx tmy dmx dmy attacking? hits) (values 210 48 0 0 false 0))
-
 (fn fly-monster []
   (set mx (+ mx dmx))
   (set my (+ my dmy))
@@ -102,14 +92,10 @@
   (when (and (<= mx lx (+ mx 32))
              (<= my ly (+ my 48)))
     (set hits (+ hits 1)))
-  (when (= hits 16)
-    (while (. launch-talk 1) (table.remove launch-talk))
-    (table.insert launch-talk :Nikita)
-    (table.insert launch-talk "I'm taking damage!")
-    (table.insert launch-talk :Nikita)
-    (table.insert launch-talk (.. "Our weapons aren't strong enough.\n"
-                                  "We need to form up!")))
-  (when (= hits 32)
+  (when (= hits 8)
+    (set launch-talk [:Nikita "I'm taking damage!"])
+    (set talk-index 1))
+  (when (= hits 42)
     (game-over)))
 
 ;; when the game is in launch mode, this becomes the TIC updater
@@ -120,9 +106,8 @@
   (when (and (btn 2) (< 0 lx)) (set lx (- lx 1)))
   (when (and (btn 3) (< lx (- 240 32))) (set lx (+ lx 1)))
   (when (btnp 4)
-    (table.remove launch-talk 1)
-    (table.remove launch-talk 1)
-    (when (<= (# launch-talk) 2) ; or whatever
+    (set talk-index (+ talk-index 2))
+    (when (= talk-index 19) ; or whatever
       (set attacking? true)))
   (fly-others)
   (fly-monster)
@@ -131,6 +116,25 @@
 
 (fn enter-launch []
   (set (lx ly scroll-x mx my) (values 0 (/ 136 2) 0 200 32))
+  (set (tmx tmy dmx dmy attacking? hits) (values 210 48 0 0 false 0))
+  (each [name pos (pairs initial-positions)]
+    (let [[x y] pos]
+      (tset others name :x x)
+      (tset others name :y y)
+      (tset others name :dx 0)
+      (tset others name :dy 0)))
+  (set launch-talk
+       [:Adam "Yeah! Time to assemble Rhinocelator!"
+        :Adam "Enter standard formation\nso I can form the head."
+        :Turk "What are you talking about?"
+        :Turk "I'm going to form the head this time."
+        :Hank "You formed the head last time."
+        :Turk "That doesn't count!"
+        :Turk "We didn't even have the\ncameras running last time."
+        :Carrie "*sighs deeply*"
+        :Nikita "Our weapons aren't strong enough.\nWe need to form up!"
+        :Adam "Look out, it's attacking!"])
+  (set talk-index 1)
   (var t -136)
   (global TIC (fn []
                 (set t (+ t 5))
