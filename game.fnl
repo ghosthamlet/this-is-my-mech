@@ -35,7 +35,7 @@
         (set y (+ y dy)))))
 
 (fn init []
-  (set (x y cam-x cam-y) (values (/ center-x 2) center-y center-x center-y)))
+  (set (x y cam-x cam-y) (values 39 304 center-y center-x center-y)))
 
 (fn draw-dialog []
   (when said

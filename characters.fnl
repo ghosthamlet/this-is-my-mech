@@ -4,7 +4,7 @@
                  :spr 322 :portrait 320})
 (set chars.Hank {:x 264 :y 2 :name "Hank"
                  :spr 354 :portrait 352})
-(set chars.Carrie {:x -128 :y -128 :name "Carrie"
+(set chars.Carrie {:x 139 :y 308 :name "Carrie"
                    :spr 386 :portrait 384})
 
 (local all {})
@@ -54,6 +54,13 @@
         (do (say "Uh... all right then, I guess.")
             (describe "He stares at his feet as you leave.")))))
 
+(fn all.Carrie []
+  (say "How's it going?")
+  (reply "Good to see you again.")
+  (say "I'm a bit worried about the next"
+       "mission. If we can't form up we"
+       "might not stand a chance."))
+
 (set chars.mech-adam {:x 240 :y 129 :spr 416 :w 4})
 (set chars.mech-turk {:x 240 :y 161 :spr 448 :w 4})
 (set chars.mech-hank {:x 240 :y 193 :spr 480 :w 4})
@@ -65,7 +72,7 @@
             "He keeps it spotless."))
 (fn all.mech-turk []
   (describe "This is Turk's mech.")
-  (describe "There is a portrait of Turk taped"
+  (describe "There is a faded photo of Turk taped"
             "up next to the controls."))
 (fn all.mech-hank []
   (describe "This is Hank's mech.")
@@ -85,8 +92,8 @@
 (set chars.turk-photo {:x 13 :y 200 :spr 190 :w 2 :h 2})
 (fn all.turk-photo []
   (describe "Only Turk would have a photo of"
-            "himself in his quarters..")
-  (describe "Hmm..why am *I* in here?"))
+            "himself in his quarters.")
+  (describe "Hmm...why am *I* in here?"))
 
 (each [name (pairs chars)] ; set up initial convos for each character
   (tset convos name (. all name)))
