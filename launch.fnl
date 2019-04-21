@@ -108,14 +108,15 @@
   (when (and (btn 3) (< lx (- 240 32))) (set lx (+ lx 1)))
   (when (btnp 4)
     (set talk-index (+ talk-index 2))
-    (when (= talk-index 19) ; or whatever
-      (set attacking? true)))
+    (when (= :function (type (. launch-talk talk-index)))
+      ((. launch-talk talk-index))
+      (set talk-index (+ talk-index 1))))
   (fly-others)
   (fly-monster)
   (hit-check)
   (draw-launch))
 
-(fn enter-launch []
+(fn enter-launch [path]
   (set (lx ly scroll-x mx my) (values 0 (/ 136 2) 0 200 32))
   (set (tmx tmy dmx dmy attacking? hits) (values 210 48 0 0 false 0))
   (each [name pos (pairs initial-positions)]
@@ -124,17 +125,20 @@
       (tset others name :y y)
       (tset others name :dx 0)
       (tset others name :dy 0)))
-  (set launch-talk
-       [:Adam "Yeah! Time to assemble Rhinocelator!"
-        :Adam "Enter standard formation\nso I can form the head."
-        :Turk "What are you talking about?"
-        :Turk "I'm going to form the head this time."
-        :Hank "You formed the head last time."
-        :Turk "That doesn't count!"
-        :Turk "We didn't even have the\ncameras running last time."
-        :Carrie "*sighs deeply*"
-        :Nikita "Our weapons aren't strong enough.\nWe need to form up!"
-        :Adam "Look out, it's attacking!"])
+  (if (= path :win)
+      (set launch-talk [])
+      (set launch-talk
+           [:Adam "Yeah! Time to assemble Rhinocelator!"
+            :Adam "Enter standard formation\nso I can form the head."
+            :Turk "What are you talking about?"
+            :Turk "I'm going to form the head this time."
+            :Hank "You formed the head last time."
+            :Turk "That doesn't count!"
+            :Turk "We didn't even have the\ncameras running last time."
+            :Carrie "*sighs deeply*"
+            :Nikita "Our weapons aren't strong enough.\nWe need to form up!"
+            (fn [] (set attacking? true))
+            :Adam "Look out, it's attacking!"]))
   (set talk-index 1)
   (var t -136)
   (global TIC (fn []
