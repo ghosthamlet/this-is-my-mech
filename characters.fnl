@@ -82,5 +82,11 @@
       (reply "Let's do this!")
       (enter-launch)))
 
+(set chars.turk-photo {:x 13 :y 200 :spr 190 :w 2 :h 2})
+(fn all.turk-photo []
+  (describe "Only Turk would have a photo of himself"
+            "in his quarters..")
+  (describe "Hmm..why am *I* in here?"))
+
 (each [name (pairs chars)] ; set up initial convos for each character
   (tset convos name (. all name)))
