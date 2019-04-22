@@ -1,15 +1,16 @@
 ;; you'll eventually get different sequences here depending on actions so far
 (var launch-talk [])
-(var (lx ly scroll-x mx my talk-index) nil)
+(var (scroll-x mx my talk-index) nil)
 (var (tmx tmy dmx dmy attacking? hits) nil)
 
-(local initial-positions {:Adam [100 15] :Turk [-50 40]
+(local initial-positions {:Adam [100 15] :Turk [-50 40] :Nikita [0 68]
                           :Hank [10 120] :Carrie [-10 100]})
 
-(local others {:Adam {:spr 416 :oy 15 :laser 0 :portrait 291}
-               :Turk {:spr 448 :oy 40 :laser 0 :portrait 323}
-               :Hank {:spr 480 :oy 120 :laser 0 :portrait 355}
-               :Carrie {:spr 452 :oy 100 :laser 0 :portrait 387}})
+(local mechs {:Adam {:spr 416 :oy 15 :laser 0 :portrait 291}
+              :Turk {:spr 448 :oy 40 :laser 0 :portrait 323}
+              :Hank {:spr 480 :oy 120 :laser 0 :portrait 355}
+              :Carrie {:spr 452 :oy 100 :laser 0 :portrait 387}
+              :Nikita {:spr 484 :oy 68 :laser 0 :portrait 259}})
 
 (local stars [])
 (for [i 1 32] (table.insert stars [(math.random 480) (math.random 272)]))
@@ -22,8 +23,7 @@
       (rectb 1 1 236 40 15)
       (print who 5 26)
       (print words 32 6)
-      (spr (if (= :Nikita who) 259 ; lol this is dumb
-               (. others who :portrait)) 8 6 0 1 0 0 2 2))))
+      (spr (. mechs who :portrait) 8 6 0 1 0 0 2 2))))
 
 (fn draw-stars [scroll-x scroll-y]
   (each [_ s (ipairs stars)]
@@ -46,30 +46,33 @@
 (fn draw-launch []
   (cls)
   (draw-stars scroll-x 0)
-  (each [_ other (pairs others)]
-    (spr other.spr (// other.x 1) (// other.y 1) 0 1 0 0 4 2)
-    (when (< 0 other.laser)
-      (laser other.x other.y)))
+  (each [_ mech (pairs mechs)]
+    (spr mech.spr (// mech.x 1) (// mech.y 1) 0 1 0 0 4 2)
+    (when (< 0 mech.laser)
+      (laser mech.x mech.y)))
   (when (btn 5)
-    (laser lx ly))
-  (spr 484 lx ly 0 1 0 0 4 2)
+    (laser mechs.Nikita.x mechs.Nikita.y))
   (draw-monster)
   (draw-talk))
 
 (local max-delta 2)
 
-(fn fly-others []
-  (each [_ other (pairs others)]
-    (set other.x (+ other.x other.dx))
-    (set other.dx (math.min (+ other.dx (* (if (< other.x lx) 0.1 -0.1) (math.random)))
-                            max-delta))
-    (set other.y (+ other.y other.dy))
-    (set other.dy (math.min (+ other.dy (* (if (< (- other.y other.oy) (- ly 70))
-                                               0.005 -0.005) (math.random)))
-                            max-delta))
-    (if (and (<= other.laser 0) (< 126 (math.random 128)))
-        (set other.laser (- (math.random 128) 64))
-        (set other.laser (- other.laser 1)))))
+(fn fly-mechs []
+  (let [lx mechs.Nikita.x ly mechs.Nikita.y]
+    (each [name mech (pairs mechs)]
+      (when (~= :Nikita name)
+        (trace name)
+        (set mech.x (+ mech.x mech.dx))
+        (set mech.dx (math.min (+ mech.dx (* (if (< mech.x lx) 0.1 -0.1)
+                                               (math.random)))
+                                max-delta))
+        (set mech.y (+ mech.y mech.dy))
+        (set mech.dy (math.min (+ mech.dy (* (if (< (- mech.y mech.oy) (- ly 70))
+                                                   0.005 -0.005) (math.random)))
+                                max-delta))
+        (if (and (<= mech.laser 0) (< 126 (math.random 128)))
+            (set mech.laser (- (math.random 128) 64))
+            (set mech.laser (- mech.laser 1)))))))
 
 (fn fly-monster []
   (set mx (+ mx dmx))
@@ -77,7 +80,7 @@
   (set dmx (math.min (+ dmx (* (if (< mx tmx) 0.1 -0.1) (math.random))) max-delta))
   (set dmy (math.min (+ dmy (* (if (< my tmy) 0.3 -0.1) (math.random))) max-delta))
   (when attacking?
-    (set (tmx tmy) (values lx (- ly 32)))))
+    (set (tmx tmy) (values mechs.Nikita.x (- mechs.Nikita.y 32)))))
 
 (fn game-over []
   (global TIC (fn []
@@ -85,12 +88,12 @@
                 (draw-stars 0 scroll-x)
                 (print "GAME OVER" 32 64 15 true 3)
                 (print "press Z to try again" 124 124 2)
-                (set scroll-x (- scroll-x 3))
+                (set scroll-x (+ scroll-x 3))
                 (when (btnp 4) (restart)))))
 
 (fn hit-check []
-  (when (and (<= mx lx (+ mx 32))
-             (<= my ly (+ my 48)))
+  (when (and (<= mx mechs.Nikita.x (+ mx 32))
+             (<= my mechs.Nikita.y (+ my 48)))
     (set hits (+ hits 1)))
   (when (= hits 8)
     (set launch-talk [:Nikita "I'm taking damage!"])
@@ -102,36 +105,39 @@
 ;; when the game is in launch mode, this becomes the TIC updater
 (fn launch []
   (set scroll-x (+ scroll-x 1))
-  (when (and (btn 0) (< 0 ly)) (set ly (- ly 1)))
-  (when (and (btn 1) (< ly (- 136 16))) (set ly (+ ly 1)))
-  (when (and (btn 2) (< 0 lx)) (set lx (- lx 1)))
-  (when (and (btn 3) (< lx (- 240 32))) (set lx (+ lx 1)))
+  (when (and (btn 0) (< 0 mechs.Nikita.y))
+    (set mechs.Nikita.y (- mechs.Nikita.y 1)))
+  (when (and (btn 1) (< mechs.Nikita.y (- 136 16)))
+    (set mechs.Nikita.y (+ mechs.Nikita.y 1)))
+  (when (and (btn 2) (< 0 mechs.Nikita.x))
+    (set mechs.Nikita.x (- mechs.Nikita.x 1)))
+  (when (and (btn 3) (< mechs.Nikita.x (- 240 32)))
+    (set mechs.Nikita.x (+ mechs.Nikita.x 1)))
   (when (btnp 4)
     (set talk-index (+ talk-index 2))
     (when (= :function (type (. launch-talk talk-index)))
       ((. launch-talk talk-index))
       (set talk-index (+ talk-index 1))))
-  (fly-others)
+  (fly-mechs)
   (fly-monster)
   (hit-check)
   (draw-launch))
 
 (fn enter-launch [path]
-  (set (lx ly scroll-x mx my) (values 0 (/ 136 2) 0 200 32))
+  (set (scroll-x mx my) (values 0 (/ 136 2) 0 200 32))
   (set (tmx tmy dmx dmy attacking? hits) (values 210 48 0 0 false 0))
   (each [name pos (pairs initial-positions)]
     (let [[x y] pos]
-      (tset others name :x x)
-      (tset others name :y y)
-      (tset others name :dx 0)
-      (tset others name :dy 0)))
+      (tset mechs name :x x)
+      (tset mechs name :y y)
+      (tset mechs name :dx 0)
+      (tset mechs name :dy 0)))
   (if (= path :win)
       (set launch-talk [])
       (set launch-talk
            [:Adam "Yeah! Time to assemble Rhinocelator!"
             :Adam "Enter standard formation\nso I can form the head."
-            :Turk "What are you talking about?"
-            :Turk "I'm going to form the head this time."
+            :Turk "What?! No way.\nI'm going to form the head this time."
             :Hank "You formed the head last time."
             :Turk "That doesn't count!"
             :Turk "We didn't even have the\ncameras running last time."
