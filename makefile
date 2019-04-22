@@ -1,7 +1,7 @@
 # an incomplete list; add more to here as we use them to make check work
 TIC_GLOBALS=mget,btn,btnp,map,spr,rect,rectb,trace,pix,mset,cls,line
 
-SRC=header.fnl dialog.fnl launch.fnl characters.fnl game.fnl
+SRC=header.fnl dialog.fnl launch.fnl win.fnl characters.fnl game.fnl
 
 run: out.fnl
 	ls *fnl | entr make out.fnl &
