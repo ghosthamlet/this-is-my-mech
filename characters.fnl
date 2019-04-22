@@ -8,6 +8,12 @@
                    :spr 386 :portrait 384})
 
 (local all {})
+(local hank-conversations {})
+(local hank-state {})
+
+(fn update-hank-disposition [change]
+  (tset hank-state :disposition
+    (+ change hank-state.disposition)))
 
 (fn all.Adam []
   (say "Check out how cool my uniform is."))
@@ -36,23 +42,67 @@
   (let [answer (ask "Have I told you about my project?"
                     ["What is it?" "Maybe later!" "Oh look at the time."])]
     (if (= answer "What is it?")
-        (do (say "I built a new targeting system for"
-                 "Rhinocelator! It uses machine"
-                 "learning algorithms!")
-            (reply "Oh! Interesting."
-                   "How well does it work?")
-            (say "I'm not sure yet. I want to use it on"
-                 "our next mission to find out!"
-                 "It could be pretty revolutionary!")
-            (reply "Don't you think you should test"
-                   "it in a less dangerous setting?")
-            (say "Come on, Nikita! It'll be fine!"
-                 "Don't be such a spoilsport."))
+        (hank-conversations.explain-idea)
         (= answer "Maybe later!")
         (say "Sure!")
         (= answer "Oh look at the time.")
         (do (say "Uh... all right then, I guess.")
             (describe "He stares at his feet as you leave.")))))
+
+
+
+(fn hank-conversations.explain-idea []
+  (say "I built a new targeting system for"
+       "Rhinocelator! It uses machine"
+       "learning algorithms and block chain"
+       "validation!")
+  (say "It works by applying techno babble"
+       "to mainframe databases through a"
+       "triangulated Thoralin pipe!")
+  (reply "...oh, nice!")
+  (describe "You nod with..'understanding'")
+  (say "It's still a prototype, but with"
+       "suitable data, it could be quite"
+       "revolutionary! Our next mission is"
+       "an ideal opportunity to perform"
+       "research and install it!")
+  (say "With a little effort, I believe our"
+       "damage output will increase by"
+       "at least 57%!")
+  (let [answer (ask "What do you think?"
+                     ["Ask more" "Back his idea" "Don't support" "Harsh don't support"])]
+                    (if (= answer "Ask more")
+                        (hank-conversations.ask-more-about-idea)
+                        (= answer "Back his idea")
+                        (hank-conversations.support-idea)
+                        (= answer "Don't support")
+                        (hank-conversations.do-not-support-idea)
+                        (= answer "What a crock")
+                        (reply "You know you just said a lot of"
+                               "techno babble bullshit, right?")
+                        (say "Egad! First off-")
+                        (reply "And don't you need like, tens of"
+                               "thousands of samples to train a"
+                               "machine learning algorithm?")
+                        (say "Well, I mean.. it depends!")
+                        (describe "Hank's cheeks are practically bleeding"
+                                  "from blushing. Someone call the doc.")
+                        (hank-conversations.do-not-support-idea))))
+
+(fn hank-conversations.ask-more-about-idea []
+  (update-hank-disposition 1)
+  (reply "Actually, the triangulated Thoralin"
+         "pipe part confused me. I've only"
+         "seen those work as schwubs or"
+         "splurns in router systems."
+         "How do they work here?")
+  (say "Explanation")
+  [let (answer (ask "Think it'll work?"
+                    ["Yes" "It's not practical"]))]
+    (if (= answer "Yes")
+        (hank-conversations.support-idea)
+        (= answer "It's not practical")
+        (hank-conversations.do-not-support-idea)))
 
 (fn all.Carrie []
   (say "How's it going?")
