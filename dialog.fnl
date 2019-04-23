@@ -16,7 +16,10 @@
         y (- a.y (if b.h (+ b.y (* b.h 3)) b.y))]
     (math.sqrt (+ (* x x) (* y y)))))
 
-(fn publish [event] (tset events (. event :event) true))
+(fn publish [...]
+  (each [_ event (ipairs [...])]
+    (tset events (. event :event) true)))
+
 (fn has-happened [event-name] (= true (. events event-name)))
 
 (fn describe [...]
