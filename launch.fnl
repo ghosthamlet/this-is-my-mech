@@ -61,7 +61,6 @@
   (let [lx mechs.Nikita.x ly mechs.Nikita.y]
     (each [name mech (pairs mechs)]
       (when (~= :Nikita name)
-        (trace name)
         (set mech.x (+ mech.x mech.dx))
         (set mech.dx (math.min (+ mech.dx (* (if (< mech.x lx) 0.1 -0.1)
                                                (math.random)))

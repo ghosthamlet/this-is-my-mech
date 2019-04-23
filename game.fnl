@@ -42,6 +42,18 @@
        (values 264 20 center-y center-x center-y)
        ))
 
+(var said-reveal 1)
+(var last-reveal nil)
+(var talk-sound 0)
+
+(fn play-talk-sound [force?]
+  (set talk-sound (- talk-sound 1))
+  (when (and (<= talk-sound 0) who)
+    (when (or force? (< 1 (math.random 8)))
+      (let [duration (math.random 12)]
+        (set talk-sound duration)
+        (sfx 1 50 duration)))))
+
 (fn draw-dialog []
   (when said
     (if
@@ -52,7 +64,13 @@
       (do
         (rect 0 0 238 42 13)
         (rectb 1 1 236 40 15)))
-    (print said 38 6)
+    (when (~= last-reveal said)
+      (play-talk-sound true)
+      (set said-reveal 1))
+    (print (: said :sub 1 said-reveal) 38 6)
+    (when (<= said-reveal (# said))
+      (play-talk-sound)
+      (set said-reveal (+ said-reveal 1)))
     (when (and who who.portrait (not replying))
       (print who.name 5 26)
       (spr who.portrait 8 6 0 1 0 0 2 2))
@@ -63,7 +81,8 @@
       (each [i ch (ipairs choices)]
         (when (= i choice)
           (print ">" 32 (+ 8 (* 8 i))))
-        (print ch 38 (+ 8 (* 8 i)))))))
+        (print ch 38 (+ 8 (* 8 i))))))
+  (set last-reveal said))
 
 (fn draw []
   (set cam-x (math.min center-x (lerp cam-x (- center-x x) 0.05)))
@@ -85,10 +104,12 @@
   (cls)
   (draw)
   (when (btnp 6) (trace (.. x " " y))) ; for debug
-  (let [talking-to (dialog x y (btnp 4) (btnp 5))]
-    (if (and talking-to (btnp 0)) (choose -1)
-        (and talking-to (btnp 1)) (choose 1)
-        (not talking-to) (move)))
+  (if (and said (< said-reveal (# said)) (btnp 5))
+      (set said-reveal (# said))
+      (let [talking-to (dialog x y (btnp 4) (btnp 5))]
+        (if (and talking-to (btnp 0)) (choose -1)
+            (and talking-to (btnp 1)) (choose 1)
+            (not talking-to) (move))))
   (when (and (btn 4) (btn 5) (btn 6)) (enter-launch)) ; for debugging
   (when (and (btn 4) (btn 6)) (enter-win))
   (for [i (# coros) 1 -1]
