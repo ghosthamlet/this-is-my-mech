@@ -13,11 +13,15 @@
 (var replying false)
 
 (local convos {})
+(local events {})
 
 (fn distance [a b]
   (let [x (- a.x (if b.w (+ b.x (* b.w 3)) b.x))
         y (- a.y (if b.h (+ b.y (* b.h 3)) b.y))]
     (math.sqrt (+ (* x x) (* y y)))))
+
+(fn publish [event] (tset events (. event :event) true))
+(fn has-happened [event-name] (= true (. events event-name)))
 
 (fn describe [...]
   (let [prev-who who]
