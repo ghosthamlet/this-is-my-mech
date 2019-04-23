@@ -72,26 +72,31 @@
   (say "With a little effort, I believe our"
        "damage output will increase by"
        "at least 57%!")
-  (let [answer (ask "What do you think?"
-                     ["Ask more" "Back his idea" "Don't support" "Harsh don't support"])]
-                    (if (= answer "Ask more")
-                        (hank-conversations.ask-more-about-idea)
-                        (= answer "Back his idea")
-                        (hank-conversations.support-idea)
-                        (= answer "Don't support")
-                        (hank-conversations.do-not-support-idea)
-                        (= answer "Harsh don't support")
-                        (do
-                          (reply "You know you just said a lot of"
-                                 "techno babble bullshit, right?")
-                          (say "Egad! First off-")
-                          (reply "And don't you need like, tens of"
-                                 "thousands of samples to train a"
-                                 "machine learning algorithm?")
-                          (say "Well, I mean.. it depends!")
-                          (describe "Hank's cheeks are practically bleeding"
-                                    "from blushing. Someone call the doc.")
-                          (hank-conversations.do-not-support-idea)))))
+  (let [answer
+        (ask "What do you think?"
+             ["Ask more" "Back his idea" "Well.." "What a crock"])]
+          (if (= answer "Ask more")
+              (hank-conversations.ask-more-about-idea)
+              (= answer "Back his idea")
+              (hank-conversations.support-idea)
+              (= answer "Well..")
+              (hank-conversations.do-not-support-idea)
+              (= answer "What a crock")
+              (do
+                (update-hank-disposition -1)
+                (reply "You know you just said a lot of"
+                       "techno babble bullshit, right?")
+                (say "Egad! First off-")
+                (reply "And don't you need like, tens of"
+                       "thousands of samples to train a"
+                       "machine learning algorithm?")
+                (say "Well, I mean.. it depends!")
+                (describe "Hank's cheeks are practically"
+                          "bleeding from blushing."
+                          "|"
+                          "Someone call the doc.")
+                (hank-conversations.do-not-support-idea)))))
+>>>>>>> Add more dialog for Hank
 
 (fn hank-conversations.ask-more-about-idea []
   (update-hank-disposition 1)
@@ -113,7 +118,7 @@
        "a schwub like a plurn.")
   (reply "Of course! Duh. Thanks for clearing"
          "that up for me.")
-  (let [answer (ask "So..do you think it'll work?"
+  (let [answer (ask "Do you think it will work?"
                 ["Yes" "It's not practical"])]
     (if (= answer "Yes")
       (hank-conversations.support-idea)
@@ -122,9 +127,18 @@
 
 (fn hank-conversations.support-idea []
   (publish {:event :supported-hanks-idea})
-  (say "Fantastic! Granted, it is illogical to"
-       "think this idea *wouldn't* work, but"
-       "I suppose some folks in this world"
+  (reply "Wow, great idea! I know it could be"
+         "burdensome to us at first, but our"
+         "next fight is as good as any!")
+  (say "Thank you! Finally someone who"
+       "understands the complexity"
+       "of my intellect.")
+  (describe "Sixty-two eyebrows just raised"
+            "across the galaxy.")
+  (reply "...Sure!")
+  (say "Granted, it is illogical to think"
+       "this idea *wouldn't* work, but I"
+       "suppose some folks in this world"
        "just do not understand...")
   (say "... *especially* Carrie! She has"
        "contested this idea from the start!"
@@ -177,15 +191,13 @@
             (publish {:event :hank-has-explained-his-idea}))
           (= answer "Makes sense to me")
           (do
-            (reply "Wow, great idea! I know it could be"
-                   "burdensome to us at first, but our"
-                   "next fight is as good as any!")
-            (say "Thank you! Finally someone who"
-                 "understands the complexity"
-                 "of my intellect.")
-            (describe "Sixty-two eyebrows just raised"
-                      "across the galaxy.")
-            (reply "...Sure!")
+            (update-hank-disposition 1)
+            (reply "Yeah...Carrie can be a bit of a"
+                   "jerk at times.")
+            (describe "He nods.")
+            (say "Anyway. Thanks for your support. I"
+                 "know you've got my back.")
+            (describe "He returns to his work.")
             (publish {:event :hank-has-explained-his-idea}) )
           (= answer "...")
           (do
@@ -193,7 +205,39 @@
             (say "Well. Thanks for your support. I"
                  "trust you'll have my back when I"
                  "present this to the others.")
+            (describe "He returns to his work.")
             (publish {:event :hank-has-explained-his-idea})))))
+
+(fn hank-conversations.do-not-support-idea [remove-reassure?]
+  (publish {:event :didnt-support-hanks-idea})
+  (when (not remove-reassure?)
+        (say "I should have known you would not"
+             "support me! You're just like the"
+             "rest."))
+  (let [questions ["Reassure" "Present Facts" "Poke fun" "..."]
+        _ (when remove-reassure?
+            (table.remove questions "Reassure"))
+        answer (ask "" questions)]
+        (if (= answer "Reassure")
+            (do
+              (update-hank-disposition 1)
+              (reply "Reassuring thing.")
+              (describe "Hank won't say it, but he"
+                        "appreciates you.")
+              (hank-conversations.do-not-support-idea true))
+            (= answer "Present Facts")
+            (if (> hank.disposition 2)
+                (hank-conversations.willing-to-negotiate)
+                (do
+                  (say "Annoyed and won't listen to reason.")
+                  (update-hank-disposition -1)))
+            (= answer "Poke fun")
+            (do (update-hank-disposition -1))
+            (= answer "Present Facts")
+            (do (update-hank-disposition -1)))))
+
+; (fn hank-conversation.willing-to-negotiate []
+;   (publish {:event :hank-has-explained-his-idea}))
 
 (fn all.Carrie []
   (say "How's it going?")
