@@ -9,11 +9,10 @@
 
 (local all {})
 (local hank-conversations {})
-(local hank-state {})
+(local hank-state {:disposition 0})
 
 (fn update-hank-disposition [change]
-  (tset hank-state :disposition
-    (+ change hank-state.disposition)))
+  (set hank-state.disposition (+ change hank-state.disposition)))
 
 (fn all.Adam []
   (say "Check out how cool my uniform is."))
@@ -60,7 +59,7 @@
        "to mainframe databases through a"
        "triangulated Thoralin pipe!")
   (reply "...oh, nice!")
-  (describe "You nod with..'understanding'")
+  (describe "You nod with.....'understanding'")
   (say "It's still a prototype, but with"
        "suitable data, it could be quite"
        "revolutionary! Our next mission is"
@@ -96,13 +95,100 @@
          "seen those work as schwubs or"
          "splurns in router systems."
          "How do they work here?")
-  (say "Explanation")
-  [let (answer (ask "Think it'll work?"
-                    ["Yes" "It's not practical"]))]
+  (say "Good question!")
+  (describe "Hank grins widely. He's filled with"
+            "motivation at the fact that you"
+            "actually paid attention.")
+  (say "When you determine the wronskian of"
+       "the triangulated values, then bisect"
+       "that over typical machine learning"
+       "algorithms, the result is a Thoralin"
+       "pipe.")
+  (say "Or in other words, you just treat"
+       "a schwub like a plurn.")
+  (reply "Of course! Duh. Thanks for clearing"
+         "that up for me.")
+  (let [answer (ask "So..do you think it'll work?"
+                ["Yes" "It's not practical"])]
     (if (= answer "Yes")
-        (hank-conversations.support-idea)
-        (= answer "It's not practical")
-        (hank-conversations.do-not-support-idea)))
+      (hank-conversations.support-idea)
+      (= answer "It's not practical")
+      (hank-conversations.do-not-support-idea))))
+
+(fn hank-conversations.support-idea []
+  (publish {:event :supported-hanks-idea})
+  (say "Fantastic! Granted, it is illogical to"
+       "think this idea *wouldn't* work, but"
+       "I suppose some folks in this world"
+       "just do not understand...")
+  (say "... *especially* Carrie! She has"
+       "contested this idea from the start!"
+       "So I'm sure you can imagine my"
+       "delight at your support.")
+  (let [answer (ask ""
+        ["What the hell?" "Hey now." "Makes sense to me" "..."])]
+        (if
+          (= answer "What the hell?")
+          (do
+            (update-hank-disposition -2)
+            (reply "Don't be a dick, Hank. Carrie is"
+                   "just being realistic. Plus you"
+                   "know how pretentious you can get."
+                   "Let's cut the shit.")
+            (say "!!!")
+            (describe "Hank frowns and almost says"
+                      "something, but slowly closes his"
+                      "mouth instead."
+                      ""
+                      ;; TODO PAUSE HERE
+                      "He glares through you.")
+            (say "...")
+            (describe "He returns to his work.")
+            (reply "Well. That pissed him off.")
+            (publish {:event :hank-has-explained-his-idea}))
+          (= answer "Hey now.")
+          (do
+            (reply "Whoa, whoa. I know you two have"
+                   "your differences, but you both want"
+                   "what's best for the team and you"
+                   "both have great ideas.")
+            (reply "Perhaps there's an opportunity"
+                   "for compromise between you two.")
+            ;; TODO PAUSE HERE
+            (say "...perhaps you are correct. That"
+                 "being said, I still don't understand"
+                 "why you would side with her over me.")
+            (reply "I'm not picking sides. I'm just saying"
+                   "you two can work this out.")
+            (say "Whatever, Nikita. Honestly, it's fine."
+                 "I understand. I know I will have"
+                 "your support when I propose this."
+                 "Thanks.")
+            (describe "He nods half-assedly and returns to"
+                      "his work."
+                      ""
+                      ;; TODO PAUSE HERE
+                      "*sigh*")
+            (publish {:event :hank-has-explained-his-idea}))
+          (= answer "Makes sense to me")
+          (do
+            (reply "Wow, great idea! I know it could be"
+                   "burdensome to us at first, but our"
+                   "next fight is as good as any!")
+            (say "Thank you! Finally someone who"
+                 "understands the complexity"
+                 "of my intellect.")
+            (describe "Sixty-two eyebrows just raised"
+                      "across the galaxy.")
+            (reply "...Sure!")
+            (publish {:event :hank-has-explained-his-idea}) )
+          (= answer "...")
+          (do
+            (reply "...")
+            (say "Well. Thanks for your support. I"
+                 "trust you'll have my back when I"
+                 "present this to the others.")
+            (publish {:event :hank-has-explained-his-idea})))))
 
 (fn all.Carrie []
   (say "How's it going?")
