@@ -19,7 +19,12 @@
   (set hank-state.disposition (+ change hank-state.disposition)))
 
 (fn all.Adam []
-  (say "Check out how cool my uniform is."))
+  (say "Check out how cool my uniform is.")
+  (describe  "He chuckles obnoxiously.")
+  ;; LATER
+  (describe "There's that damn chuckle again.")
+  ;; EVEN LATER
+  (describe "UGH STOP CHUCKLING DAMN IT."))
 
 (fn all.Turk []
   (describe "Turk seems a little agitated.")
