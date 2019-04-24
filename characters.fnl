@@ -11,6 +11,17 @@
 (set chars.Nikita {:x -256 :y -256 :name "Nikita"
                    :spr 258 :portrait 256 :helmet 259})
 
+(fn move-to [character-name tx ty]
+  (let [char (assert (. chars character-name) (.. character-name " not found"))]
+    (fn mover []
+      (let [dx (- tx char.x) dy (- ty char.y)]
+        (while (not (and (= 0 dx) (= 0 dy)))
+          (set char.x (+ char.x (if (< dx 0) -1 (> dx 1) 0 (< dx 1) dx 0)))
+          (set char.y (+ char.y (if (< dy 0) -1 (> dy 1) 0 (< dy 1) dy 0)))
+          (coroutine.yield)
+          (mover))))
+    (table.insert coros (coroutine.create mover))))
+
 (local all {})
 (local hank-conversations {})
 (local hank-state {:disposition 0})
@@ -24,7 +35,10 @@
   ;; LATER
   (describe "There's that damn chuckle again.")
   ;; EVEN LATER
-  (describe "UGH STOP CHUCKLING DAMN IT."))
+  (describe "UGH STOP CHUCKLING DAMN IT.")
+  (say "I'm going to walk north for some reason.")
+  ;; TODO: delete this; it's dumb
+  (move-to :Adam 40 (- chars.Adam.y 10)))
 
 (fn all.Turk []
   (describe "Turk seems a little agitated.")

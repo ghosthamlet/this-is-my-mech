@@ -69,7 +69,11 @@
             (and talking-to (btnp 1)) (choose 1)
             (not talking-to) (move))))
   (when (and (btn 4) (btn 5) (btn 6)) (enter-launch)) ; for debugging
-  (when (and (btn 4) (btn 6)) (enter-win)))
+  (when (and (btn 4) (btn 6)) (enter-win))
+  (for [i (# coros) 1 -1]
+    (assert (coroutine.resume (. coros i)))
+    (when (= :dead (coroutine.status (. coros i)))
+      (table.remove coros i))))
 
 (fn intro []
   (cls)
