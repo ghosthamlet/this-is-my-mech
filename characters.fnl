@@ -101,7 +101,6 @@
                           "|"
                           "Someone call the doc.")
                 (hank-conversations.do-not-support-idea)))))
->>>>>>> Add more dialog for Hank
 
 (fn hank-conversations.ask-more-about-idea []
   (update-hank-disposition 1)
@@ -141,7 +140,7 @@
        "of my intellect.")
   (describe "Sixty-two eyebrows just raised"
             "across the galaxy.")
-  (reply "...Sure!")
+  (reply ".|..Sure!")
   (say "Granted, it is illogical to think"
        "this idea *wouldn't* work, but I"
        "suppose some folks in this world"
@@ -164,8 +163,7 @@
             (describe "Hank frowns and almost says"
                       "something, but slowly closes his"
                       "mouth instead."
-                      ""
-                      ;; TODO PAUSE HERE
+                      "|"
                       "He glares through you.")
             (say "...")
             (describe "He returns to his work.")
@@ -190,8 +188,7 @@
                  "Thanks.")
             (describe "He nods half-assedly and returns to"
                       "his work."
-                      ""
-                      ;; TODO PAUSE HERE
+                      "|"
                       "*sigh*"))
           (= answer "Makes sense to me")
           (do
@@ -249,49 +246,51 @@
 (fn hank-conversation.willing-to-negotiate []
   ;; TODO: Fill out
   (say "I'm beginning to see your point, but")
-  (let [answer (ask ["Experiment in your own time"
-                     "Let's try later"
-                     "Let's simplify your test"])]
-    (if (= answer "Experiment in your own time"))
-    (do
-      (publish {:event :nikita-frustrated-hank})
-      (reply "Hank, our lives are at stake."
-             "I love the fact that you are eager"
-             "to improve our systems, but you should"
-             "experiment in your own time.")
-      (say "But this will benefit us all! It could"
-           "even *save* our lives!")
-      (reply "Hank, really! Now is not the time.")
-      (describe "Frustrated, he lets out a massive sigh"
-                "and turns his back to you."))
-    (if (= answer "Let's try later"))
-    (do
-      (publish {:event :nikita-frustrated-hank})
-      (reply "You've got a great idea here, Hank."
-             "But now is not the time. We need"
-             "stability. Perhaps we can try later?")
-      (say "It's always later! This team never"
-           "understands me and evidently neither"
-           "do you.")
-      (describe "He turns around before you can reply."))
-    (if (= answer "Let's simplify"))
-    (do
-      (reply "You have an awesome idea, Hank!"
-             "But I think we could simplify here.")
-      (reply "What if we run your system in parallel"
-             "with our existing system, gather telemtry,"
-             "then present this to the team")
-      (reply "Backed with the right data, the rest"
-             "of the team would have no choice but to"
-             "agree!")
-      (say "It's not as fast as I would like, but"
-           "I cannot say I would disagree with you.")
-      (say "Now we just need to convince Carrie!")
-      (reply "Okay. I'll chat with her and see what"
-             "she thinks. Keep the good ideas coming,"
-             "Hank!")
-      (describe "He flashes a wry smile, then returns"
-                "to his work. Way to compromise, girl."))))
+  (let [answer (ask "" ["Experiment in your own time"
+                        "Let's try later"
+                        "Let's simplify your test"])]
+    (if
+      (= answer "Experiment in your own time")
+      (do
+        (publish {:event :nikita-frustrated-hank})
+        (reply "Hank, our lives are at stake."
+               "I love the fact that you are eager"
+               "to improve our systems, but you should"
+               "experiment in your own time.")
+        (say "But this will benefit us all! It could"
+             "even *save* our lives!")
+        (reply "Hank, really! Now is not the time.")
+        (describe "Frustrated, he lets out a massive sigh"
+                  "and turns his back to you."))
+      (= answer "Let's try later")
+      (do
+        (publish {:event :nikita-frustrated-hank})
+        (reply "You've got a great idea here, Hank."
+               "But now is not the time. We need"
+               "stability. Perhaps we can try later?")
+        (say "It's always later! This team never"
+             "understands me and evidently neither"
+             "do you.")
+        (describe "He turns around before you can reply."))
+      (= answer "Let's simplify")
+      (do
+        (reply "You have an awesome idea, Hank!"
+               "But I think we could simplify here.")
+        (reply "What if we run your system in parallel"
+               "with our existing system, gather telemtry,"
+               "then present this to the team")
+        (reply "Backed with the right data, the rest"
+               "of the team would have no choice but to"
+               "agree!")
+        (say "It's not as fast as I would like, but"
+             "I cannot say I would disagree with you.")
+        (say "Now we just need to convince Carrie!")
+        (reply "Okay. I'll chat with her and see what"
+               "she thinks. Keep the good ideas coming,"
+               "Hank!")
+        (describe "He flashes a wry smile, then returns"
+                  "to his work. Way to compromise, girl.")))))
+
 (fn all.Carrie []
   (say "How's it going?")
   (reply "Good to see you again.")
