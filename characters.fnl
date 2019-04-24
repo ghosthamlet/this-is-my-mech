@@ -48,41 +48,68 @@
        "15 minutes.")
   (let [answer (ask "What's up?" ["Agent?" "Carrie" "Bye"])]
     (if (= answer "Agent?")
-        (reply "Oooo, agent, eh?"
-               "What's going\non there?")
-        (= answer "Carrie")
-        (do
-          (reply "I'd like you to consider letting Carrie be the head. She-")
-          (say "Let me just stop you right there."
-               "I NEED to be the head."))
-        (do
-          (reply "Nevermind. Later.")
-          (describe "He seems relieved you're leaving.")))))
+      (reply "Oooo, agent, eh?"
+             "What's going\non there?")
+      (= answer "Carrie")
+      (do
+        (reply "I'd like you to consider letting Carrie be the head. She-")
+        (say "Let me just stop you right there."
+             "I NEED to be the head."))
+      (do
+        (reply "Nevermind. Later.")
+        (describe "He seems relieved you're leaving.")))))
 
 (fn all.Hank []
-  (say "Oh, it's you. Hi Nikita.")
-  (let [answer (ask "Have I told you about my project?"
-                    ["What is it?" "Maybe later!" "Oh look at the time."])]
-    (if (= answer "What is it?")
-        (hank-conversations.explain-idea)
-        (= answer "Maybe later!")
-        (say "Sure!")
-        (= answer "Oh look at the time.")
-        (do (say "Uh... all right then, I guess.")
-            (describe "He stares at his feet as you leave.")))))
+  (if
+    (>= hank-state.disposition 0)
+    (if
+      (has-happened :hank-has-explained-his-idea)
+      (let [answer (ask "Greetings. What can I do for you?"
+                        ["I'd like Carrie to be the head" "Nevermind"])]
+        (if (= answer "I'd like Carrie to be the head")
+          (= answer "Nevermind")
+          (do
+            (reply "Nevermind. My bad.")
+            (describe "He nods, then curtly turns around"
+                      "with his hands clasped behind his back."))))
+      (do
+        (say "Oh, it's you. Hi Nikita.")
+        (let [answer (ask "Have I told you about my project?"
+                          ["Let's hear it!" "Maybe later!" "Oh look at the time."])]
+          (if (= answer "Let's hear it!")
+            (hank-conversations.explain-idea)
+            (= answer "Maybe later!")
+            (say "Sure!")
+            (= answer "Oh look at the time.")
+            (do (say "Uh... all right then, I guess.")
+              (describe "He stares at his feet as you leave."))))))
+    (< hank-state.disposition 0)
+    (if
+      (has-happened :nikita-talked-to-pissed-off-hank)
+      (reply "I better leave him alone.")
+      (do
+        (publish {:event :nikita-talked-to-pissed-off-hank})
+        (reply "Hank?")
+        (say "...")
+        (describe "He's ignoring you.| Dang it.")))
+    (or
+      (has-happened :nikita-frustrated-hank)
+      (has-happened :carrie-disagrees-with-hanks-plan))
+    (say "Look, I'm not in the mood to talk, okay?")
+    (reply "I better leave him alone.")))
 
 
 
 (fn hank-conversations.explain-idea []
   (say "I built a new targeting system for"
-       "Rhinocelator! It uses machine"
+       "Rhinocelator! It utilizes machine"
        "learning algorithms and block chain"
        "validation!")
   (say "It works by applying techno babble"
        "to mainframe databases through a"
        "triangulated Thoralin pipe!")
   (reply "...oh, nice!")
-  (describe "You nod with.....|'understanding'")
+  (describe "You nod with...|'understanding'")
   (say "It's still a prototype, but with"
        "suitable data, it could be quite"
        "revolutionary! Our next mission is"
@@ -93,14 +120,14 @@
        "at least 57%!")
   (let [answer
         (ask "What do you think?"
-             ["Ask more" "Back his idea" "Well.." "What a crock"])]
-          (if (= answer "Ask more")
+             ["Thoralin pipe?" "Great idea!" "Well.." "What a crock."])]
+          (if (= answer "Thoralin pipe?")
               (hank-conversations.ask-more-about-idea)
-              (= answer "Back his idea")
+              (= answer "Great idea!")
               (hank-conversations.support-idea)
               (= answer "Well..")
               (hank-conversations.do-not-support-idea)
-              (= answer "What a crock")
+              (= answer "What a crock.")
               (do
                 (update-hank-disposition -1)
                 (reply "You know you just said a lot of"
@@ -109,7 +136,7 @@
                 (reply "And don't you need like, tens of"
                        "thousands of samples to train a"
                        "machine learning algorithm?")
-                (say "Well, I mean.. it depends!")
+                (say "Well, I mean..| it depends!")
                 (describe "Hank's cheeks are practically"
                           "bleeding from blushing."
                           "|"
@@ -154,12 +181,15 @@
        "of my intellect.")
   (describe "Sixty-two eyebrows just raised"
             "across the galaxy.")
-  (reply ".|..Sure!")
-  (say "Granted, it is illogical to think"
+  (reply "...Sure!")
+  (say "This idea is what's best for our"
+       "team even if the others"
+       "can't see that.")
+  (say "It is illogical to think"
        "this idea *wouldn't* work, but I"
        "suppose some folks in this world"
        "just do not understand...")
-  (say "... *especially* Carrie! She has"
+  (say "...|*especially* Carrie! She has"
        "contested this idea from the start!"
        "So I'm sure you can imagine my"
        "delight at your support.")
@@ -173,7 +203,7 @@
                    "just being realistic. Plus you"
                    "know how pretentious you can get."
                    "Let's cut the shit.")
-            (say "!!!")
+            (say "|!!!")
             (describe "Hank frowns and almost says"
                       "something, but slowly closes his"
                       "mouth instead."
@@ -190,14 +220,13 @@
                    "both have great ideas.")
             (reply "Perhaps there's an opportunity"
                    "for compromise between you two.")
-            ;; TODO PAUSE HERE
-            (say "...perhaps you are correct. That"
+            (say "...|perhaps you are correct. That"
                  "being said, I still don't understand"
                  "why you would side with her over me.")
             (reply "I'm not picking sides. I'm just saying"
                    "you two can work this out.")
             (say "Whatever, Nikita. Honestly, it's fine."
-                 "I understand. I know I will have"
+                 "|I understand. I know I will have"
                  "your support when I propose this."
                  "Thanks.")
             (describe "He nods half-assedly and returns to"
