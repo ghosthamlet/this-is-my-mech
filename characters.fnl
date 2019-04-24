@@ -120,7 +120,7 @@
        "algorithms, the result is a Thoralin"
        "pipe.")
   (say "Or in other words, you just treat"
-       "a schwub like a plurn.")
+       "a schwub like a plumbus.")
   (reply "Of course! Duh. Thanks for clearing"
          "that up for me.")
   (let [answer (ask "Do you think it will work?"
@@ -131,7 +131,8 @@
       (hank-conversations.do-not-support-idea))))
 
 (fn hank-conversations.support-idea []
-  (publish {:event :supported-hanks-idea})
+  (publish {:event :supported-hanks-idea}
+           {:event :hank-has-explained-his-idea})
   (reply "Wow, great idea! I know it could be"
          "burdensome to us at first, but our"
          "next fight is as good as any!")
@@ -168,8 +169,7 @@
                       "He glares through you.")
             (say "...")
             (describe "He returns to his work.")
-            (reply "Well. That pissed him off.")
-            (publish {:event :hank-has-explained-his-idea}))
+            (reply "Well. That pissed him off."))
           (= answer "Hey now.")
           (do
             (reply "Whoa, whoa. I know you two have"
@@ -192,8 +192,7 @@
                       "his work."
                       ""
                       ;; TODO PAUSE HERE
-                      "*sigh*")
-            (publish {:event :hank-has-explained-his-idea}))
+                      "*sigh*"))
           (= answer "Makes sense to me")
           (do
             (update-hank-disposition 1)
@@ -202,19 +201,19 @@
             (describe "He nods.")
             (say "Anyway. Thanks for your support. I"
                  "know you've got my back.")
-            (describe "He returns to his work.")
-            (publish {:event :hank-has-explained-his-idea}) )
+            (describe "He returns to his work."))
           (= answer "...")
           (do
             (reply "...")
             (say "Well. Thanks for your support. I"
                  "trust you'll have my back when I"
                  "present this to the others.")
-            (describe "He returns to his work.")
-            (publish {:event :hank-has-explained-his-idea})))))
+            (describe "He returns to his work.")))))
 
+;; TODO: Fill in
 (fn hank-conversations.do-not-support-idea [remove-reassure?]
-  (publish {:event :didnt-support-hanks-idea})
+  (publish {:event :didnt-support-hanks-idea}
+           {:event :hank-has-explained-his-idea})
   (when (not remove-reassure?)
         (say "I should have known you would not"
              "support me! You're just like the"
@@ -237,13 +236,62 @@
                   (say "Annoyed and won't listen to reason.")
                   (update-hank-disposition -1)))
             (= answer "Poke fun")
-            (do (update-hank-disposition -1))
-            (= answer "Present Facts")
-            (do (update-hank-disposition -1)))))
+            (do
+              (update-hank-disposition -1)
+              (reply "Poke fun"))
+            (= answer "...")
+            (do
+              (update-hank-disposition -1)
+              (reply "...")
+              (say "Fine. Don't say anything. Your loss.")
+              (describe "Hank turns his back to you.")))))
 
-; (fn hank-conversation.willing-to-negotiate []
-;   (publish {:event :hank-has-explained-his-idea}))
-
+(fn hank-conversation.willing-to-negotiate []
+  ;; TODO: Fill out
+  (say "I'm beginning to see your point, but")
+  (let [answer (ask ["Experiment in your own time"
+                     "Let's try later"
+                     "Let's simplify your test"])]
+    (if (= answer "Experiment in your own time"))
+    (do
+      (publish {:event :nikita-frustrated-hank})
+      (reply "Hank, our lives are at stake."
+             "I love the fact that you are eager"
+             "to improve our systems, but you should"
+             "experiment in your own time.")
+      (say "But this will benefit us all! It could"
+           "even *save* our lives!")
+      (reply "Hank, really! Now is not the time.")
+      (describe "Frustrated, he lets out a massive sigh"
+                "and turns his back to you."))
+    (if (= answer "Let's try later"))
+    (do
+      (publish {:event :nikita-frustrated-hank})
+      (reply "You've got a great idea here, Hank."
+             "But now is not the time. We need"
+             "stability. Perhaps we can try later?")
+      (say "It's always later! This team never"
+           "understands me and evidently neither"
+           "do you.")
+      (describe "He turns around before you can reply."))
+    (if (= answer "Let's simplify"))
+    (do
+      (reply "You have an awesome idea, Hank!"
+             "But I think we could simplify here.")
+      (reply "What if we run your system in parallel"
+             "with our existing system, gather telemtry,"
+             "then present this to the team")
+      (reply "Backed with the right data, the rest"
+             "of the team would have no choice but to"
+             "agree!")
+      (say "It's not as fast as I would like, but"
+           "I cannot say I would disagree with you.")
+      (say "Now we just need to convince Carrie!")
+      (reply "Okay. I'll chat with her and see what"
+             "she thinks. Keep the good ideas coming,"
+             "Hank!")
+      (describe "He flashes a wry smile, then returns"
+                "to his work. Way to compromise, girl."))))
 (fn all.Carrie []
   (say "How's it going?")
   (reply "Good to see you again.")
