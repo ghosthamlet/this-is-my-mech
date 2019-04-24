@@ -1,3 +1,5 @@
+;;; character positioning, state, and dialog
+
 (set chars.Adam {:x 40 :y 64 :name "Adam"
                  :spr 290 :portrait 288})
 (set chars.Turk {:x 152 :y 8 :name "Turk"
@@ -59,7 +61,7 @@
        "to mainframe databases through a"
        "triangulated Thoralin pipe!")
   (reply "...oh, nice!")
-  (describe "You nod with.....'understanding'")
+  (describe "You nod with.....|'understanding'")
   (say "It's still a prototype, but with"
        "suitable data, it could be quite"
        "revolutionary! Our next mission is"
@@ -76,17 +78,18 @@
                         (hank-conversations.support-idea)
                         (= answer "Don't support")
                         (hank-conversations.do-not-support-idea)
-                        (= answer "What a crock")
-                        (reply "You know you just said a lot of"
-                               "techno babble bullshit, right?")
-                        (say "Egad! First off-")
-                        (reply "And don't you need like, tens of"
-                               "thousands of samples to train a"
-                               "machine learning algorithm?")
-                        (say "Well, I mean.. it depends!")
-                        (describe "Hank's cheeks are practically bleeding"
-                                  "from blushing. Someone call the doc.")
-                        (hank-conversations.do-not-support-idea))))
+                        (= answer "Harsh don't support")
+                        (do
+                          (reply "You know you just said a lot of"
+                                 "techno babble bullshit, right?")
+                          (say "Egad! First off-")
+                          (reply "And don't you need like, tens of"
+                                 "thousands of samples to train a"
+                                 "machine learning algorithm?")
+                          (say "Well, I mean.. it depends!")
+                          (describe "Hank's cheeks are practically bleeding"
+                                    "from blushing. Someone call the doc.")
+                          (hank-conversations.do-not-support-idea)))))
 
 (fn hank-conversations.ask-more-about-idea []
   (update-hank-disposition 1)

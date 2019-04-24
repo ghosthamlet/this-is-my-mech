@@ -1,4 +1,5 @@
-;; you'll eventually get different sequences here depending on actions so far
+;;; the end-game sequence where the mechs launch
+
 (var launch-talk [])
 (var (scroll-x mx my talk-index) nil)
 (var (tmx tmy dmx dmy attacking? hits) nil)
@@ -58,6 +59,7 @@
 (local max-delta 2)
 
 (fn fly-mechs []
+  (set scroll-x (+ scroll-x 1))
   (let [lx mechs.Nikita.x ly mechs.Nikita.y]
     (each [name mech (pairs mechs)]
       (when (~= :Nikita name)
@@ -85,8 +87,9 @@
   (global TIC (fn []
                 (cls)
                 (draw-stars 0 scroll-x)
-                (print "GAME OVER" 32 64 15 true 3)
-                (print "press Z to try again" 124 124 2)
+                (print "GAME OVER" 32 48 15 true 3)
+                (print "press Z to try again" 116 116 2)
+                (print "press ESC to see how the game was made" 16 126 2)
                 (set scroll-x (+ scroll-x 3))
                 (when (btnp 4) (restart)))))
 
@@ -101,10 +104,8 @@
   (when (= hits 42)
     (game-over)))
 
-;; when the game is in launch mode, this becomes the TIC updater
-(fn launch []
-  (set scroll-x (+ scroll-x 1))
-  (when (and (btn 0) (< 0 mechs.Nikita.y))
+(fn launch-input []
+    (when (and (btn 0) (< 0 mechs.Nikita.y))
     (set mechs.Nikita.y (- mechs.Nikita.y 1)))
   (when (and (btn 1) (< mechs.Nikita.y (- 136 16)))
     (set mechs.Nikita.y (+ mechs.Nikita.y 1)))
@@ -116,12 +117,17 @@
     (set talk-index (+ talk-index 2))
     (when (= :function (type (. launch-talk talk-index)))
       ((. launch-talk talk-index))
-      (set talk-index (+ talk-index 1))))
+      (set talk-index (+ talk-index 1)))))
+
+;; when the game is in launch mode, this becomes the TIC updater
+(fn launch []
+  (launch-input)
   (fly-mechs)
   (fly-monster)
   (hit-check)
   (draw-launch))
 
+;; you'll eventually get different sequences here depending on actions so far
 (fn enter-launch [path]
   (set (scroll-x mx my) (values 0 (/ 136 2) 0 200 32))
   (set (tmx tmy dmx dmy attacking? hits) (values 210 48 0 0 false 0))
@@ -131,25 +137,25 @@
       (tset mechs name :y y)
       (tset mechs name :dx 0)
       (tset mechs name :dy 0)))
-  (if (= path :win)
-      (set launch-talk [])
-      (set launch-talk
-           [:Adam "Yeah! Time to assemble Rhinocelator!"
-            :Adam "Enter standard formation\nso I can form the head."
-            :Turk "What?! No way.\nI'm going to form the head this time."
-            :Hank "You formed the head last time."
-            :Turk "That doesn't count!"
-            :Turk "We didn't even have the\ncameras running last time."
-            :Carrie "*sighs deeply*"
-            :Nikita "Our weapons aren't strong enough.\nWe need to form up!"
-            (fn [] (set attacking? true))
-            :Adam "Look out, it's attacking!"]))
+  (set launch-talk
+       [:Adam "Yeah! Time to assemble Rhinocelator!"
+        :Adam "Enter standard formation\nso I can form the head."
+        :Turk "What?! No way.\nI'm going to form the head this time."
+        :Hank "You formed the head last time."
+        :Turk "That doesn't count!"
+        :Turk "We didn't even have the\ncameras running last time."
+        :Carrie "*sighs deeply*"
+        :Nikita "Our weapons aren't strong enough.\nWe need to form up!"
+        (fn [] (set attacking? true))
+        :Adam "Look out, it's attacking!"])
   (set talk-index 1)
   (var t -136)
-  (global TIC (fn []
+  (global TIC (fn [] ; flash the screen before transfering control to launch fn
                 (set t (+ t 5))
                 (when (<= 0 t 136)
                   (launch))
                 (rect 0 t 240 136 15)
                 (when (< 136 t)
                   (global TIC launch)))))
+
+(global e-l enter-launch)

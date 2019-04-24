@@ -1,4 +1,4 @@
-;;;; game code
+;;; game code, tying it all together
 
 (local (w h) (values 240 136))
 (local (center-x center-y) (values (/ w 2) (/ h 2)))
@@ -45,6 +45,7 @@
 (var said-reveal 1)
 (var last-reveal nil)
 (var talk-sound 0)
+(var reveal-delay 0)
 
 (fn play-talk-sound [force?]
   (set talk-sound (- talk-sound 1))
@@ -67,10 +68,18 @@
     (when (~= last-reveal said)
       (play-talk-sound true)
       (set said-reveal 1))
-    (print (: said :sub 1 said-reveal) 38 6)
+    (when (and (= reveal-delay 0) (= "|" (: said :sub said-reveal said-reveal)))
+      (set reveal-delay 30))
+    (print (-> said
+               (: :sub 1 said-reveal)
+               (: :gsub "|" "")) ; pipes used as delay markers
+           38 6)
     (when (<= said-reveal (# said))
       (play-talk-sound)
-      (set said-reveal (+ said-reveal 1)))
+      (when (<= reveal-delay 1)
+        (set said-reveal (+ said-reveal 1)))
+      (when (< 0 reveal-delay)
+        (set reveal-delay (- reveal-delay 1))))
     (when (and who who.portrait (not replying))
       (print who.name 5 26)
       (spr who.portrait 8 6 0 1 0 0 2 2))
@@ -104,18 +113,14 @@
   (cls)
   (draw)
   (when (btnp 6) (trace (.. x " " y))) ; for debug
-  (if (and said (< said-reveal (# said)) (btnp 5))
+  (if (and said (< said-reveal (# said)) (or (btnp 5) (btnp 4)))
       (set said-reveal (# said))
       (let [talking-to (dialog x y (btnp 4) (btnp 5))]
         (if (and talking-to (btnp 0)) (choose -1)
             (and talking-to (btnp 1)) (choose 1)
             (not talking-to) (move))))
   (when (and (btn 4) (btn 5) (btn 6)) (enter-launch)) ; for debugging
-  (when (and (btn 4) (btn 6)) (enter-win))
-  (for [i (# coros) 1 -1]
-    (coroutine.resume (. coros i))
-    (when (= :dead (coroutine.status (. coros i)))
-      (table.remove coros i))))
+  (when (and (btn 4) (btn 6)) (enter-win)))
 
 (fn intro []
   (cls)

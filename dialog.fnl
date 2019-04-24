@@ -1,8 +1,6 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;; dialog
+;;; general-purpose dialog engine
 
 (local chars {})
-
-(local coros {})
 
 (var said nil)
 (var who nil)
@@ -73,8 +71,8 @@
 (fn dialog [x y act? cancel?]
   (when act?
     (if current-talk
-        (do (coroutine.resume current-talk
-                              (and choices (. choices choice)))
+        (do (assert (coroutine.resume current-talk
+                                      (and choices (. choices choice))))
             (when (= (coroutine.status current-talk)
                      "dead")
               (set current-talk nil)))
@@ -86,6 +84,3 @@
   (when cancel?
     (set current-talk nil))
   (and current-talk {:said said :who who :choices choices}))
-
-;; for tests
-{:dialog dialog :convos convos :chars chars :say say :ask ask :choose choose}

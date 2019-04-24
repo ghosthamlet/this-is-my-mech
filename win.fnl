@@ -1,3 +1,5 @@
+;;; win state animations
+
 (local flipped {:Nikita true :Hank true :Carrie true})
 
 (fn split-faces []
@@ -39,7 +41,8 @@
     (spr 268 mx my 0 1 0 0 4 6)
     (when (< 240 rx)
       (print "YOU WIN" 42 48 15 false 4)
-      (print "thanks for playing!" 68 120 2))))
+      (print "thanks for playing!" 68 120 2)
+      (print "press ESC to see how the game was made" 16 130 2))))
 
 (fn win []
   (each [name mech (pairs mechs)]
@@ -48,11 +51,10 @@
   (draw-win))
 
 (fn enter-win []
-  (set scroll-x 0)
-  (set rx 16)
-  (set mx 168)
-  (set my 28)
+  (set (scroll-x rx mx my) (values 0 16 168 28))
   (each [name mech (pairs mechs)]
     (set mech.x (* mech.oy 1.8))
     (set mech.y (+ 128 (math.random 32))))
   (global TIC win))
+
+(global e-win enter-win)
