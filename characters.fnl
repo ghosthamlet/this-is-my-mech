@@ -17,7 +17,6 @@
   (let [char (assert (. chars character-name) (.. character-name " not found"))]
     (fn mover []
       (let [dx (- tx char.x) dy (- ty char.y)]
-        (trace (.. "mover " dx " " dy))
         (while (not (and (= 0 dx) (= 0 dy)))
           (set char.x (+ char.x (if (< dx 0) -1 (> dx 1) 1 (< dx 1) dx 0)))
           (set char.y (+ char.y (if (< dy 0) -1 (> dy 1) 1 (< dy 1) dy 0)))
@@ -39,7 +38,7 @@
   (describe "There's that damn chuckle again.")
   ;; EVEN LATER
   (describe "UGH STOP CHUCKLING DAMN IT.")
-  (say "I'm going to walk north for some reason.")
+  (say "I'm going to walk north for some" " reason.")
   ;; TODO: delete this; it's dumb
   (move-to :Adam 40 (- chars.Adam.y 10)))
 
@@ -47,15 +46,16 @@
   (describe "Turk seems a little agitated.")
   (reply "Hey, Turk.")
   (say "Nikita!! My favorite person. Make it"
-       "quick; I've got a call with my agent in"
-       "15 minutes.")
+       "quick; I've got a call with my agent"
+       "in 15 minutes.")
   (let [answer (ask "What's up?" ["Agent?" "Carrie" "Bye"])]
     (if (= answer "Agent?")
       (reply "Oooo, agent, eh?"
              "What's going\non there?")
       (= answer "Carrie")
       (do
-        (reply "I'd like you to consider letting Carrie be the head. She-")
+        (reply "I'd like you to consider letting Carrie"
+               "be the head when we form up. She-")
         (say "Let me just stop you right there."
              "I NEED to be the head."))
       (do
@@ -340,10 +340,12 @@
 (fn all.Carrie []
   (say "Uh oh, not another space beast.")
   (reply "Are you worried?")
-  (say "It's just that... there's been a"
-       "lot of arguing on the team recently.")
-  (say "We got lucky in our last battle but"
-       "if we can't form up this time...")
+  (say "It's just that... we haven't been"
+       "working together as a team very well"
+       "recently.")
+  (say "We got lucky in our last battle since"
+       "MegaMoth ran into that huge solar" "collector.")
+  (say "But if we can't form up this time...")
   (say "Well, I better get my gear.")
   (move-to :Carrie 142 302)
   (set convos.Carrie all.Carrie2))
