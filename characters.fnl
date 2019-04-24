@@ -6,18 +6,21 @@
                  :spr 322 :portrait 320  :helmet 323})
 (set chars.Hank {:x 264 :y 2 :name "Hank"
                  :spr 354 :portrait 352 :helmet 355})
-(set chars.Carrie {:x 139 :y 308 :name "Carrie"
+(set chars.Carrie {:x 84 :y 300 :name "Carrie"
                    :spr 386 :portrait 384 :helmet 387})
 (set chars.Nikita {:x -256 :y -256 :name "Nikita"
                    :spr 258 :portrait 256 :helmet 259})
+
+(set chars.alert {:x -256 :y -256 :name "alert" :portrait 420 :spr 420})
 
 (fn move-to [character-name tx ty]
   (let [char (assert (. chars character-name) (.. character-name " not found"))]
     (fn mover []
       (let [dx (- tx char.x) dy (- ty char.y)]
+        (trace (.. "mover " dx " " dy))
         (while (not (and (= 0 dx) (= 0 dy)))
-          (set char.x (+ char.x (if (< dx 0) -1 (> dx 1) 0 (< dx 1) dx 0)))
-          (set char.y (+ char.y (if (< dy 0) -1 (> dy 1) 0 (< dy 1) dy 0)))
+          (set char.x (+ char.x (if (< dx 0) -1 (> dx 1) 1 (< dx 1) dx 0)))
+          (set char.y (+ char.y (if (< dy 0) -1 (> dy 1) 1 (< dy 1) dy 0)))
           (coroutine.yield)
           (mover))))
     (table.insert coros (coroutine.create mover))))
@@ -335,11 +338,18 @@
                   "to his work. Way to compromise, girl.")))))
 
 (fn all.Carrie []
-  (say "How's it going?")
-  (reply "Good to see you again.")
-  (say "I'm a bit worried about the next"
-       "mission. If we can't form up we"
-       "might not stand a chance."))
+  (say "Uh oh, not another space beast.")
+  (reply "Are you worried?")
+  (say "It's just that... there's been a"
+       "lot of arguing on the team recently.")
+  (say "We got lucky in our last battle but"
+       "if we can't form up this time...")
+  (say "Well, I better get my gear.")
+  (move-to :Carrie 142 302)
+  (set convos.Carrie all.Carrie2))
+
+(fn all.Carrie2 []
+  (say "Now where did I put my helmet?"))
 
 (set chars.mech-adam {:x 240 :y 129 :spr 416 :w 4})
 (set chars.mech-turk {:x 240 :y 161 :spr 448 :w 4})

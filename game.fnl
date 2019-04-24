@@ -36,11 +36,16 @@
 
 (fn init []
   (set (x y cam-x cam-y)
-      ;; Spawn next to Hank for now cause #lazy
-      ;; SORRY PHIL BUT FUCKING BACK OFF OKAY
-      ;; (values 39 304 center-y center-x center-y)
-       (values 264 20 center-y center-x center-y)
-       ))
+       ;; Spawn next to Hank for now cause #lazy
+       ;; SORRY PHIL BUT FUCKING BACK OFF OKAY
+       ;; nope now I've gotta test my stuff
+      (values 39 304 center-y center-x center-y)
+       ;; (values 264 20 center-y center-x center-y)
+       )
+  (fn opening []
+    (say-as :alert "Warning! Hostile space beast" "detected inbound.")
+    (say-as :alert "All mech pilots: prepare for launch."))
+  (set-dialog opening))
 
 (fn draw []
   (set cam-x (math.min center-x (lerp cam-x (- center-x x) 0.05)))
