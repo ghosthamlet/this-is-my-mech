@@ -231,7 +231,7 @@
              "rest."))
   (let [questions ["Reassure" "Present Facts" "Poke fun" "..."]
         _ (when remove-reassure?
-            (table.remove questions "Reassure"))
+            (table.remove questions 1))
         answer (ask "" questions)]
         (if (= answer "Reassure")
             (do
@@ -241,7 +241,7 @@
                         "appreciates you.")
               (hank-conversations.do-not-support-idea true))
             (= answer "Present Facts")
-            (if (> hank.disposition 2)
+            (if (> hank-state.disposition 2)
                 (hank-conversations.willing-to-negotiate)
                 (do
                   (say "Annoyed and won't listen to reason.")
@@ -257,7 +257,7 @@
               (say "Fine. Don't say anything. Your loss.")
               (describe "Hank turns his back to you.")))))
 
-(fn hank-conversation.willing-to-negotiate []
+(fn hank-conversations.willing-to-negotiate []
   ;; TODO: Fill out
   (say "I'm beginning to see your point, but")
   (let [answer (ask "" ["Experiment in your own time"
