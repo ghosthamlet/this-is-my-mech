@@ -1,30 +1,20 @@
 ;;; the end-game sequence where the mechs launch
 
-(var launch-talk [])
-(var (scroll-x mx my talk-index) nil)
+;; mx and my are monster x/y; dmx/dmy is velocity. tmx/tmy is target coords.
+(var (scroll-x mx my) nil)
 (var (tmx tmy dmx dmy attacking? hits) nil)
 
 (local initial-positions {:Adam [100 15] :Turk [-50 40] :Nikita [0 68]
                           :Hank [10 120] :Carrie [-10 100]})
 
-(local mechs {:Adam {:spr 416 :oy 15 :laser 0 :portrait 291}
-              :Turk {:spr 448 :oy 40 :laser 0 :portrait 323}
-              :Hank {:spr 480 :oy 120 :laser 0 :portrait 355}
-              :Carrie {:spr 452 :oy 100 :laser 0 :portrait 387}
-              :Nikita {:spr 484 :oy 68 :laser 0 :portrait 259}})
+(local mechs {:Adam {:spr 416 :oy 15 :laser 0}
+              :Turk {:spr 448 :oy 40 :laser 0}
+              :Hank {:spr 480 :oy 120 :laser 0}
+              :Carrie {:spr 452 :oy 100 :laser 0}
+              :Nikita {:spr 484 :oy 0 :laser 0}})
 
 (local stars [])
 (for [i 1 32] (table.insert stars [(math.random 480) (math.random 272)]))
-
-(fn draw-talk []
-  (let [who (. launch-talk talk-index)
-        words (. launch-talk (+ talk-index 1))]
-    (when words
-      (rect 0 0 238 42 13)
-      (rectb 1 1 236 40 15)
-      (print who 5 26)
-      (print words 32 6)
-      (spr (. mechs who :portrait) 8 6 0 1 0 0 2 2))))
 
 (fn draw-stars [scroll-x scroll-y]
   (each [_ s (ipairs stars)]
@@ -34,11 +24,8 @@
       (pix (% (- sx scroll-x) 240)
            (% (- sy scroll-y) 136) 15))))
 
-(fn draw-monster []
-  (spr 268 mx my 0 1 0 0 4 6))
-
 (fn laser [x y]
-  (let [w (if (<= my (+ y 6) (+ my 48))
+  (let [w (if (and (<= my (+ y 6) (+ my 48)) (<= x mx))
               (- mx x 18)
               (- 240 x))]
     (rect (+ x 30) (+ y 6) w 1 1)
@@ -53,8 +40,8 @@
       (laser mech.x mech.y)))
   (when (btn 5)
     (laser mechs.Nikita.x mechs.Nikita.y))
-  (draw-monster)
-  (draw-talk))
+  (spr 268 mx my 0 1 0 0 4 6) ; monster
+  (draw-dialog :helmet))
 
 (local max-delta 2)
 
@@ -98,9 +85,9 @@
              (<= my mechs.Nikita.y (+ my 48)))
     (set hits (+ hits 1)))
   (when (= hits 8)
-    (set launch-talk [:Nikita "I'm taking damage!"])
-    (set talk-index 1)
-    (set attacking? true))
+    (set-dialog (fn []
+                  (say-as :Nikita "I'm taking damage!")
+                  (set attacking? true))))
   (when (= hits 42)
     (game-over)))
 
@@ -112,16 +99,12 @@
   (when (and (btn 2) (< 0 mechs.Nikita.x))
     (set mechs.Nikita.x (- mechs.Nikita.x 1)))
   (when (and (btn 3) (< mechs.Nikita.x (- 240 32)))
-    (set mechs.Nikita.x (+ mechs.Nikita.x 1)))
-  (when (btnp 4)
-    (set talk-index (+ talk-index 2))
-    (when (= :function (type (. launch-talk talk-index)))
-      ((. launch-talk talk-index))
-      (set talk-index (+ talk-index 1)))))
+    (set mechs.Nikita.x (+ mechs.Nikita.x 1))))
 
 ;; when the game is in launch mode, this becomes the TIC updater
 (fn launch []
   (launch-input)
+  (dialog 0 0 (btnp 4))
   (fly-mechs)
   (fly-monster)
   (hit-check)
@@ -137,18 +120,18 @@
       (tset mechs name :y y)
       (tset mechs name :dx 0)
       (tset mechs name :dy 0)))
-  (set launch-talk
-       [:Adam "Yeah! Time to assemble Rhinocelator!"
-        :Adam "Enter standard formation\nso I can form the head."
-        :Turk "What?! No way.\nI'm going to form the head this time."
-        :Hank "You formed the head last time."
-        :Turk "That doesn't count!"
-        :Turk "We didn't even have the\ncameras running last time."
-        :Carrie "*sighs deeply*"
-        :Nikita "Our weapons aren't strong enough.\nWe need to form up!"
-        (fn [] (set attacking? true))
-        :Adam "Look out, it's attacking!"])
-  (set talk-index 1)
+  (fn launch-talk []
+    (say-as :Adam "Yeah! Time to assemble Rhinocelator!")
+    (say-as :Adam "Enter standard formation\nso I can form the head.")
+    (say-as :Turk "What?! No way.\nI'm going to form the head this time.")
+    (say-as :Hank "You formed the head last time.")
+    (say-as :Turk "That doesn't count!")
+    (say-as :Turk "We didn't even have the\ncameras running last time.")
+    (say-as :Carrie "*sighs deeply*")
+    (say-as :Nikita "Our weapons aren't strong enough.\nWe need to form up!")
+    (set attacking? true)
+    (say-as :Carrie "Look out, it's attacking!"))
+  (set-dialog launch-talk)
   (var t -136)
   (global TIC (fn [] ; flash the screen before transfering control to launch fn
                 (set t (+ t 5))
@@ -158,4 +141,4 @@
                 (when (< 136 t)
                   (global TIC launch)))))
 
-(global e-l enter-launch)
+(global el enter-launch)

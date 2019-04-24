@@ -1,13 +1,15 @@
 ;;; character positioning, state, and dialog
 
 (set chars.Adam {:x 40 :y 64 :name "Adam"
-                 :spr 290 :portrait 288})
+                 :spr 290 :portrait 288 :helmet 291})
 (set chars.Turk {:x 152 :y 8 :name "Turk"
-                 :spr 322 :portrait 320})
+                 :spr 322 :portrait 320  :helmet 323})
 (set chars.Hank {:x 264 :y 2 :name "Hank"
-                 :spr 354 :portrait 352})
+                 :spr 354 :portrait 352 :helmet 355})
 (set chars.Carrie {:x 139 :y 308 :name "Carrie"
-                   :spr 386 :portrait 384})
+                   :spr 386 :portrait 384 :helmet 387})
+(set chars.Nikita {:x -256 :y -256 :name "Nikita"
+                   :spr 258 :portrait 256 :helmet 259})
 
 (local all {})
 (local hank-conversations {})

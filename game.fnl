@@ -2,7 +2,7 @@
 
 (local (w h) (values 240 136))
 (local (center-x center-y) (values (/ w 2) (/ h 2)))
-(var (x y cam-x cam-y) nil)
+(var (x y cam-x cam-y) nil) ; TODO: get rid of x/y, use chars.Nikita.x/y
 
 (fn filter [f t]
   (local res [])
@@ -42,57 +42,6 @@
        (values 264 20 center-y center-x center-y)
        ))
 
-(var said-reveal 1)
-(var last-reveal nil)
-(var talk-sound 0)
-(var reveal-delay 0)
-
-(fn play-talk-sound [force?]
-  (set talk-sound (- talk-sound 1))
-  (when (and (<= talk-sound 0) who)
-    (when (or force? (< 1 (math.random 8)))
-      (let [duration (math.random 12)]
-        (set talk-sound duration)
-        (sfx 1 50 duration)))))
-
-(fn draw-dialog []
-  (when said
-    (if
-      (and choices (> (# choices) 3))
-      (do
-        (rect 0 0 238 (+ 12 (* (# choices) 10)) 13)
-        (rectb 1 1 236 (+ 10 (* (# choices) 10)) 15))
-      (do
-        (rect 0 0 238 42 13)
-        (rectb 1 1 236 40 15)))
-    (when (~= last-reveal said)
-      (play-talk-sound true)
-      (set said-reveal 1))
-    (when (and (= reveal-delay 0) (= "|" (: said :sub said-reveal said-reveal)))
-      (set reveal-delay 30))
-    (print (-> said
-               (: :sub 1 said-reveal)
-               (: :gsub "|" "")) ; pipes used as delay markers
-           38 6)
-    (when (<= said-reveal (# said))
-      (play-talk-sound)
-      (when (<= reveal-delay 1)
-        (set said-reveal (+ said-reveal 1)))
-      (when (< 0 reveal-delay)
-        (set reveal-delay (- reveal-delay 1))))
-    (when (and who who.portrait (not replying))
-      (print who.name 5 26)
-      (spr who.portrait 8 6 0 1 0 0 2 2))
-    (when (and who who.portrait replying)
-      (print "Nikita" 5 26)
-      (spr 256 8 6 0 1 0 0 2 2))
-    (when choices
-      (each [i ch (ipairs choices)]
-        (when (= i choice)
-          (print ">" 32 (+ 8 (* 8 i))))
-        (print ch 38 (+ 8 (* 8 i))))))
-  (set last-reveal said))
-
 (fn draw []
   (set cam-x (math.min center-x (lerp cam-x (- center-x x) 0.05)))
   (set cam-y (math.min center-y (lerp cam-y (- center-y y) 0.05)))
@@ -104,7 +53,7 @@
     (when c.spr
       (spr c.spr (+ cam-x c.x) (+ cam-y c.y) 0 1 0 0 (or c.w 1) (or c.h 2))))
   (spr 258 (+ x cam-x) (+ y cam-y) 0 1 0 0 1 2)
-  (draw-dialog))
+  (draw-dialog :portrait))
 
 (init)
 
@@ -126,14 +75,14 @@
   (cls)
   (draw-stars cam-x cam-y)
   (print "t  h  i  s        i  s        m  y" 24 10)
-  (map 92 55 14 4 10 26 0 2)
+  (map 92 55 14 4 10 26 0 2) ; MECH pixel-art
   (set cam-x (+ cam-x 2))
   (print "by Emma Bukacek and Phil Hagelberg" 28 110)
-  (print "press Z" (+ (* 128
+  (print "press Z" (+ (* 128 ; bounce!
                          (- 1 (math.abs (- 1 (math.fmod (/ cam-x 100) 2)))))
                       32) 124 2)
   (for [i 0 5]
-    (when (btnp i)
+    (when (btnp i) ; lol jk you can press any key
       (set cam-x 96)
       (global TIC main))))
 

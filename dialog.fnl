@@ -8,8 +8,6 @@
 (var choice nil)
 (var current-talk nil)
 
-(var replying false)
-
 (local convos {})
 (local events {})
 
@@ -34,12 +32,14 @@
   (coroutine.yield)
   (set said nil))
 
+(fn say-as [name ...]
+  (let [prev-who who]
+    (set who (and name (assert (. chars name) (.. name " not found"))))
+    (say ...)
+    (set who prev-who)))
+
 (fn reply [...]
-  (set said (table.concat [...] "\n"))
-  (set replying true)
-  (coroutine.yield)
-  (set replying false)
-  (set said nil))
+  (say-as :Nikita ...))
 
 (fn ask [q ch]
   (set (said choices choice) (values q ch 1))
@@ -84,3 +84,57 @@
   (when cancel?
     (set current-talk nil))
   (and current-talk {:said said :who who :choices choices}))
+
+;; This can be useful for launch-mode where there's really only one conversation
+;; going on instead of walking around among multiple characters.
+(fn set-dialog [f]
+  (set current-talk (coroutine.create f))
+  (set who (. chars :Nikita))
+  (coroutine.resume current-talk))
+
+(var said-reveal 1)
+(var last-reveal nil)
+(var talk-sound 0)
+(var reveal-delay 0)
+
+(fn play-talk-sound []
+  (set talk-sound (- talk-sound 1))
+  (when (and (<= talk-sound 0) who)
+    (when (or force? (< 1 (math.random 8)))
+      (let [duration (math.random 12)]
+        (set talk-sound duration)
+        (sfx 1 50 duration)))))
+
+(fn draw-dialog [portrait-key]
+  (when said
+    (if
+      (and choices (> (# choices) 3))
+      (do
+        (rect 0 0 238 (+ 12 (* (# choices) 10)) 13)
+        (rectb 1 1 236 (+ 10 (* (# choices) 10)) 15))
+      (do
+        (rect 0 0 238 42 13)
+        (rectb 1 1 236 40 15)))
+    (when (~= last-reveal said)
+      (set said-reveal 1))
+    (when (and (= reveal-delay 0) (= "|" (: said :sub said-reveal said-reveal)))
+      (set reveal-delay 30))
+    (print (-> said
+               (: :sub 1 said-reveal)
+               (: :gsub "|" "")) ; pipes used as delay markers
+           38 6)
+    (when (<= said-reveal (# said))
+      (play-talk-sound)
+      (when (<= reveal-delay 1)
+        (set said-reveal (+ said-reveal 1)))
+      (when (< 0 reveal-delay)
+        (set reveal-delay (- reveal-delay 1))))
+    (when (and who (. who portrait-key))
+      (print who.name 5 26)
+      (spr (. who portrait-key) 8 6 0 1 0 0 2 2))
+    (when choices
+      (each [i ch (ipairs choices)]
+        (when (= i choice)
+          (print ">" 32 (+ 8 (* 8 i))))
+        (print ch 38 (+ 8 (* 8 i))))))
+  (set last-reveal said))
