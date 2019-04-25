@@ -110,14 +110,12 @@
 
 (fn draw-dialog [portrait-key]
   (when said
-    (if
-      (and choices (> (# choices) 3))
-      (do
-        (rect 0 0 238 (+ 12 (* (# choices) 10)) 13)
-        (rectb 1 1 236 (+ 10 (* (# choices) 10)) 15))
-      (do
-        (rect 0 0 238 42 13)
-        (rectb 1 1 236 40 15)))
+    (let [box-height (if (and choices (> (# choices) 3))
+                         (+ 12 (* (# choices) 10))
+                         42)
+          box-height (if (= said "") (- box-height 10) box-height)]
+      (rect 0 0 238 box-height 13)
+      (rectb 1 1 236 (- box-height 2) 15))
     (when (~= last-reveal said)
       (set said-reveal 1))
     (when (and (= reveal-delay 0) (= "|" (: said :sub said-reveal said-reveal)))
@@ -137,7 +135,8 @@
       (spr (. who portrait-key) 8 6 0 1 0 0 2 2))
     (when choices
       (each [i ch (ipairs choices)]
-        (when (= i choice)
-          (print ">" 32 (+ 8 (* 8 i))))
-        (print ch 38 (+ 8 (* 8 i))))))
-  (set last-reveal said))
+        (let [choice-y (if (= said "") 0 8)]
+          (when (= i choice)
+            (print ">" 32 (+ choice-y (* 8 i))))
+          (print ch 38 (+ choice-y (* 8 i))))))
+    (set last-reveal said)))
