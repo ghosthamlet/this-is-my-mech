@@ -19,10 +19,11 @@
        (= 0 (# (filter (partial hit? px py) chars)))))
 
 (fn can-move? [x y]
-  (and (can-move-point? x y)
-       (can-move-point? (+ x 6) y)
-       (can-move-point? x (+ y 7))
-       (can-move-point? (+ x 6) (+ y 7))))
+  (or (btn 7) ; S key is noclip; for debugging only!
+      (and (can-move-point? x y)
+           (can-move-point? (+ x 6) y)
+           (can-move-point? x (+ y 7))
+           (can-move-point? (+ x 6) (+ y 7)))))
 
 (fn move []
   (let [dx (if (btn 2) -1 (btn 3) 1 0)

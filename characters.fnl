@@ -2,7 +2,7 @@
 
 (set chars.Adam {:x 40 :y 64 :name "Adam"
                  :spr 290 :portrait 288 :helmet 291})
-(set chars.Turk {:x 152 :y 8 :name "Turk"
+(set chars.Turk {:x 85 :y 215 :name "Turk"
                  :spr 322 :portrait 320  :helmet 323})
 (set chars.Hank {:x 264 :y 2 :name "Hank"
                  :spr 354 :portrait 352 :helmet 355})
@@ -13,14 +13,19 @@
 
 (set chars.alert {:x -256 :y -256 :name "alert" :portrait 420 :spr 420})
 
-(fn move-to [character-name tx ty]
-  (let [char (assert (. chars character-name) (.. character-name " not found"))]
+(fn move-to [character-name ...]
+  (let [char (assert (. chars character-name) (.. character-name " not found"))
+        coords [...]]
     (fn mover []
-      (let [dx (- tx char.x) dy (- ty char.y)]
-        (while (not (and (= 0 dx) (= 0 dy)))
-          (set char.x (+ char.x (if (< dx 0) -1 (> dx 1) 1 (< dx 1) dx 0)))
-          (set char.y (+ char.y (if (< dy 0) -1 (> dy 1) 1 (< dy 1) dy 0)))
-          (coroutine.yield)
+      (let [[tx ty] coords
+            dx (- tx char.x) dy (- ty char.y)]
+        (set char.x (+ char.x (if (< dx 0) -1 (> dx 1) 1 (< dx 1) dx 0)))
+        (set char.y (+ char.y (if (< dy 0) -1 (> dy 1) 1 (< dy 1) dy 0)))
+        (coroutine.yield)
+        (when (and (<= (math.abs dx) 1) (<= (math.abs dy) 1))
+          (table.remove coords 1)
+          (table.remove coords 1))
+        (when (. coords 1)
           (mover))))
     (table.insert coros (coroutine.create mover))))
 
@@ -37,12 +42,19 @@
   ;; LATER
   (describe "There's that damn chuckle again.")
   ;; EVEN LATER
-  (describe "UGH STOP CHUCKLING DAMN IT.")
-  (say "I'm going to walk north for some" " reason.")
-  ;; TODO: delete this; it's dumb
-  (move-to :Adam 40 (- chars.Adam.y 10)))
+  (describe "UGH STOP CHUCKLING DAMN IT."))
 
 (fn all.Turk []
+  (say "Did you hear that?" "We've got company!")
+  (say "This is perfect; my chance to shine!")
+  (say "See you in the launch bay in a few.")
+  (set convos.Turk all.Turk2)
+  (move-to :Turk
+           85 153
+           156 153
+           156 4))
+
+(fn all.Turk2 []
   (describe "Turk seems a little agitated.")
   (reply "Hey, Turk.")
   (say "Nikita!! My favorite person. Make it"
@@ -345,7 +357,8 @@
        "recently.")
   (say "We got lucky in our last battle since"
        "MegaMoth ran into that huge solar" "collector.")
-  (say "But if we can't form up this time...")
+  (say "But if we fail to form Rhinocelator"
+       "again this time...")
   (say "Well, I better get my gear.")
   (move-to :Carrie 142 302)
   (set convos.Carrie all.Carrie2))
@@ -383,7 +396,7 @@
 
 (set chars.turk-photo {:x 13 :y 200 :spr 190 :w 2 :h 2})
 (fn all.turk-photo []
-  (describe "Only Turk would have a photo of"
+  (describe "Only Turk would have a poster of"
             "himself in his quarters.")
   (describe "Hmm...why am *I* in here?"))
 
