@@ -46,8 +46,8 @@
   (describe "UGH STOP CHUCKLING DAMN IT."))
 
 (fn all.Turk []
-  (say "Did you hear that?" "We've got company!")
-  (say "This is perfect; my chance to shine!")
+  (say "Did you hear that? We got company!"
+       "This is perfect; my chance to shine!")
   (say "See you in the launch bay in a few."
        "I got a couple things to do first.")
   (set convos.Turk all.Turk2)
@@ -353,18 +353,20 @@
                   "to his work. Way to compromise, girl.")))))
 
 (fn all.Carrie []
-  (say "Uh oh, not another space beast.")
-  (reply "Are you worried?")
-  (say "It's just that... we haven't been"
-       "working together as a team very well"
-       "recently.")
-  (say "We got lucky in our last battle when"
-       "MegaMoth ran into that huge solar" "collector.")
-  (say "But if we fail to form Rhinocelator"
-       "again this time...")
-  (when (< 1 restart-count)
-    (say "If only Turk and Adam would stop"
-         "fighting over who gets to be the head."))
+  (if (= 0 restart-count)
+      (do
+        (say "Uh oh, not another space beast.")
+        (reply "Are you worried?")
+        (say "It's just that... we haven't been"
+             "working together as a team very well"
+             "recently.")
+        (say "We got lucky in our last battle when"
+             "MegaMoth ran into that huge solar" "collector.")
+        (say "But if we fail to form Rhinocelator"
+             "again this time..."))
+      (say "If only Turk and Adam would stop"
+           "fighting over who gets to be"
+           "the head."))
   (say "Well, I better get my gear.")
   (move-to :Carrie 142 302)
   (set convos.Carrie all.Carrie2))
@@ -406,7 +408,7 @@
             "himself in his quarters.")
   (describe "Hmm...why am *I* in here?"))
 
-(set chars.bridge-screen {:x 110 :y 16 :w 3})
+(set chars.bridge-screen {:x 100 :y 16 :w 3})
 (fn all.bridge-screen []
   (describe "The tactical display shows the"
             "space beast's rapid approach"
@@ -415,3 +417,18 @@
             "to beam weapons but could be driven"
             "away by an indimidating display"
             "of superior size."))
+
+(set chars.mech-repair {:x 200 :y 272})
+(fn all.mech-repair []
+  (say "Rhinocelator diagnostics system...")
+  (let [m (ask "" ["Gold Mech" "Blue Mech" "Pink Mech"
+                   "Purple Mech" "Black Mech"])]
+    (say (.. m " is fully operational")
+         "and ready to launch.")))
+
+(set chars.bridge-station {:x 56 :y 26})
+(fn all.bridge-station []
+  (say "Enter authentication code to log in."
+       "A 4-digit code has been sent to the"
+       "email address associated with your"
+       "account."))
