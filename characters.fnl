@@ -358,8 +358,8 @@
         (say "Uh oh, not another space beast.")
         (reply "Are you worried?")
         (say "It's just that... we haven't been"
-             "working together as a team very well"
-             "recently.")
+             "working together as a team very"
+             "well recently.")
         (say "We got lucky in our last battle when"
              "MegaMoth ran into that huge solar" "collector.")
         (say "But if we fail to form Rhinocelator"

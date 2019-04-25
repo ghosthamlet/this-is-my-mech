@@ -11,10 +11,19 @@
 (local convos {})
 (local events {})
 
+(fn distance* [ax ay bx by]
+  (let [dx (- ax bx)
+        dy (- ay by)]
+    (math.sqrt (+ (* dx dx) (* dy dy)))))
+
 (fn distance [a b]
-  (let [x (- a.x (if b.w (+ b.x (* b.w 3)) b.x))
-        y (- a.y (if b.h (+ b.y (* b.h 3)) b.y))]
-    (math.sqrt (+ (* x x) (* y y)))))
+  ;; check all the corners of b but not of a since a is always the player
+  (let [w (* 8 (or b.w 1))
+        h (* 8 (or b.h 1))]
+    (math.min (distance* a.x a.y b.x b.y)
+              (distance* a.x a.y (+ b.x w) b.y)
+              (distance* a.x a.y b.x (+ b.y h))
+              (distance* a.x a.y (+ b.x w) (+ b.y h)))))
 
 (fn publish [...]
   (each [_ event (ipairs [...])]
@@ -50,7 +59,7 @@
     (set (said choices choice) nil)
     answer))
 
-(local talk-range 16)
+(local talk-range 12)
 
 (fn find-convo [x y]
   (var target nil)
@@ -79,7 +88,7 @@
             (when (= (coroutine.status current-talk)
                      "dead")
               (set current-talk nil)))
-        (let [(convo char) (find-convo x y)]
+        (let [(convo char) (find-convo (+ x 4) (+ y 4))]
           (when convo
             (set current-talk (coroutine.create convo))
             (set who char)
