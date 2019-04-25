@@ -130,7 +130,9 @@
     (say-as :Carrie "*sighs deeply*")
     (say-as :Nikita "Our weapons aren't strong enough.\nWe need to form up!")
     (set attacking? true)
-    (say-as :Carrie "Look out, it's attacking!"))
+    (say-as :Carrie "Look out, it's attacking!")
+    (when (<= 1 restart-count)
+      (say-as :Hank "We'll never win at this rate.")))
   (set-dialog launch-talk)
   (var t -136)
   (global TIC (fn [] ; flash the screen before transfering control to launch fn

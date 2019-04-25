@@ -10,3 +10,5 @@
 (var restart nil) ; forward-declaration
 
 (var coros []) ; things to run in the background
+
+(var restart-count 0)

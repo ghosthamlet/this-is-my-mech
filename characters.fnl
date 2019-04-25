@@ -1,17 +1,18 @@
 ;;; character positioning, state, and dialog
 
-(set chars.Adam {:x 40 :y 64 :name "Adam"
-                 :spr 290 :portrait 288 :helmet 291})
-(set chars.Turk {:x 85 :y 215 :name "Turk"
-                 :spr 322 :portrait 320  :helmet 323})
-(set chars.Hank {:x 264 :y 2 :name "Hank"
-                 :spr 354 :portrait 352 :helmet 355})
-(set chars.Carrie {:x 84 :y 300 :name "Carrie"
-                   :spr 386 :portrait 384 :helmet 387})
-(set chars.Nikita {:x -256 :y -256 :name "Nikita"
-                   :spr 258 :portrait 256 :helmet 259})
+(local initial-positions {:Adam [48 64]
+                          :Turk [85 215]
+                          :Hank [264 2]
+                          :Carrie [84 300]
+                          :Nikita [39 304]})
 
-(set chars.alert {:x -256 :y -256 :name "alert" :portrait 420 :spr 420})
+(set chars.Adam {:name "Adam" :spr 290 :portrait 288 :helmet 291})
+(set chars.Turk {:name "Turk" :spr 322 :portrait 320  :helmet 323})
+(set chars.Hank {:name "Hank" :spr 354 :portrait 352 :helmet 355})
+(set chars.Carrie {:name "Carrie" :spr 386 :portrait 384 :helmet 387})
+(set chars.Nikita {:name "Nikita" :spr 258 :portrait 256 :helmet 259})
+
+(set chars.alert {:x 0 :y 0 :name "alert" :portrait 420})
 
 (fn move-to [character-name ...]
   (let [char (assert (. chars character-name) (.. character-name " not found"))
@@ -47,23 +48,25 @@
 (fn all.Turk []
   (say "Did you hear that?" "We've got company!")
   (say "This is perfect; my chance to shine!")
-  (say "See you in the launch bay in a few.")
+  (say "See you in the launch bay in a few."
+       "I got a couple things to do first.")
   (set convos.Turk all.Turk2)
   (move-to :Turk
            85 153
            156 153
-           156 4))
+           156 96
+           179 96))
 
 (fn all.Turk2 []
   (describe "Turk seems a little agitated.")
   (reply "Hey, Turk.")
   (say "Nikita!! My favorite person. Make it"
        "quick; I've got a call with my agent"
-       "in 15 minutes.")
+       "in a few minutes.")
   (let [answer (ask "What's up?" ["Agent?" "Carrie" "Bye"])]
     (if (= answer "Agent?")
       (reply "Oooo, agent, eh?"
-             "What's going\non there?")
+             "What's going on there?")
       (= answer "Carrie")
       (do
         (reply "I'd like you to consider letting Carrie"
@@ -288,7 +291,7 @@
             (if (> hank-state.disposition 2)
                 (hank-conversations.willing-to-negotiate)
                 (do
-                  (say "Annoyed and won't listen to reason.")
+                  (describe "He's annoyed and won't listen.")
                   (update-hank-disposition -1)))
             (= answer "Poke fun")
             (do
@@ -355,10 +358,13 @@
   (say "It's just that... we haven't been"
        "working together as a team very well"
        "recently.")
-  (say "We got lucky in our last battle since"
+  (say "We got lucky in our last battle when"
        "MegaMoth ran into that huge solar" "collector.")
   (say "But if we fail to form Rhinocelator"
        "again this time...")
+  (when (< 1 restart-count)
+    (say "If only Turk and Adam would stop"
+         "fighting over who gets to be the head."))
   (say "Well, I better get my gear.")
   (move-to :Carrie 142 302)
   (set convos.Carrie all.Carrie2))
@@ -400,5 +406,12 @@
             "himself in his quarters.")
   (describe "Hmm...why am *I* in here?"))
 
-(each [name (pairs chars)] ; set up initial convos for each character
-  (tset convos name (. all name)))
+(set chars.bridge-screen {:x 110 :y 16 :w 3})
+(fn all.bridge-screen []
+  (describe "The tactical display shows the"
+            "space beast's rapid approach"
+            "towards Earth.")
+  (describe "Sensors indicate it is impervious"
+            "to beam weapons but could be driven"
+            "away by an indimidating display"
+            "of superior size."))

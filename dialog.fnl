@@ -103,7 +103,7 @@
 (fn play-talk-sound []
   (set talk-sound (- talk-sound 1))
   (when (and (<= talk-sound 0) who)
-    (when (or force? (< 1 (math.random 8)))
+    (when (< 1 (math.random 8))
       (let [duration (math.random 12)]
         (set talk-sound duration)
         (sfx 1 50 duration)))))
