@@ -154,7 +154,11 @@
         (reply "I'd like you to consider letting Carrie"
                "be the head when we form up. She-")
         (say "Let me just stop you right there."
-             "I NEED to be the head."))
+             "I NEED to be the head.")
+        ;; TODO: throw this out; this is just for testing
+        (reply "I think you should reconsider!")
+        (say "Oh, well in that case...")
+        (set events.turk-agreed true))
       (do
         (reply "Nevermind. Later.")
         (describe "He seems relieved you're leaving.")))))
@@ -167,11 +171,14 @@
       (let [answer (ask "Greetings. What can I do for you?"
                         ["I'd like Carrie to be the head" "Nevermind"])]
         (if (= answer "I'd like Carrie to be the head")
-          (= answer "Nevermind")
-          (do
-            (reply "Nevermind. My bad.")
-            (describe "He nods, then curtly turns around"
-                      "with his hands clasped behind his back."))))
+            ;; TODO: throw this out; this is just for testing
+            (do (reply "OK.")
+                (set events.hank-agreed true))
+            (= answer "Nevermind")
+            (do
+              (reply "Nevermind. My bad.")
+              (describe "He nods, then curtly turns around"
+                        "with his hands clasped behind his back."))))
       (do
         (say "Oh, it's you. Hi Nikita.")
         (let [answer (ask "Have I told you about my project?"
@@ -432,7 +439,8 @@
                "she thinks. Keep the good ideas coming,"
                "Hank!")
         (describe "He flashes a wry smile, then returns"
-                  "to his work. Way to compromise, girl.")))))
+                  "to his work. Way to compromise, girl.")
+        (set events.hank-agreed true)))))
 
 (fn all.Carrie []
   (if (= 0 restart-count)

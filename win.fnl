@@ -50,14 +50,12 @@
   (pmem 0 0) ; reset restart-counter back to zero
   (draw-win))
 
-
-(fn enter-win []
-  (set (scroll-x rx rdx mx my) (values 0 16 0.5 168 28))
-  (let [init-ys {:Adam 8 :Turk 8 :Carrie 0 :Hank 12 :Nikita 12}
-        init-xs {:Adam 100 :Turk 40 :Carrie 68 :Hank 15 :Nikita 120}]
-    (each [name mech (pairs mechs)]
-      (set mech.x (* (. init-xs name) 1.8))
-      (set mech.y (+ 128 (. init-ys name)))))
-  (global TIC win))
-
-(global ew enter-win)
+(set enter-win
+     (fn []
+       (set (scroll-x rx rdx mx my) (values 0 16 0.5 168 28))
+       (let [init-ys {:Adam 8 :Turk 8 :Carrie 0 :Hank 12 :Nikita 12}
+             init-xs {:Adam 100 :Turk 40 :Carrie 68 :Hank 15 :Nikita 120}]
+         (each [name mech (pairs mechs)]
+           (set mech.x (* (. init-xs name) 1.8))
+           (set mech.y (+ 128 (. init-ys name)))))
+       (global TIC win)))

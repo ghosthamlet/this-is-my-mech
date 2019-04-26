@@ -135,12 +135,14 @@
       (say-as :Hank "We'll never win at this rate.")))
   (set-dialog launch-talk)
   (var t -136)
-  (global TIC (fn [] ; flash the screen before transfering control to launch fn
-                (set t (+ t 5))
-                (when (<= 0 t 136)
-                  (launch))
-                (rect 0 t 240 136 15)
-                (when (< 136 t)
-                  (global TIC launch)))))
+  (if (and events.adam-agreed events.turk-agreed events.hank-agreed)
+      (enter-win)
+      (global TIC (fn [] ; flash the screen before transfering control to launch
+                    (set t (+ t 5))
+                    (when (<= 0 t 136)
+                      (launch))
+                    (rect 0 t 240 136 15)
+                    (when (< 136 t)
+                      (global TIC launch))))))
 
 (global el enter-launch)

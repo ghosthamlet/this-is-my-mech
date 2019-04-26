@@ -8,6 +8,7 @@
   (+ (* a (- 1 t)) (* t b)))
 
 (var restart nil) ; forward-declaration
+(var enter-win nil) ; another forward-decl
 
 (var coros []) ; things to run in the background
 
