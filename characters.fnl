@@ -4,7 +4,9 @@
                           :Turk [85 215]
                           :Hank [264 2]
                           :Carrie [84 300]
-                          :Nikita [39 304]})
+                          ; :Nikita [39 304]
+                          :Nikita [289 14]
+                          })
 
 (set chars.Adam {:name "Adam" :spr 290 :portrait 288 :helmet 291})
 (set chars.Turk {:name "Turk" :spr 322 :portrait 320  :helmet 323})
@@ -19,20 +21,27 @@
 
 (set chars.alert {:x 0 :y 0 :name "alert" :portrait 420})
 
+(fn mover-actions [action value mover]
+  (when (= action :wait)
+    (for [i 1 value] (coroutine.yield))))
+
 (fn move-to [character-name ...]
   (let [char (assert (. chars character-name) (.. character-name " not found"))
         coords [...]]
     (fn mover []
-      (let [[tx ty] coords
-            dx (- tx char.x) dy (- ty char.y)]
-        (set char.x (+ char.x (if (< dx 0) -1 (> dx 1) 1 (< dx 1) dx 0)))
-        (set char.y (+ char.y (if (< dy 0) -1 (> dy 1) 1 (< dy 1) dy 0)))
-        (coroutine.yield)
-        (when (and (<= (math.abs dx) 1) (<= (math.abs dy) 1))
-          (table.remove coords 1)
-          (table.remove coords 1))
-        (when (. coords 1)
-          (mover))))
+      (if
+        (= :string (type (. coords 1)))
+        (mover-actions coords)
+        (let [[tx ty] coords
+                      dx (- tx char.x) dy (- ty char.y)]
+          (set char.x (+ char.x (if (< dx 0) -1 (> dx 1) 1 (< dx 1) dx 0)))
+          (set char.y (+ char.y (if (< dy 0) -1 (> dy 1) 1 (< dy 1) dy 0)))
+          (coroutine.yield)
+          (when (and (<= (math.abs dx) 1) (<= (math.abs dy) 1))
+            (table.remove coords 1)
+            (table.remove coords 1))
+          (when (. coords 1)
+            (mover)))))
     (table.insert coros (coroutine.create mover))))
 
 (local all {})
@@ -367,7 +376,7 @@
         (say "I should have known you would not"
              "support me! You are just like the"
              "rest."))
-  (let [questions ["Reassure" "Present Facts" "Poke fun" "..."]
+  (let [questions ["Reassure" "Present Facts" "Of course I don't support you" "..."]
         _ (when remove-reassure?
             (table.remove questions 1))
         answer (ask "" questions)]
@@ -379,26 +388,36 @@
                      "lunch box. Believe me, I would"
                      "love to see this get off the"
                      "ground!")
-              (say "..thank you.")
-              (describe "Hank won't say it, but he"
-                        "appreciates you.")
+              (reply "I just have a few reservations;"
+                    "that's all!")
+              (say "...thanks.")
               (hank-conversations.do-not-support-idea true))
             (= answer "Present Facts")
             (do
-              (reply "Look, you're a smart guy. Let's take"
-                     "a look at the data on your computer.")
-              ;; TODO: Add movement logic to computer.
+              (if remove-reassure?
+                (reply "But look, you're a smart guy. Let's take"
+                       "a look at the data on your computer.")
+                (reply "You're a smart guy. Let me show you."
+                       "Let's take a look at the data"
+                       "on your computer."))
+              (do
+                (move-to :Hank
+                         :wait 15
+                         289 14)
+                (move-to :Nikita 302 8))
               (reply "You mentioned machine learning"
                      "algorithms to generate the"
                      "Thoralin pipe, right?"
-              (reply "I see a few hundred here, but don't"
-                     "we need thousands of samples"
-                     "to train it?")
-              (reply "In other words, we can't be certain"
-                     "the Thoralin pipe wouldn't collapse"
-                     "during the fight.")
-              (reply "Not to mention we need to"
-                     "get ready!")
+              (reply "I only see a few hundred samples here"
+                     "to teach your Thoralin pipe how to"
+                     "triangulate.")
+              (reply "Don't we need thousands or even"
+                     "millions of samples to train it?")
+              (reply "Without proper training, we can't be"
+                     "certain of the Thoralin pipe durability"
+                     "under stress and if it collapses, we"
+                     "would be in trouble, right?")
+              (reply "..." "")
               (if (> hank-state.disposition 2)
                 (hank-conversations.willing-to-negotiate)
                 (do
@@ -409,10 +428,17 @@
                        "one thousand, three-hundred and"
                        "thirty-seven")
                   (update-hank-disposition -1))))))
-            (= answer "Poke fun")
+            (= answer "Of course I don't support you")
             (do
               (update-hank-disposition -1)
-              (reply "Poke fun"))
+              (reply "Why would I support you? We all"
+                    "know block chain and machine learning"
+                    "is an overhyped mess perpetuated"
+                    "by Silicon Valley.")
+              (reply "And to think you'd fall for"
+                     "buzzword bingo!")
+              (say "You're a jerk.")
+              (describe "He turns his back to you."))
             (= answer "...")
             (do
               (update-hank-disposition -1)
@@ -421,11 +447,11 @@
               (describe "Hank turns his back to you.")))))
 
 (fn hank-conversations.willing-to-negotiate []
-  ;; TODO: Fill out
-  (say "I'm beginning to see your point, but")
+  (say "Okay, Nikita. Say you're not wrong."
+       "What do you recommend we do here?")
   (let [answer (ask "" ["Experiment in your own time"
-                        "Let's try later"
-                        "Let's simplify your test"])]
+                        "The fight's coming up soon; let's try later"
+                        "Let's gather test data"])]
     (if
       (= answer "Experiment in your own time")
       (do
@@ -444,7 +470,8 @@
         (publish {:event :nikita-frustrated-hank})
         (reply "You've got a great idea here, Hank."
                "But now is not the time. We need"
-               "stability. Perhaps we can try later?")
+               "stability.")
+        (reply "Why don't we try again another time?")
         (say "It's always later! This team never"
              "understands me and evidently neither"
              "do you.")
@@ -455,7 +482,7 @@
                "But I think we could simplify here.")
         (reply "What if we run your system in parallel"
                "with our existing system, gather telemtry,"
-               "then present this to the team")
+               "then present this to the team.")
         (reply "Backed with the right data, the rest"
                "of the team would have no choice but to"
                "agree!")
@@ -524,8 +551,7 @@
 (set chars.turk-photo {:x 13 :y 200 :spr 190 :w 2 :h 2})
 (fn all.turk-photo []
   (describe "Only Turk would have a poster of"
-            "himself in his quarters.")
-  (describe "Hmm...why am *I* in here?"))
+            "himself in his quarters."))
 
 (set chars.bridge-screen {:x 100 :y 16 :w 3})
 (fn all.bridge-screen []
