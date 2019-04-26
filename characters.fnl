@@ -12,6 +12,11 @@
 (set chars.Carrie {:name "Carrie" :spr 386 :portrait 384 :helmet 387})
 (set chars.Nikita {:name "Nikita" :spr 258 :portrait 256 :helmet 259})
 
+;; near adam, for debugging
+(global a (fn []
+            (set chars.Nikita.x 34)
+            (set chars.Nikita.y 62)))
+
 (set chars.alert {:x 0 :y 0 :name "alert" :portrait 420})
 
 (fn move-to [character-name ...]
@@ -38,12 +43,89 @@
   (set hank-state.disposition (+ change hank-state.disposition)))
 
 (fn all.Adam []
-  (say "Check out how cool my uniform is.")
-  (describe  "He chuckles obnoxiously.")
-  ;; LATER
-  (describe "There's that damn chuckle again.")
-  ;; EVEN LATER
-  (describe "UGH STOP CHUCKLING DAMN IT."))
+  (say "I... um. Hang on.")
+  (move-to :Adam 48 25)
+  (set convos.bridge-station all.bridge-station-auth)
+  (set convos.Adam (fn []
+                     (say "Oops.")
+                     (set convos.Adam all.Adam2)
+                     (all.Adam2))))
+
+(fn adam-mention-turk []
+  (say "If I don't form the head, then"
+       "Turk is going to do it. "
+       "Don't get me wrong; I like the guy"
+       "a lot! But ...")
+  (say "He just isn't leadership material!"
+       "He jokes around all the time and"
+       "doesn't take his job seriously.")
+  (set events.adam-mentions-turk true))
+
+(fn all.Adam2 []
+  (say "Hey, sorry about that.")
+  (let [r (ask "What's up?" ["What are you doing?" "Where's the restroom?"])]
+    (if (= r "Where's the restroom?")
+        (say "You can pee in your pilot suit; isn't"
+             "technology amazing? Built-in"
+             "waste recyclers.")
+        (= r "What are you doing?")
+        (do (say "Well... I got a bit flustered and"
+                 "forgot my password, and now I'm"
+                 "locked out of the system!")
+            (say "I really need to get a tactical"
+                 "analysis of the beast so I'm"
+                 "prepared to lead the team and"
+                 "be the head.")
+            (let [r2 (ask "" ["Why do you need to be the head?"
+                              "I think I can help with the analysis."])]
+              (if (= r2 "Why do you need to be the head?")
+                  (adam-mention-turk)
+                  (= r2 "I think I can help with the analysis.")
+                  (do (reply "I noticed the screen on the other"
+                             "side of the room is already showing"
+                             "the tactical analysis. Does that"
+                             "have what you need?")
+                      (say "Oh, that might do it! Let me check.")
+                      (move-to :Adam 48 32 109 32 109 24)
+                      (set convos.Adam all.Adam3))))))))
+
+(fn all.Adam3 []
+  (when (not events.adam-screen)
+    (reply "How's that look?")
+    (say "Perfect; thanks! Guess I don't"
+         "need to log in after all.")
+    (set events.adam-screen true))
+  (say "It looks like the important thing for"
+       "this battle is that we form up to"
+       "make Rhinocelator. Otherwise we"
+       "don't stand a chance on our own.")
+  (say "Good thing I'm here to save the day!")
+  (reply "What's that supposed to mean?")
+  (when (not events.adam-mentions-turk)
+    (adam-mention-turk))
+  (say "Remember last time Turk formed"
+       "the head? You don't want a"
+       "repeat of that, do you?")
+  (let [r (ask "" ["Good point."
+                   "Just let Turk do it already."
+                   "Turk's not the only option you know."])]
+    (if (= r "Just let Turk do it already.")
+        (say "I really don't think that's"
+             "a good idea.")
+        (= r "Turk's not the only option you know.")
+        (do
+          (reply "Carrie is perfectly capable of"
+                 "forming the head. She's smarter"
+                 "than you give her credit for.")
+          (say "I don't know... maybe that's true, but"
+               "Turk won't see it that way. If I don't"
+               "form the head, he'll do it!")
+          (reply "What if Turk agreed to let Carrie"
+                 "form the head?")
+          (say "Huh... yeah, that could work.")
+          (set events.adam-agreed true)
+          (set convos.Adam (partial describe
+                                    "He's examining tactical data."))))))
 
 (fn all.Turk []
   (say "Did you hear that? We got company!"
@@ -374,6 +456,8 @@
 (fn all.Carrie2 []
   (say "Now where did I put my helmet?"))
 
+;; non-character "dialog"
+
 (set chars.mech-adam {:x 240 :y 129 :spr 416 :w 4})
 (set chars.mech-turk {:x 240 :y 161 :spr 448 :w 4})
 (set chars.mech-hank {:x 240 :y 193 :spr 480 :w 4})
@@ -416,7 +500,8 @@
   (describe "Sensors indicate it is impervious"
             "to beam weapons but could be driven"
             "away by an indimidating display"
-            "of superior size."))
+            "of superior size.")
+  (set events.screen-seen true))
 
 (set chars.mech-repair {:x 200 :y 272})
 (fn all.mech-repair []
@@ -426,9 +511,23 @@
     (say (.. m " is fully operational")
          "and ready to launch.")))
 
-(set chars.bridge-station {:x 56 :y 26})
+(set chars.bridge-station {:x 56 :y 22})
 (fn all.bridge-station []
+  (say "Enter username and password:"))
+(fn all.bridge-station-auth []
   (say "Enter authentication code to log in."
        "A 4-digit code has been sent to the"
-       "email address associated with your"
+       "phone number associated with your"
        "account."))
+
+(set chars.bridge-station2 {:x 56 :y 64})
+(fn all.bridge-station2 []
+  (say "You have exceeded the maximum"
+       "number of attempted logins. Your"
+       "account is locked. Please contact a"
+       "system administrator."))
+
+(set chars.door1 {:x 56 :y 160})
+(set chars.door2 {:x 106 :y 231})
+(fn all.door1 [] (describe "Locked."))
+(set all.door2 all.door1)

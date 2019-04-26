@@ -23,7 +23,8 @@
     (math.min (distance* a.x a.y b.x b.y)
               (distance* a.x a.y (+ b.x w) b.y)
               (distance* a.x a.y b.x (+ b.y h))
-              (distance* a.x a.y (+ b.x w) (+ b.y h)))))
+              (distance* a.x a.y (+ b.x w) (+ b.y h))
+              (distance* a.x a.y (+ b.x (/ w 2)) (+ b.y h)))))
 
 (fn publish [...]
   (each [_ event (ipairs [...])]
@@ -122,7 +123,9 @@
     (let [box-height (if (and choices (> (# choices) 3))
                          (+ 12 (* (# choices) 10))
                          42)
-          box-height (if (= said "") (- box-height 10) box-height)]
+          box-height (if (= said "")
+                         (math.max (- box-height 10) 42)
+                         box-height)]
       (rect 0 0 238 box-height 13)
       (rectb 1 1 236 (- box-height 2) 15))
     (when (~= last-reveal said)
