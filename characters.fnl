@@ -191,7 +191,8 @@
             (do
               (reply "Nevermind. My bad.")
               (describe "He nods, then curtly turns around"
-                        "with his hands clasped behind his back."))))
+                        "with his hands clasped behind"
+                        "his back."))))
       (do
         (say "Oh, it's you. Hi Nikita.")
         (let [answer (ask "Have I told you about my project?"
@@ -199,12 +200,14 @@
           (if (= answer "Let's hear it!")
             (hank-conversations.explain-idea)
             (= answer "Maybe later!")
-            (reply "Ah, I gotta prepare for the space beast."
-                   "Maybe later!")
-            (say "Sure!")
+            (do
+             (reply "Ah, I gotta prepare to fight the"
+              "space beast. Maybe later!")
+             (say "Sure!"))
             (= answer "Oh look at the time.")
-            (do (say "Uh... all right then, I guess.")
-              (describe "He stares at his feet as you leave."))))))
+            (do
+             (say "Uh... all right then, I guess.")
+             (describe "He stares at his feet as you leave."))))))
     (< hank-state.disposition 0)
     (if
       (has-happened :nikita-talked-to-pissed-off-hank)
@@ -252,7 +255,7 @@
               (hank-conversations.ask-more-about-idea)
               (= answer "Great idea!")
               (hank-conversations.support-idea)
-              (= answer "Well..")
+              (= answer "Well...")
               (hank-conversations.do-not-support-idea)
               (= answer "What a crock.")
               (do
@@ -310,8 +313,8 @@
             "across the galaxy.")
   (reply "...Sure!")
   (say "This idea is what's best for our"
-       "team even if the others"
-       "can't see that.")
+       "team even if the others can't"
+       "see that.")
   (say "It is illogical to think"
        "this idea *wouldn't* work, but I"
        "suppose some folks in this world"
@@ -383,8 +386,8 @@
            {:event :hank-has-explained-his-idea})
   (when (not remove-reassure?)
         (say "I should have known you would not"
-             "support me! You are just like the"
-             "rest."))
+             "support me! ...you are just like"
+             "the rest of the team."))
   (let [questions ["Reassure" "Present Facts" "Of course I don't support you" "..."]
         _ (when remove-reassure?
             (table.remove questions 1))
@@ -411,50 +414,65 @@
                 (move-to :Nikita 302 8))
               (reply "You mentioned machine learning"
                      "algorithms to generate the"
-                     "Thoralin pipe, right?"
-              (reply "I only see a few hundred samples here"
-                     "to teach your Thoralin pipe how to"
-                     "triangulate.")
+                     "Thoralin pipe, right?")
+              (reply "I only see a few hundred samples"
+                     "here to teach your Thoralin pipe"
+                     "how to triangulate.")
               (reply "Don't we need thousands or even"
-                     "millions of samples to train it?")
+                     "millions of samples to train"
+                     "the model?")
               (reply "Without proper training, we can't be"
-                     "certain of the Thoralin pipe durability"
-                     "under stress and if it collapses, we"
-                     "would be in trouble, right?")
-              (reply "..." "")
-              (if (> hank-state.disposition 2)
+                     "certain of the Thoralin pipe's"
+                     "durability under stress.")
+              (reply "If it collapses, we have bigger"
+                     "problems, right?")
+              (say "I suppose, but-")
+              (reply "And last I talked to Carrie, we"
+                     "don't even have a failover"
+                     "plumbus set up in half the suits,"
+                     "so, even these projected numbers"
+                     "carry a high risk.")
+              (reply "I'm not saying it's a bad idea."
+                     "I just think we need to proceed"
+                     "with some caution.")
+              (if (>= hank-state.disposition 2)
                 (hank-conversations.willing-to-negotiate)
                 (do
                   (say "Say what you wanna say, but I"
                        "have complete confidence in my"
-                       "data."
+                       "data.")
                   (say "I already have at least"
                        "one thousand, three-hundred and"
-                       "thirty-seven")
-                  (update-hank-disposition -1))))))
+                       "thirty-seven datasets that I"
+                       "collated myself!")
+                  (say "Like I said, you're just like"
+                       "everyone else.")
+                  (update-hank-disposition -1))))
             (= answer "Of course I don't support you")
             (do
               (update-hank-disposition -1)
               (reply "Why would I support you? We all"
-                    "know block chain and machine learning"
-                    "is an overhyped mess perpetuated"
-                    "by Silicon Valley.")
+                    "know block chain and machine"
+                    "learning is an overhyped mess"
+                    "perpetuated by Silicon Valley.")
               (reply "And to think you'd fall for"
                      "buzzword bingo!")
               (say "You're a jerk.")
-              (describe "He turns his back to you."))
+              (describe "He turns his back to you.")
+              (move-to :Hank 264 16))
             (= answer "...")
             (do
               (update-hank-disposition -1)
               (reply "...")
               (say "Fine. Don't say anything. Your loss.")
-              (describe "Hank turns his back to you.")))))
+              (describe "Hank turns his back to you.")
+              (move-to :Hank 264 16)))))
 
 (fn hank-conversations.willing-to-negotiate []
   (say "Okay, Nikita. Say you're not wrong."
        "What do you recommend we do here?")
   (let [answer (ask "" ["Experiment in your own time"
-                        "The fight's coming up soon; let's try later"
+                        "Let's try later"
                         "Let's gather test data"])]
     (if
       (= answer "Experiment in your own time")
@@ -462,13 +480,16 @@
         (publish {:event :nikita-frustrated-hank})
         (reply "Hank, our lives are at stake."
                "I love the fact that you are eager"
-               "to improve our systems, but you should"
-               "experiment in your own time.")
+               "to improve our systems, but you"
+               "should experiment in your"
+               "own time.")
         (say "But this will benefit us all! It could"
              "even *save* our lives!")
-        (reply "Hank, really! Now is not the time.")
-        (describe "Frustrated, he lets out a massive sigh"
-                  "and turns his back to you."))
+        (reply "Hank. Seriously. Now is not"
+               "the time.")
+        (describe "Frustrated, he lets out a massive"
+                  "sigh and turns his back to you.")
+        (move-to :Hank 264 16))
       (= answer "Let's try later")
       (do
         (publish {:event :nikita-frustrated-hank})
@@ -480,7 +501,7 @@
              "understands me and evidently neither"
              "do you.")
         (describe "He turns around before you can reply."))
-      (= answer "Let's simplify")
+      (= answer "Let's gather test data")
       (do
         (reply "You have an awesome idea, Hank!"
                "But I think we could simplify here.")
