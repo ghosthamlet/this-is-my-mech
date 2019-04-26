@@ -186,6 +186,8 @@
           (if (= answer "Let's hear it!")
             (hank-conversations.explain-idea)
             (= answer "Maybe later!")
+            (reply "Ah, I gotta prepare for the space beast."
+                   "Maybe later!")
             (say "Sure!")
             (= answer "Oh look at the time.")
             (do (say "Uh... all right then, I guess.")
@@ -363,7 +365,7 @@
            {:event :hank-has-explained-his-idea})
   (when (not remove-reassure?)
         (say "I should have known you would not"
-             "support me! You're just like the"
+             "support me! You are just like the"
              "rest."))
   (let [questions ["Reassure" "Present Facts" "Poke fun" "..."]
         _ (when remove-reassure?
@@ -372,16 +374,41 @@
         (if (= answer "Reassure")
             (do
               (update-hank-disposition 1)
-              (reply "Reassuring thing.")
+              (reply "No, no, Hank, it's a good idea!"
+                     "I didn't mean to poopoo in your"
+                     "lunch box. Believe me, I would"
+                     "love to see this get off the"
+                     "ground!")
+              (say "..thank you.")
               (describe "Hank won't say it, but he"
                         "appreciates you.")
               (hank-conversations.do-not-support-idea true))
             (= answer "Present Facts")
-            (if (> hank-state.disposition 2)
+            (do
+              (reply "Look, you're a smart guy. Let's take"
+                     "a look at the data on your computer.")
+              ;; TODO: Add movement logic to computer.
+              (reply "You mentioned machine learning"
+                     "algorithms to generate the"
+                     "Thoralin pipe, right?"
+              (reply "I see a few hundred here, but don't"
+                     "we need thousands of samples"
+                     "to train it?")
+              (reply "In other words, we can't be certain"
+                     "the Thoralin pipe wouldn't collapse"
+                     "during the fight.")
+              (reply "Not to mention we need to"
+                     "get ready!")
+              (if (> hank-state.disposition 2)
                 (hank-conversations.willing-to-negotiate)
                 (do
-                  (describe "He's annoyed and won't listen.")
-                  (update-hank-disposition -1)))
+                  (say "Say what you wanna say, but I"
+                       "have complete confidence in my"
+                       "data."
+                  (say "I already have at least"
+                       "one thousand, three-hundred and"
+                       "thirty-seven")
+                  (update-hank-disposition -1))))))
             (= answer "Poke fun")
             (do
               (update-hank-disposition -1)
