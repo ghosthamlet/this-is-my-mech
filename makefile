@@ -17,3 +17,5 @@ count: out.fnl ; cloc $^
 upload: mech.tic.html
 	cp $^ index.html
 	butler push index.html technomancy/this-is-my-mech:mech.tic.html
+
+todo: ; grep TODO $(SRC)

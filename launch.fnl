@@ -4,8 +4,8 @@
 (var (scroll-x mx my) nil)
 (var (tmx tmy dmx dmy attacking? hits) nil)
 
-(local initial-positions {:Adam [100 15] :Turk [-50 40] :Nikita [0 68]
-                          :Hank [10 120] :Carrie [-10 100]})
+(local initial-mech-positions {:Adam [100 15] :Turk [-50 40] :Nikita [0 68]
+                               :Hank [10 120] :Carrie [-10 100]})
 
 (local mechs {:Adam {:spr 416 :oy 15 :laser 0}
               :Turk {:spr 448 :oy 40 :laser 0}
@@ -110,39 +110,89 @@
   (hit-check)
   (draw-launch))
 
-;; you'll eventually get different sequences here depending on actions so far
+(fn launch-talk-default []
+  (say-as :Hank "Finally, let's see how this new" "targeting system works.")
+  (say-as :Carrie "You're testing that right now?!")
+  (say-as :Hank "It'll be fine! I just need to" "form the head so I can pull"
+          "down combined sensor readings.")
+  (say-as :Adam "This is a space combat situation,"
+          "not an app store alpha test!")
+  (say-as :Hank "I'm getting pretty tired of you" "telling me what I can't do.")
+  (set attacking? true)
+  (say-as :Turk "Uh, guys? That space beast is" "looking pretty hungry.")
+  (say-as :Carrie "And our beams aren't having" "the slightest effect."))
+
+(fn launch-talk-hank []
+  (say-as :Adam "Yeah! Time to assemble Rhinocelator!")
+  (say-as :Adam "Enter standard formation\nso I can form the head.")
+  (say-as :Turk "What?! No way.\nI'm going to form the head this time.")
+  (say-as :Hank "You formed the head last time.")
+  (say-as :Turk "That doesn't count!")
+  (say-as :Turk "We didn't even have the\ncameras running last time.")
+  (say-as :Carrie "*sighs deeply*")
+  (say-as :Nikita "Our weapons aren't strong enough.\nWe need to form up!")
+  (set attacking? true)
+  (say-as :Carrie "Look out, it's attacking!")
+  (when (<= 1 restart-count)
+    (say-as :Hank "We'll never win at this rate.")))
+
+(fn launch-talk-hank-turk []
+  (say-as :Adam "Time to assemble Rhinocelator!")
+  (say-as :Adam "Enter standard formation\nso I can form the head.")
+  (say-as :Turk "Wait a minute; slow down."
+          "Who said you get to form the head?")
+  (say-as :Adam "I'm the leader!")
+  (say-as :Turk "Well, I never voted for you.")
+  (say-as :Hank "We're wasting time here!")
+  (set attacking? true)
+  (say-as :Adam "Uh oh. Here it comes." "Evasive action!"))
+
+(fn launch-talk-hank-adam []
+  (say-as :Turk "Aw yeah, that's what I'm" "talking about!")
+  (say-as :Turk "Let's make this happen!"
+          "Watch out, space beast, you're"
+          "about to get Rhinocelated!")
+  (say-as :Hank "What does that even mean?")
+  (say-as :Adam "Can we just focus for even" "one minute?")
+  (set attacking? true)
+  (say-as :Adam "Blast it down!")
+  (say-as :Carrie "It's not helping!"))
+
+(fn lose-with [talk]
+  (set-dialog talk)
+  (var lt -136)
+  (global TIC (fn  []
+                (set lt (+ lt 5))
+                (when (<= 0 lt 136)
+                  (launch))
+                (rect 0 lt 240 136 15)
+                (when (< 136 lt)
+                  (global TIC launch)))))
+
 (fn enter-launch [path]
   (set (scroll-x mx my) (values 0 (/ 136 2) 0 200 32))
   (set (tmx tmy dmx dmy attacking? hits) (values 210 48 0 0 false 0))
-  (each [name pos (pairs initial-positions)]
+  (each [name pos (pairs initial-mech-positions)]
     (let [[x y] pos]
       (tset mechs name :x x)
       (tset mechs name :y y)
       (tset mechs name :dx 0)
       (tset mechs name :dy 0)))
-  (fn launch-talk []
-    (say-as :Adam "Yeah! Time to assemble Rhinocelator!")
-    (say-as :Adam "Enter standard formation\nso I can form the head.")
-    (say-as :Turk "What?! No way.\nI'm going to form the head this time.")
-    (say-as :Hank "You formed the head last time.")
-    (say-as :Turk "That doesn't count!")
-    (say-as :Turk "We didn't even have the\ncameras running last time.")
-    (say-as :Carrie "*sighs deeply*")
-    (say-as :Nikita "Our weapons aren't strong enough.\nWe need to form up!")
-    (set attacking? true)
-    (say-as :Carrie "Look out, it's attacking!")
-    (when (<= 1 restart-count)
-      (say-as :Hank "We'll never win at this rate.")))
-  (set-dialog launch-talk)
-  (var t -136)
-  (if (and events.adam-agreed events.turk-agreed events.hank-agreed)
-      (enter-win)
-      (global TIC (fn [] ; flash the screen before transfering control to launch
-                    (set t (+ t 5))
-                    (when (<= 0 t 136)
-                      (launch))
-                    (rect 0 t 240 136 15)
-                    (when (< 136 t)
-                      (global TIC launch))))))
+  (if (not (or events.adam-agreed events.turk-agreed events.hank-agreed path))
+      (lose-with launch-talk-default)
+      (or (= path 2)
+          (and events.hank-agreed (not events.turk-agreed) (not events.adam-agreed)))
+      (lose-with launch-talk-hank)
+      (or (= path 3)
+          (and events.hank-agreed events.turk-agreed (not events.adam-agreed)))
+      (lose-with launch-talk-hank-turk)
+      (or (= path 4)
+          (and events.hank-agreed (not events.turk-agreed) events.adam-agreed))
+      (lose-with launch-talk-hank-adam)
+      (or (= path 5)
+          (and events.adam-agreed events.turk-agreed events.hank-agreed))
+      (enter-win)))
 
-(global el enter-launch)
+;; you can run this in the console to debug the endings
+;; eval (e 2) etc then resume
+(global e enter-launch)

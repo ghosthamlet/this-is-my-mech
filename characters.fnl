@@ -104,10 +104,10 @@
     (say "Perfect; thanks! Guess I don't"
          "need to log in after all.")
     (set events.adam-screen true))
-  (say "It looks like the important thing for"
-       "this battle is that we form up to"
-       "make Rhinocelator. Otherwise we"
-       "don't stand a chance on our own.")
+  (say "The important thing for this battle"
+       "is that we form up to make"
+       "Rhinocelator. Otherwise we don't"
+       "stand a chance on our own.")
   (say "Good thing I'm here to save the day!")
   (reply "What's that supposed to mean?")
   (when (not events.adam-mentions-turk)
