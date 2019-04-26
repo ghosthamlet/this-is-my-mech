@@ -2,7 +2,7 @@
 
 (local initial-positions {:Adam [48 64]
                           :Turk [85 215]
-                          :Hank [264 2]
+                          :Hank [264 16]
                           :Carrie [84 300]
                           ; :Nikita [39 304]
                           :Nikita [289 14]
@@ -21,17 +21,21 @@
 
 (set chars.alert {:x 0 :y 0 :name "alert" :portrait 420})
 
-(fn mover-actions [action value mover]
-  (when (= action :wait)
-    (for [i 1 value] (coroutine.yield))))
+(fn mover-actions [coords]
+  (let [action (. coords 1)
+        value (. coords 2)]
+    (when (= action :wait)
+      (do
+        (for [i 1 value] (coroutine.yield))
+        (table.remove coords 1)))))
 
 (fn move-to [character-name ...]
   (let [char (assert (. chars character-name) (.. character-name " not found"))
         coords [...]]
     (fn mover []
-      (if
-        (= :string (type (. coords 1)))
-        (mover-actions coords)
+      ; (if
+      ;   (= :string (type (. coords 1)))
+      ;   (mover-actions coords)
         (let [[tx ty] coords
                       dx (- tx char.x) dy (- ty char.y)]
           (set char.x (+ char.x (if (< dx 0) -1 (> dx 1) 1 (< dx 1) dx 0)))
@@ -41,7 +45,7 @@
             (table.remove coords 1)
             (table.remove coords 1))
           (when (. coords 1)
-            (mover)))))
+            (mover))))
     (table.insert coros (coroutine.create mover))))
 
 (local all {})
@@ -213,12 +217,17 @@
     (or
       (has-happened :nikita-frustrated-hank)
       (has-happened :carrie-disagrees-with-hanks-plan))
-    (say "Look, I'm not in the mood to talk, okay?")
-    (reply "I better leave him alone.")))
+    (do
+      (say "Look, I'm not in the mood to talk, okay?")
+      (reply "I better leave him alone."))))
 
 
 
 (fn hank-conversations.explain-idea []
+  (say "Check it out!")
+  (do
+    (move-to :Hank 264 2)
+    (move-to :Nikita 276 8))
   (say "I built a new targeting system for"
        "Rhinocelator! It utilizes machine"
        "learning algorithms and block chain"
@@ -238,7 +247,7 @@
        "at least 57%!")
   (let [answer
         (ask "What do you think?"
-             ["Thoralin pipe?" "Great idea!" "Well.." "What a crock."])]
+             ["Well..." "Great idea!" "Thoralin pipe?" "What a crock."])]
           (if (= answer "Thoralin pipe?")
               (hank-conversations.ask-more-about-idea)
               (= answer "Great idea!")
@@ -394,16 +403,11 @@
               (hank-conversations.do-not-support-idea true))
             (= answer "Present Facts")
             (do
-              (if remove-reassure?
-                (reply "But look, you're a smart guy. Let's take"
-                       "a look at the data on your computer.")
-                (reply "You're a smart guy. Let me show you."
-                       "Let's take a look at the data"
-                       "on your computer."))
+              (reply "You're a smart guy. Let me show you."
+                     "Let's take a look at the data"
+                     "on your computer.")
               (do
-                (move-to :Hank
-                         :wait 15
-                         289 14)
+                (move-to :Hank 289 14)
                 (move-to :Nikita 302 8))
               (reply "You mentioned machine learning"
                      "algorithms to generate the"
