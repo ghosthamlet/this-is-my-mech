@@ -11,4 +11,4 @@
 
 (var coros []) ; things to run in the background
 
-(var restart-count 0)
+(var restart-count (or (pmem 0) 0))

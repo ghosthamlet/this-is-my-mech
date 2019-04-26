@@ -114,4 +114,7 @@
 (set restart (fn []
                (init)
                (set restart-count (+ restart-count 1))
+               ;; This persists the restart count across playthrus.
+               ;; I'm not sure it's a great idea?
+               (pmem 0 restart-count)
                (global TIC main)))
