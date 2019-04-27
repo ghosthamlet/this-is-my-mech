@@ -52,6 +52,8 @@
 (fn update-hank-disposition [change]
   (set hank-state.disposition (+ change hank-state.disposition)))
 
+;;; ADAM
+
 (fn all.Adam []
   (say "I... um. Hang on.")
   (move-to :Adam 48 25)
@@ -132,10 +134,13 @@
                "form the head, he'll do it!")
           (reply "What if Turk agreed to let Carrie"
                  "form the head?")
-          (say "Huh... yeah, that could work.")
+          (say "Huh... yeah, that could work. I mean,"
+               "as long as you can convince him.")
           (set events.adam-agreed true)
           (set convos.Adam (partial describe
                                     "He's examining tactical data."))))))
+
+;; TURK
 
 (fn all.Turk []
   (say "Did you hear that? We got company!"
@@ -155,10 +160,29 @@
   (say "Nikita!! My favorite person. Make it"
        "quick; I've got a call with my agent"
        "in a few minutes.")
-  (let [answer (ask "What's up?" ["Agent?" "Carrie" "Bye"])]
-    (if (= answer "Agent?")
-      (reply "Oooo, agent, eh?"
-             "What's going on there?")
+  (let [answer (ask "What's up?" ["Your agent?" "Carrie" "Bye"])]
+    (if (= answer "Your agent?")
+        (do (say "That's right. Man, I never knew being"
+                 "a mech pilot would be so much work!"
+                 "I could never keep track of all the"
+                 "fans and conventions on my own.")
+            (say "The life of a hero is demanding!")
+            (reply "I, uh, never thought of it that way.")
+            (say "Not that I'm complaining! I'm a"
+                 "natural in the spotlight, but you"
+                 "knew that already!")
+            (say "Now if you'll excuse me, I gotta"
+                 "make a call.")
+            (say "...")
+            (say "Ugh; this station gets the worst"
+                 "cell reception. Maybe I can get a"
+                 "signal over by the airlock.")
+            (move-to :Turk 180 60 164 61 164 2)
+            (set convos.Turk (partial say "..."))
+            (fn wait3 []
+              (for [_ 1 256] (coroutine.yield))
+              (set convos.Turk all.Turk3))
+            (table.insert coros (coroutine.create wait3)))
       (= answer "Carrie")
       (do
         (reply "I'd like you to consider letting Carrie"
@@ -172,6 +196,16 @@
       (do
         (reply "Nevermind. Later.")
         (describe "He seems relieved you're leaving.")))))
+
+(fn all.Turk3 []
+  (say "Well that was a disaster."))
+
+;; for testing; remove this:
+(set all.Turk all.Turk2)
+(set initial-positions.Turk [179 96])
+(set initial-positions.Nikita [170 96])
+
+;; HANK
 
 (fn all.Hank []
   (if
@@ -613,6 +647,8 @@
                       ["Carrie should be the head"] ["Nevermind"])]
       (if (= answer "Carrie should be the head")
           (= answer "Nevermind")))))
+
+;; CARRIE
 
 (fn all.Carrie []
   (if (= 0 restart-count)
