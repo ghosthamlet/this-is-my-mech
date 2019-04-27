@@ -5,7 +5,7 @@
                           :Hank [264 16]
                           :Carrie [84 300]
                           :Nikita [39 304]
-                          ;:Nikita [289 14]
+                          ; :Nikita [289 14]
                           })
 
 (set chars.Adam {:name "Adam" :spr 290 :portrait 288 :helmet 291})
@@ -46,6 +46,8 @@
 (local all {})
 (local hank-conversations {})
 (local hank-state {:disposition 0})
+
+(local carrie-conversations {})
 
 (fn update-hank-disposition [change]
   (set hank-state.disposition (+ change hank-state.disposition)))
@@ -176,48 +178,39 @@
     (>= hank-state.disposition 0)
     (if
       (has-happened :hank-has-explained-his-idea)
-      (let [answer (ask "Greetings. What can I do for you?"
-                        ["I'd like Carrie to be the head" "Nevermind"])]
-        (if (= answer "I'd like Carrie to be the head")
-            ;; TODO: throw this out; this is just for testing
-            (do (reply "OK.")
-                (set events.hank-agreed true))
-            (= answer "Nevermind")
-            (do
-              (reply "Nevermind. My bad.")
-              (describe "He nods, then curtly turns around"
-                        "with his hands clasped behind"
-                        "his back."))))
+      (hank-conversations.follow-up-conversation)
       (do
         (say "Oh, it's you. Hi Nikita.")
         (let [answer (ask "Have I told you about my project?"
-                          ["Let's hear it!" "Maybe later!" "Oh look at the time."])]
+                          ["Let's hear it!" "Maybe later"])]
           (if (= answer "Let's hear it!")
             (hank-conversations.explain-idea)
-            (= answer "Maybe later!")
+            (= answer "Maybe later")
             (do
-             (reply "Ah, I gotta prepare to fight the"
-              "space beast. Maybe later!")
-             (say "Sure!"))
-            (= answer "Oh look at the time.")
-            (do
-             (say "Uh... all right then, I guess.")
-             (describe "He stares at his feet as you leave."))))))
+              (reply "Ah, I gotta prepare to fight the"
+                     "space beast. Maybe later, okay?")
+              (say "Sure!"))))))
     (< hank-state.disposition 0)
     (if
       (has-happened :nikita-talked-to-pissed-off-hank)
-      (reply "I better leave him alone.")
+      (if (has-happened :nikita-shit-on-hanks-idea)
+        (reply "Ha, I better leave him alone.")
+        (reply "I better leave him alone."))
       (do
         (publish {:event :nikita-talked-to-pissed-off-hank})
         (reply "Hank?")
         (say "...")
-        (describe "He's ignoring you.| Dang it.")))
+        (describe "He's ignoring you.")))
     (or
       (has-happened :nikita-frustrated-hank)
       (has-happened :carrie-disagrees-with-hanks-plan))
-    (do
-      (say "Look, I'm not in the mood to talk, okay?")
-      (reply "I better leave him alone."))))
+    (if (has-happened :nikita-talked-to-frustrated-hank)
+      (if (has-happened :nikita-shit-on-hanks-idea)
+        (reply "Ha, I better leave him alone.")
+        (reply "I better leave him alone."))
+      (do
+        (publish {:event :nikita-talked-to-frustrated-hank})
+        (say "Look, I'm not in the mood to talk, okay?")))))
 
 
 
@@ -251,9 +244,19 @@
               (= answer "Great idea!")
               (hank-conversations.support-idea)
               (= answer "Well...")
-              (hank-conversations.do-not-support-idea)
+              (do
+                (reply "Well.. I'm not so sure.")
+                (say "What do you mean you're not"
+                     "sure?")
+                (reply "I'm not sure if you've noticed,"
+                       "but I think Earth might be under"
+                       "attack or something.")
+                (reply "Something about space beasts"
+                       "and warnings?")
+                (hank-conversations.do-not-support-idea))
               (= answer "What a crock.")
               (do
+                (publish {:event :nikita-shit-on-hanks-idea})
                 (update-hank-disposition -1)
                 (reply "You know you just said a lot of"
                        "techno babble bullshit, right?")
@@ -289,11 +292,15 @@
   (reply "Of course! Duh. Thanks for clearing"
          "that up for me.")
   (let [answer (ask "Do you think it will work?"
-                ["Yes" "It's not practical"])]
+                ["Yeah!" "It's not practical."])]
     (if (= answer "Yes")
       (hank-conversations.support-idea)
-      (= answer "It's not practical")
-      (hank-conversations.do-not-support-idea))))
+      (= answer "It's not practical.")
+      (do
+        (reply "Hank, I think it's a good idea"
+               "but I'm not really sure how"
+               "practical it is.")
+        (hank-conversations.do-not-support-idea)))))
 
 (fn hank-conversations.support-idea []
   (publish {:event :supported-hanks-idea}
@@ -306,20 +313,17 @@
        "of my intellect.")
   (describe "Sixty-two eyebrows just raised"
             "across the galaxy.")
-  (reply "...Sure!")
   (say "This idea is what's best for our"
        "team even if the others can't"
        "see that.")
-  (say "It is illogical to think"
-       "this idea *wouldn't* work, but I"
-       "suppose some folks in this world"
-       "just do not understand...")
+  (say "It is illogical to think this idea"
+       "*wouldn't* work, but I suppose some"
+       "folks in this world just don't"
+       "understand...")
   (say "...|*especially* Carrie! She has"
-       "contested this idea from the start!"
-       "So I'm sure you can imagine my"
-       "delight at your support.")
+       "contested this idea from the start.")
   (let [answer (ask ""
-        ["What the hell?" "Hey now." "Makes sense to me" "..."])]
+        ["What the hell?" "Hey now." "Agreed." "..."])]
         (if
           (= answer "What the hell?")
           (do
@@ -332,8 +336,7 @@
             (describe "Hank frowns and almost says"
                       "something, but slowly closes his"
                       "mouth instead."
-                      "|"
-                      "He glares through you.")
+                      "|He glares through you.")
             (say "...")
             (describe "He returns to his work.")
             (reply "Well. That pissed him off."))
@@ -358,7 +361,7 @@
                       "his work."
                       "|"
                       "*sigh*"))
-          (= answer "Makes sense to me")
+          (= answer "Agreed.")
           (do
             (update-hank-disposition 1)
             (reply "Yeah...Carrie can be a bit of a"
@@ -375,19 +378,17 @@
                  "present this to the others.")
             (describe "He returns to his work.")))))
 
-;; TODO: Fill in
-(fn hank-conversations.do-not-support-idea [remove-reassure?]
+(fn hank-conversations.do-not-support-idea []
   (publish {:event :didnt-support-hanks-idea}
            {:event :hank-has-explained-his-idea})
-  (when (not remove-reassure?)
-        (say "I should have known you would not"
-             "support me! ...you are just like"
-             "the rest of the team."))
-  (let [questions ["Reassure" "Present Facts" "Of course I don't support you" "..."]
-        _ (when remove-reassure?
-            (table.remove questions 1))
+  (say "Ugh, I should have known you would"
+       "not support me. ...just like"
+       "everyone else.")
+  (let [questions ["Reassure him" "Present Facts" "Of course I don't support you" "..."]
+        nikita-is-mean (has-happened :nikita-shit-on-hanks-idea)
+        _ (when nikita-is-mean (table.remove questions 1))
         answer (ask "" questions)]
-        (if (= answer "Reassure")
+        (if (= answer "Reassure him")
             (do
               (update-hank-disposition 1)
               (reply "No, no, Hank, it's a good idea!"
@@ -396,72 +397,99 @@
                      "love to see this get off the"
                      "ground!")
               (reply "I just have a few reservations;"
-                    "that's all!")
-              (say "...thanks.")
-              (hank-conversations.do-not-support-idea true))
+                    "that's all.")
+              (describe "He won't show it, but he appreciated"
+                        "that.")
+              (hank-conversations.present-facts))
             (= answer "Present Facts")
-            (do
-              (reply "You're a smart guy. Let me show you."
-                     "Let's take a look at the data"
-                     "on your computer.")
-              (do
-                (move-to :Hank 289 14)
-                (move-to :Nikita 302 8))
-              (reply "You mentioned machine learning"
-                     "algorithms to generate the"
-                     "Thoralin pipe, right?")
-              (reply "I only see a few hundred samples"
-                     "here to teach your Thoralin pipe"
-                     "how to triangulate.")
-              (reply "Don't we need thousands or even"
-                     "millions of samples to train"
-                     "the model?")
-              (reply "Without proper training, we can't be"
-                     "certain of the Thoralin pipe's"
-                     "durability under stress.")
-              (reply "If it collapses, we have bigger"
-                     "problems, right?")
-              (say "I suppose, but-")
-              (reply "And last I talked to Carrie, we"
-                     "don't even have a failover"
-                     "plumbus set up in half the suits,"
-                     "so, even these projected numbers"
-                     "carry a high risk.")
-              (reply "I'm not saying it's a bad idea."
-                     "I just think we need to proceed"
-                     "with some caution.")
-              (if (>= hank-state.disposition 2)
-                (hank-conversations.willing-to-negotiate)
-                (do
-                  (say "Say what you wanna say, but I"
-                       "have complete confidence in my"
-                       "data.")
-                  (say "I already have at least"
-                       "one thousand, three-hundred and"
-                       "thirty-seven datasets that I"
-                       "collated myself!")
-                  (say "Like I said, you're just like"
-                       "everyone else.")
-                  (update-hank-disposition -1))))
+            (hank-conversations.present-facts)
             (= answer "Of course I don't support you")
             (do
               (update-hank-disposition -1)
               (reply "Why would I support you? We all"
                     "know block chain and machine"
                     "learning is an overhyped mess"
-                    "perpetuated by Silicon Valley.")
+                    "perpetuated by Silicon Valley"
+                    "anyway.")
               (reply "And to think you'd fall for"
-                     "buzzword bingo!")
-              (say "You're a jerk.")
-              (describe "He turns his back to you.")
-              (move-to :Hank 264 16))
+                     "buzzword bingo!| Ha!")
+              (say "...I don't understand why you find"
+                   "being a jerk so appealing.")
+              (describe "He shakes his head.")
+              (move-to :Hank 303 8))
             (= answer "...")
             (do
               (update-hank-disposition -1)
               (reply "...")
-              (say "Fine. Don't say anything. Your loss.")
-              (describe "Hank turns his back to you.")
-              (move-to :Hank 264 16)))))
+              (say "Fine. Don't say anything.")
+              (describe "Hank scoffs.")
+              (move-to :Hank 303 8)))))
+
+(fn hank-conversations.present-facts []
+  (do
+    (reply "You're a smart guy. Let's take a look"
+           "at your data so I can show you"
+           "my concerns.")
+    (do
+      (move-to :Hank 289 14)
+      (move-to :Nikita 302 8))
+    (reply "You mentioned machine learning"
+           "algorithms to generate the"
+           "Thoralin pipe, right?")
+    (if nikita-is-mean
+      (do
+        (reply "Like I was saying, we would need"
+               "millions of samples for the"
+               "Thoralin pipe to be effective.")
+        (reply "Which upon analysis of your data"
+               "|...you clearly don't have.")
+        (describe "Hank frowns."))
+      (do
+        (reply "I only see a few hundred samples"
+               "here to teach your Thoralin pipe"
+               "how to triangulate.")
+        (reply "Don't we need thousands or even"
+               "millions of samples to train"
+               "the model effectively?")
+        (say "Well..for optimum performance,"
+             "I suppose, but-")))
+    (reply "Without proper training, we can't"
+           "be certain of the Thoralin pipe's"
+           "durability under stress.")
+    (if nikita-is-mean
+      (reply "If it collapses, then we obviously"
+             "have bigger problems.")
+      (reply "If it collapses, then we would have"
+             "bigger problems, right?"))
+    (say "Okay, but-")
+    (reply "And last I talked to Carrie, we"
+           "don't even have a failover"
+           "plumbus set up in half the suits,"
+           "so, even these projected numbers"
+           "carry a high risk.")
+    (if nikita-is-mean
+      (reply "Your idea sucks and you know it.")
+      (reply "Look, I'm not saying it's a bad idea."
+             "I just think we need to proceed"
+             "with some caution."))
+    (if (>= hank-state.disposition 2)
+      (hank-conversations.willing-to-negotiate)
+      (if nikita-is-mean
+        (do
+          (say "You're an idiot.")
+          (update-hank-disposition -1)
+          (move-to :Hank 303 8))
+        (do
+          (say "Say what you wanna say, but I"
+               "have complete confidence in my"
+               "data.")
+          (say "I already have at least"
+               "one thousand, three-hundred and"
+               "thirty-seven datasets that I"
+               "collated myself!")
+          (say "Now if you'll kindly leave me"
+               "alone.")
+          (update-hank-disposition -1))))))
 
 (fn hank-conversations.willing-to-negotiate []
   (say "Okay, Nikita. Say you're not wrong."
@@ -492,29 +520,100 @@
                "But now is not the time. We need"
                "stability.")
         (reply "Why don't we try again another time?")
-        (say "It's always later! This team never"
-             "understands me and evidently neither"
-             "do you.")
-        (describe "He turns around before you can reply."))
+        (say "We *always* put off my ideas. And I'm"
+             "getting tired of it! This team, once"
+             "again, fails to understand me.")
+        (describe "He turns around before you can"
+                  "say anything."))
       (= answer "Let's gather test data")
       (do
-        (reply "You have an awesome idea, Hank!"
-               "But I think we could simplify here.")
-        (reply "What if we run your system in parallel"
-               "with our existing system, gather telemtry,"
-               "then present this to the team.")
-        (reply "Backed with the right data, the rest"
-               "of the team would have no choice but to"
-               "agree!")
-        (say "It's not as fast as I would like, but"
-             "I cannot say I would disagree with you.")
-        (say "Now we just need to convince Carrie!")
+        (reply "You have a kick-ass idea, Hank!"
+               "But I think we may have a more"
+               "rationale approach to this.")
+        (reply "What if we run your system in"
+               "parallel with our existing system,"
+               "gather telemtry, then present this"
+               "to the team.")
+        (reply "This gives us a guarantee of whether"
+               "whether or not your idea is solid."
+               "And we both know it is.")
+        (reply "So not only do we minimize our risk"
+               "for this mission, but we get data"
+               "to back your idea up for our next"
+               "mission!")
+        (say "I wished it could be this mission, but"
+             "you make a compelling argument."
+             "|Better safe than sorry.")
+        (say "Now if you can help me convince Carrie,"
+             "I think we've got a plan.")
         (reply "Okay. I'll chat with her and see what"
                "she thinks. Keep the good ideas coming,"
                "Hank!")
         (describe "He flashes a wry smile, then returns"
                   "to his work. Way to compromise, girl.")
         (set events.hank-agreed true)))))
+
+(fn hank-conversations.supported-hanks-idea-follow-up []
+  (say "Hey Nikita! Good to see you."
+       "I've got a request.")
+  (reply "Oh?")
+  (say "I know you like my idea, but if"
+       "we have any chance of success, we"
+       "need to convince Carrie.")
+  (let [answer (ask "Can you give it a shot?"
+                    ["I'll do my best." "I better not."])]
+    (if
+      (= answer "I'll do my best.")
+      (do
+        (say "I knew I could count on you!")
+        (publish
+          {:event :nikita-agreed-to-convince-carrie-of-hanks-plan}))
+      (= answer "I better not.")
+      (do
+        (reply "I'm not so sure any more Hank."
+               "I better not.|I'd prefer to sit"
+               "this one out.")
+        (say "I don't understand; I thought you"
+             "supported me?")
+        (reply "I do! I just like you both and I'd"
+               "rather not get in the middle of this.")
+        (say "Alright, fine.| Whatever.")
+        (publish {:event :nikita-frustrated-hank})
+        (move-to :Hank 264 16)))))
+
+(fn hank-conversations.follow-up-conversation []
+  (if
+    (has-happened :supported-hanks-idea)
+    (hank-conversations.supported-hanks-idea-follow-up)
+    (has-happened :carrie-is-convinced-of-hanks-compromise)
+    (do
+      (say "Any news?")
+      (reply "Actually, yeah! Great news! Carrie"
+             "is on board!")
+      (say "That's great!! Thank you for finding"
+           "this compromise, Nikita. I owe you, one.")
+      (reply "It's no problem. I look forward to"
+             "seeing your progress!")
+      ;; TODO SFX?
+      (describe "Your high five with Hank shattered"
+                "a window somewhere.")
+      (say "And you know what? It will be good for"
+           "Carrie to be head. She's gonna do great!")
+      (say "Anyway, I better get to work! No time to"
+           "waste!")
+      (set events.hank-agreed true)
+      (move-to :Hank
+               247 17
+               247 51
+               180 51
+               158 108
+               158 154
+               226 154
+               229 194))
+    (let [answer (ask "Greetings. How can I help?"
+                      ["Carrie should be the head"] ["Nevermind"])]
+      (if (= answer "Carrie should be the head")
+          (= answer "Nevermind")))))
 
 (fn all.Carrie []
   (if (= 0 restart-count)
@@ -533,10 +632,24 @@
            "the head."))
   (say "Well, I better get my gear.")
   (move-to :Carrie 142 302)
-  (set convos.Carrie all.Carrie2))
+  (set convos.Carrie carrie-conversations.find-helmet))
 
-(fn all.Carrie2 []
-  (say "Now where did I put my helmet?"))
+; (fn carrie-conversations.hub []
+;   (reply "Hey Carrie, I have-")
+;   (say "One sec, Nikita.."))
+; :nikita-agreed-to-convince-carrie-of-hanks-plan
+
+
+(fn carrie-conversations.find-helmet []
+  (say "Now where did I put my helmet?")
+  (set convos.Carrie carrie-conversations.observe-finding-helmet))
+
+(fn carrie-conversations.observe-finding-helmet []
+  (say "Grr, dang it.")
+  (move-to :Carrie 141 315)
+  (describe "She apparently hasn't found her"
+            "helmet yet")
+  (move-to :Carrie 142 302))
 
 ;; non-character "dialog"
 
@@ -583,7 +696,7 @@
             "towards Earth.")
   (describe "Sensors indicate it is impervious"
             "to beam weapons but could be driven"
-            "away by an indimidating display"
+            "away by an intimidating display"
             "of superior size.")
   (set events.screen-seen true))
 
