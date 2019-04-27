@@ -178,7 +178,7 @@
       (tset mechs name :y y)
       (tset mechs name :dx 0)
       (tset mechs name :dy 0)))
-  (if (not (or events.adam-agreed events.turk-agreed events.hank-agreed path))
+  (if (not (or events.hank-agreed path))
       (lose-with launch-talk-default)
       (or (= path 2)
           (and events.hank-agreed (not events.turk-agreed) (not events.adam-agreed)))
