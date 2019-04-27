@@ -135,7 +135,9 @@
           (reply "What if Turk agreed to let Carrie"
                  "form the head?")
           (say "Huh... yeah, that could work. I mean,"
-               "as long as you can convince him.")
+               "as long as you can convince him."
+               "I don't see how you're going to do"
+               "that though.")
           (set events.adam-agreed true)
           (set convos.Adam (partial describe
                                     "He's examining tactical data."))))))
@@ -154,56 +156,88 @@
            156 96
            179 96))
 
+(fn turk-make-call [skip?]
+  (when (not skip?)
+    (say "Now if you'll excuse me, I gotta"
+         "make a call.")
+    (say "...")
+    (say "Ugh; this station gets the worst"
+         "cell reception. Maybe I can get a"
+         "signal over by the airlock."))
+  (move-to :Turk 180 60 164 61 164 2)
+  (set convos.Turk (partial say "..."))
+  (fn wait3 []
+    (for [_ 1 256] (coroutine.yield))
+    (set convos.Turk all.Turk3))
+  (table.insert coros (coroutine.create wait3)))
+
 (fn all.Turk2 []
   (describe "Turk seems a little agitated.")
   (reply "Hey, Turk.")
   (say "Nikita!! My favorite person. Make it"
        "quick; I've got a call with my agent"
        "in a few minutes.")
-  (let [answer (ask "What's up?" ["Your agent?" "Carrie" "Bye"])]
-    (if (= answer "Your agent?")
-        (do (say "That's right. Man, I never knew being"
-                 "a mech pilot would be so much work!"
-                 "I could never keep track of all the"
-                 "fans and conventions on my own.")
-            (say "The life of a hero is demanding!")
-            (reply "I, uh, never thought of it that way.")
-            (say "Not that I'm complaining! I'm a"
+  (reply "Your agent?")
+  (say "That's right. Man, I never knew being"
+       "a mech pilot would be so much work!"
+       "I could never keep track of all the"
+       "fans and conventions on my own.")
+  (say "The life of a hero is demanding!")
+  (let [answer (ask "" ["I, uh, never thought of it that way."
+                        "Being a pilot isn't about showing off."
+                        "You're really full of yourself."])]
+    (if (= answer "I, uh, never thought of it that way.")
+        (do (say "Not that I'm complaining! I'm a"
                  "natural in the spotlight, but you"
                  "knew that already!")
-            (say "Now if you'll excuse me, I gotta"
-                 "make a call.")
-            (say "...")
-            (say "Ugh; this station gets the worst"
-                 "cell reception. Maybe I can get a"
-                 "signal over by the airlock.")
-            (move-to :Turk 180 60 164 61 164 2)
-            (set convos.Turk (partial say "..."))
-            (fn wait3 []
-              (for [_ 1 256] (coroutine.yield))
-              (set convos.Turk all.Turk3))
-            (table.insert coros (coroutine.create wait3)))
-      (= answer "Carrie")
-      (do
-        (reply "I'd like you to consider letting Carrie"
-               "be the head when we form up. She-")
-        (say "Let me just stop you right there."
-             "I NEED to be the head.")
-        ;; TODO: throw this out; this is just for testing
-        (reply "I think you should reconsider!")
-        (say "Oh, well in that case...")
-        (set events.turk-agreed true))
-      (do
-        (reply "Nevermind. Later.")
-        (describe "He seems relieved you're leaving.")))))
+            (turk-make-call))
+        (= answer "Being a pilot isn't about showing off.")
+        (do (say "Err--I mean... Sure. But why not have"
+                 "a bit of fun with it if you can?")
+            (describe "He flashes a wide grin.")
+            (turk-make-call))
+        (= answer "You're really full of yourself.")
+        (do (say "Who asked you?")
+            (set events.annoyed-turk true)
+            (say "Anyway, I gotta go make this call.")
+            (turk-make-call true)))))
 
 (fn all.Turk3 []
-  (say "Well that was a disaster."))
+  (say "Well that was a disaster.")
+  (reply "What happened?")
+  (say "My agent was supposed to land me a"
+       "sweet merchandising deal! T-shirts,"
+       "breakfast cereal... but mostly"
+       "action figures; kids love those!")
+  (say "But apparently I don't have enough"
+       "\"star power\", whatever that means.")
+  (say "It's because Adam keeps forming the"
+       "head instead of me!")
+  (set convos.Turk all.Turk4)
+  (all.Turk4))
+
+(fn all.Turk4 []
+  (say "Now how am I going to pay off my" "student loans?")
+  (describe "You recall that mech pilot school"
+            "was not particularly affordable.")
+  (let [answer (ask "" ["Maybe Hank can help."
+                        "Maybe Carrie can help."
+                        "I dunno; that sucks."])]
+    (if (= answer "Maybe Hank can help.")
+        (do (say "You think so?")
+            (describe "Well, he's good with finances.")
+            ;; TODO: uuuuuuh....
+            )
+        (if (= answer "Maybe Carrie can help."))
+        (do (say "I don't know if Carrie likes me"
+                 "all that much.")
+            ;; TODO: uuuuuhhhhhhhh.h.h.h
+            ))))
 
 ;; for testing; remove this:
-(set all.Turk all.Turk2)
-(set initial-positions.Turk [179 96])
-(set initial-positions.Nikita [170 96])
+;; (set all.Turk all.Turk2)
+;; (set initial-positions.Turk [179 96])
+;; (set initial-positions.Nikita [170 96])
 
 ;; HANK
 
