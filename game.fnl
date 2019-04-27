@@ -55,8 +55,8 @@
       (tset (. chars name) :x x)
       (tset (. chars name) :y y)))
   (fn opening []
-    (say-as :alert "Warning! Hostile space beast" "detected inbound."
-            "All mech pilots: prepare for launch."))
+    (say-as :alert "Warning! Hostile space beast" "detected inbound!" ""
+            "All mech pilots,| prepare for launch."))
   (set-dialog opening)
   (each [name (pairs chars)] ; set up initial convos
     (tset convos name (. all name))))
