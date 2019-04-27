@@ -97,7 +97,7 @@
   (print "t  h  i  s        i  s        m  y" 24 10)
   (map 92 55 14 4 10 26 0 2) ; MECH pixel-art
   (set cam-x (+ cam-x 2))
-  (print "(work-in-progress; unwinnable)" 48 100 5)
+  (print "(work-in-progress!)" 48 100 5)
   (print "by Emma Bukacek and Phil Hagelberg" 28 110)
   (print "press Z" (+ (* 128 ; bounce!
                          (- 1 (math.abs (- 1 (math.fmod (/ cam-x 100) 2)))))

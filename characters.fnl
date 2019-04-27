@@ -225,9 +225,10 @@
                         "I dunno; that sucks."])]
     (if (= answer "Maybe Hank can help.")
         (do (say "You think so?")
-            (describe "Well, he's good with finances.")
-            ;; TODO: uuuuuuh....
-            )
+            (reply "Well, he's good with finances.")
+            (say "Yeah, I'll talk to him.")
+            ;; TODO: uuuhuhhhhhh ... yeah. fill this out more.
+            (set events.turk-agreed true))
         (if (= answer "Maybe Carrie can help."))
         (do (say "I don't know if Carrie likes me"
                  "all that much.")
