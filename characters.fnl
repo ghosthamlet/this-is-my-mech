@@ -28,9 +28,6 @@
   (let [char (assert (. chars character-name) (.. character-name " not found"))
         coords [...]]
     (fn mover []
-      ; (if
-      ;   (= :string (type (. coords 1)))
-      ;   (mover-actions coords)
         (let [[tx ty] coords
                       dx (- tx char.x) dy (- ty char.y)]
           (set char.x (+ char.x (if (< dx 0) -1 (> dx 1) 1 (< dx 1) dx 0)))
@@ -702,23 +699,68 @@
            "the head."))
   (say "Well, I better get my gear.")
   (move-to :Carrie 142 302)
-  (set convos.Carrie carrie-conversations.find-helmet))
+  (set convos.Carrie carrie-conversations.looking-for-helmet))
 
-; (fn carrie-conversations.hub []
-;   (reply "Hey Carrie, I have-")
-;   (say "One sec, Nikita.."))
-; :nikita-agreed-to-convince-carrie-of-hanks-plan
+(fn carrie-conversations.hub []
+  (let [questions []]
+    (when events.nikita-agreed-to-convince-carrie-of-hanks-plan
+      (table.insert questions "Have you heard about Hank's plan?"))
+    (when events.nikita-agreed-to-convince-carrie-of-hanks-plan
+      (table.insert questions "Have you heard about Hank's plan?"))
+    (if
+      (not events.carrie-found-her-helmet)
+      (do
+        (reply "Hey Carrie, I have-")
+        (move-to :Carrie 119 304)
+        (say "One sec, Nikita..")
+        (describe "She grunts as stretches her arm"
+                  "under the bed.")
+        (say "|...|...got it!")
+        (say "I have no idea how my helmet ended"
+             "there..|Anyway! You have my attention.")
+        (say "How can I help?")
+        (set events.carrie-found-her-helmet true)
+        (table.insert questions "Nevermind"))
+      (do
+        (if events.nikita-has-talked-to-carrie
+          (do
+            (describe "She's reviewing the owner's manual"
+                      "for her mech. She looks up and"
+                      "smiles.")
+            (set events.nikita-has-talked-to-carrie true))
+          (describe "She's reviewing the owner's manual"
+                    "for her mech..|Again. She looks up."))
+        (say "Hey Nikita! Shouldn't you be getting"
+            "ready?")
+        (table.insert questions "Good point")))
+    (let [answer (ask "" questions)]
+      (if
+        (= answer "Nevermind")
+        (do
+          (reply "Ah, nevermind Carrie. I'll get"
+                 "out of your hair!")
+          (say "Well, you know my office hours.")
+          (describe "She flashes you a corny smile"
+                    "and picks up her owner's manual."))
+        (= answer "Good point")
+        (do
+          (reply "Good point. I'll leave you to it.")
+          (say "Well, you know my office hours.")
+          (describe "She flashes you a corny smile"
+                    "and picks up her owner's manual."))))))
 
-
-(fn carrie-conversations.find-helmet []
+(fn carrie-conversations.looking-for-helmet []
   (say "Now where did I put my helmet?")
-  (set convos.Carrie carrie-conversations.observe-finding-helmet))
+  (set convos.Carrie carrie-conversations.observe-search-for-helmet))
 
-(fn carrie-conversations.observe-finding-helmet []
-  (say "Grr, dang it.")
-  (move-to :Carrie 141 315)
+(fn carrie-conversations.observe-search-for-helmet []
+  (say "..grr, dang it!")
+  (let [random (math.ceil (* (math.random) 1000))]
+    (if (= 0 (% random 2))
+      (move-to :Carrie 141 315)
+      (move-to :Carrie 149 288)))
   (describe "She apparently hasn't found her"
-            "helmet yet")
+            "helmet yet..")
   (move-to :Carrie 142 302))
 
 ;; non-character "dialog"

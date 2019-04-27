@@ -47,6 +47,7 @@
   (each [k (pairs hank-state)] (tset hank-state k nil))
   (each [k (pairs events)] (tset events k nil))
   (set hank-state.disposition 0)
+  (math.randomseed (time))
   (each [name pos (pairs initial-positions)]
     (let [[x y] pos]
       (tset (. chars name) :x x)
