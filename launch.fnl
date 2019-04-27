@@ -170,7 +170,6 @@
                   (global TIC launch)))))
 
 (fn enter-launch [path]
-  (trace (.. "launch " path))
   (set (scroll-x mx my) (values 0 (/ 136 2) 0 200 32))
   (set (tmx tmy dmx dmy attacking? hits) (values 210 48 0 0 false 0))
   (each [name pos (pairs initial-mech-positions)]

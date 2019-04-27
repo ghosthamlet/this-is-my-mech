@@ -569,9 +569,10 @@
       (reply "Let's do this!")
       (enter-launch launch-cheat)))
 
+(var poster-count 0)
 (set chars.turk-photo {:x 13 :y 200 :spr 190 :w 2 :h 2})
 (fn all.turk-photo []
-  (set launch-cheat true)
+  (set poster-count (+ poster-count 1)) ; allow cheating after six counts
   (describe "Only Turk would have a poster of"
             "himself in his quarters."))
 
@@ -594,7 +595,7 @@
         m (ask "" mechs)]
     (say (.. m " is fully operational")
          "and ready to launch.")
-    (when launch-cheat
+    (when (< 5 poster-count)
       (each [i mech (pairs mechs)]
         (when (= mech m)
           (set launch-cheat i))))))
