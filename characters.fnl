@@ -277,17 +277,14 @@
         (reply "Hank?")
         (say "...")
         (describe "He's ignoring you.")))
-    (or
-      (has-happened :nikita-frustrated-hank)
-      (has-happened :carrie-disagrees-with-hanks-plan))
-    (if (has-happened :nikita-talked-to-frustrated-hank)
-      (if (has-happened :nikita-shit-on-hanks-idea)
-        (reply "Ha, I better leave him alone.")
+    (events.nikita-frustrated-hank)
+    (if (events.nikita-talked-to-frustrated-hank)
+      (if (events.nikita-shit-on-hanks-idea)
+        (reply "Haha, I better leave him alone.")
         (reply "I better leave him alone."))
       (do
-        (publish {:event :nikita-talked-to-frustrated-hank})
+        (set events.nikita-talked-to-frustrated-hank true)
         (say "Look, I'm not in the mood to talk, okay?")))))
-
 
 
 (fn hank-conversations.explain-idea []
@@ -604,75 +601,102 @@
       (do
         (reply "You have a kick-ass idea, Hank!"
                "But I think we may have a more"
-               "rational approach to this.")
+               "reasonable approach to this.")
         (reply "What if we run your system in"
                "parallel with our existing system,"
                "gather telemtry, then present this"
-               "to the team.")
+               "to the team?")
         (reply "This gives us a guarantee of whether"
-               "whether or not your idea is solid."
+               "or not your idea is solid.|"
                "And we both know it is.")
         (reply "So not only do we minimize our risk"
                "for this mission, but we get data"
                "to back your idea up for our next"
                "mission!")
-        (say "I wished it could be this mission, but"
-             "you make a compelling argument."
-             "|Better safe than sorry.")
-        (say "Now if you can help me convince"
+        (say "Hm.|| I wish I could disagree, but"
+             "unfortunately,|you have a compelling"
+             "argument.|"
+             "Better safe than sorry.")
+        (say "If you can help me convince"
              "Carrie, I think we've got a plan.")
-        (reply "Okay. I'll chat with her and see what"
-               "she thinks. Keep the good ideas"
-               "coming, Hank!")
+        (reply "Great! I'll chat with her and see"
+               "what she thinks.")
+        (reply "Thanks for hearing me out, Hank."
+               "Keep the good ideas coming!")
         (describe "He flashes a wry smile, then returns"
-                  "to his work. Way to compromise, girl.")
-        (set events.hank-agreed true)))))
+                  "to his work."
+                  "|"
+                  "Way to compromise, girl.")
+        (set events.hank-is-willing-to-compromise true)
+        (reply "Oh, and Hank, one more thing.")
+        (hank-conversations.advocate-for-carrie "What's that?")))))
 
 (fn hank-conversations.supported-hanks-idea-follow-up []
-  (say "Hey Nikita! Good to see you."
-       "I've got a request.")
-  (reply "Oh?")
-  (say "I know you like my idea, but if"
-       "we have any chance of success, we"
-       "need to convince Carrie.")
-  (let [answer (ask "Can you give it a shot?"
-                    ["I'll do my best." "I better not."])]
+  (if
+    (not (or
+           events.nikita-agreed-to-convince-carrie-of-hanks-plan
+           events.nikita-frustrated-hank))
+    (do
+      (say "Hey Nikita! Good to see you."
+           "I've got a request.")
+      (reply "Oh?")
+      (say "I know you like my idea, but if"
+           "we have any chance of success, we"
+           "need to convince Carrie.")
+      (let [answer (ask "Can you give it a shot?"
+                        ["I'll do my best." "I changed my mind."])]
+        (if
+          (= answer "I'll do my best.")
+          (do
+            (say "I knew I could count on you!")
+            (set convos.Carrie carrie-conversations.hub)
+            (set events.nikita-agreed-to-convince-carrie-of-hanks-plan true))
+          (= answer "I changed my mind.")
+          (do
+            (reply "I'm not so sure any more Hank."
+                   "I better not.|I'd prefer to sit"
+                   "this one out.")
+            (say "I don't understand; I thought you"
+                 "supported me?")
+            (reply "I do! I just like you both and I'd"
+                   "rather not get in the middle of this.")
+            (say "Alright, fine.| Whatever.")
+            (set events.nikita-frustrated-hank true)
+            (move-to :Hank 264 16))))))
+    (events.nikita-agreed-to-convince-carrie-of-hanks-plan)
     (if
-      (= answer "I'll do my best.")
+      (events.carrie-rejects-hanks-plan)
       (do
-        (say "I knew I could count on you!")
-        (publish
-          {:event :nikita-agreed-to-convince-carrie-of-hanks-plan}))
-      (= answer "I better not.")
+        (say "Hey Nikita! Any news?")
+        (reply "No good news, I'm afraid.")
+        (say "...what did she say?")
+        (reply "Well, in no shortage of bad words,"
+               "she rejected your idea.")
+        (say "...great. Why am I not surprised?"
+             "Thanks for trying.")
+        (set events.nikita-frustrated-hank true)
+        (move-to :Hank 264 16))
       (do
-        (reply "I'm not so sure any more Hank."
-               "I better not.|I'd prefer to sit"
-               "this one out.")
-        (say "I don't understand; I thought you"
-             "supported me?")
-        (reply "I do! I just like you both and I'd"
-               "rather not get in the middle of this.")
-        (say "Alright, fine.| Whatever.")
-        (publish {:event :nikita-frustrated-hank})
-        (move-to :Hank 264 16)))))
+        (say "Hey Nikita. Any word from Carrie?")
+        (reply "Not yet; I'll keep you posted."))))
 
 (fn hank-conversations.follow-up-conversation []
   (if
     (has-happened :supported-hanks-idea)
     (hank-conversations.supported-hanks-idea-follow-up)
-    (has-happened :carrie-is-convinced-of-hanks-compromise)
+    (has-happened :carrie-accepts-hanks-compromise)
     (do
       (say "Any news?")
       (reply "Actually, yeah! Great news! Carrie"
              "is on board!")
       (say "That's great!! Thank you for finding"
-           "this compromise, Nikita. I owe you, one.")
+           "this compromise, Nikita. I owe you one.")
       (reply "It's no problem. I look forward to"
              "seeing your progress!")
       ;; TODO SFX?
       (describe "Your high five with Hank shattered"
                 "a window somewhere.")
-      (say "And you know what? It will be good for"
+      (say "...|And you know what? It will be good for"
            "Carrie to be head. She's gonna do great!")
       (say "Anyway, I better get to work! No time to"
            "waste!")
@@ -684,14 +708,72 @@
                158 108
                158 154
                226 154
-               229 194))
-    ;; TODO: is this supposed to happen?
-    (let [answer (ask "Greetings. How can I help?"
-                      ["Carrie should be the head" "Nevermind"])]
-      (if (= answer "Carrie should be the head")
-          (= answer "Nevermind")))))
 
+               229 194)
+      (set convos.Hank hank-conversations.installing-telemetry)
+    (hank-conversations.advocate-for-carrie))))
+
+(fn hank-conversations.advocate-for-carrie [greeting-override]
+  (let [greeting
+         (if
+           (greeting-override) greeting-override
+           (events.nikita-agreed-to-convince-carrie-of-hanks-compromise) "Any news?"
+           "Greetings. How can I help?")
+        questions []
+        _ (if (not events.nikita-agreed-to-convince-carrie-of-hanks-compromise)
+            (do
+              (table.insert questions "Carrie should be the head")
+              (table.insert questions "Nevermind."))
+            (table.insert questions "Nothing yet."))
+        answer (ask greeting questions)]
+      (if
+        (= answer "Carrie should be the head")
+        (do
+
+          (reply "Soo, hey.| I think Carrie should be"
+                 "the head for this next fight.")
+          (reply "She's always overlooked by the rest"
+                 "of us, but we both know she's"
+                 "more than capable as a leader.")
+          (reply "Especially since Adam and Turk tend"
+                 "to butt heads, it would be a nice"
+                 "change of pace. She deserves a shot.")
+          (reply "What do you think?")
+          (if events.hank-is-willing-to-compromise
+            (do
+              (say "...|Honestly, I like that idea.")
+              (say "If you can get her to back your"
+                   "idea so we can gather data for"
+                   "the targeting system, I'm on board.")
+              (set convos.Carrie carrie-conversations.hub)
+              (set events.nikita-agreed-to-convince-carrie-of-hanks-compromise
+                   true))
+            (do
+              (say "I disagree. I know Carrie doesn't"
+                   "support my idea and you've"
+                   "made it clear that you don't either..")
+              (say "...so why would I support this?")
+              (reply "Come on, Hank.")
+              (say "Sorry.| You won't get my support.")
+              (describe "He returns to his work.")
+              (set convos.Hank hank-conversations.busy))))
+          (= answer "Nevermind.")
+          (describe "Hank nods and returns to his work.")
+          (= answer "Nothing yet.")
+          (reply "Well, keep me posted."))))
+
+(fn hank-conversations.busy []
+  (say "I'm busy. I'd rather not talk right now."))
+
+(fn hank-conversations.installing-telemetry []
+  (describe "The clattering of keys, levers, and"
+            "beeps indicates Hank is going ham"
+            "on his software.")
+  (reply "Better leave him to it."))
+
+;;
 ;; CARRIE
+;;
 
 (fn all.Carrie []
   (if (= :hank last-losing)
@@ -719,9 +801,13 @@
 
 (fn carrie-conversations.hub []
   (let [questions []]
-    (when events.nikita-agreed-to-convince-carrie-of-hanks-plan
-      (table.insert questions "Have you heard about Hank's plan?"))
-    (when events.nikita-agreed-to-convince-carrie-of-hanks-plan
+    (when (and
+            events.nikita-agreed-to-convince-carrie-of-hanks-plan
+            (not events.carrie-rejects-hanks-plan))
+      (table.insert questions "Hank has a new targeting system."))
+    (when (and
+            events.nikita-agreed-to-convince-carrie-of-hanks-compromise
+            (not events.carrie-accepts-hanks-compromise))
       (table.insert questions "Have you heard about Hank's plan?"))
     (if
       (not events.carrie-found-her-helmet)
@@ -763,7 +849,86 @@
           (reply "Good point. I'll leave you to it.")
           (say "Well, you know my office hours.")
           (describe "She flashes you a corny smile"
-                    "and picks up her owner's manual."))))))
+                    "and picks up her owner's manual."))
+        (= answer "Hank has a new targeting system.")
+        (carrie-conversations.convince-carrie-of-hanks-plan)
+        (= answer "Have you heard about Hank's plan?")
+        (carrie-conversations.convince-carrie-of-hanks-compromise)))))
+
+(fn carrie-conversations.convince-carrie-of-hanks-plan []
+  (reply "So Hank has a new targeting system.")
+  (describe "She rolls her eyes.")
+  (say "So I've heard. Did he try convincing you"
+       "as well?")
+  (reply "Well he did, actually. Look, even a 25%"
+         "improvement to our damage output could"
+         "give us an edge in this battle. Even"
+         "Adam can't do that much damage.")
+  (say "...|Are you serious? We're going"
+       "into battle,| where we could *die*,"
+       "|and you both want to gut our targeting"
+       "systems for an experiment?"
+       "I can't support that.")
+  (reply "But-")
+  (say "Come on! You know this isn't the right"
+       "time for trying new systems. We can't"
+       "risk it!")
+  (reply "Please reconsider. I really think-")
+  (say "Sorry, but the answer is no, Nikita."
+       "Tell him we can try after this battle,"
+       "but it really doesn't make sense.")
+  (describe "She shakes her head a bit and"
+            "turns around.")
+  (set events.carrie-rejects-hanks-plan true))
+
+(fn carrie-conversations.convince-carrie-of-hanks-compromise []
+  (reply "You've heard of Hank's new targeting system,"
+         "right?")
+  (describe "She rolls her eyes.")
+  (say "*sigh*" "Who hasn't?")
+  (say "Sometimes his dedication to innovation"
+       "goes a little too far...")
+  (reply "I know what you mean, but I think he"
+         "might be onto something here.")
+  (reply "And! He agreed to let you form the"
+         "head in our next battle if you're"
+         "interested.")
+  (describe "She perks up.")
+  (say "Me? As the head? I mean, as Captain"
+       "Talroth says in 'Star Adventures',"
+       "'Count me the hell in!', but I"
+       "could never agree to it at the expense"
+       "of our team or our mission.")
+  (reply "That's admirable! But I think we can"
+         "accomplish both.")
+  (say "I'm listening.")
+  (reply "So I agree it's not the right time"
+         "to deploy these new systems, but"
+         "I have an idea for compromise.")
+  (reply "What if we install his systems in"
+         "an observation capacity, only?"
+         "Our systems would remain unaffected,"
+         "but we could gather telemtry on his"
+         "systems in the meantime.")
+  (reply "Once we make it through a battle"
+         "or two, then we can sit down and"
+         "evaluate it as a team.")
+  (reply "In my opinion, it's low risk"
+         "with a lot of reward? What do you"
+         "say?")
+  (describe "Her eyes narrow in thought.")
+  (say "...|Why not? I'm game."
+       "Tell him I'm on board!")
+  (reply "That's awesome! I'll tell him"
+         "right now. Thanks for listening!")
+  (say "Of course.")
+  (move-to :Nikita 105 301)
+  (say "And Nikita?||"
+       "...thanks for advocating for me."
+       "You're a good friend.")
+  (describe "She smiles softly and returns"
+            "to her manual.")
+  (set events.carrie-accepts-hanks-compromise true))
 
 (fn carrie-conversations.looking-for-helmet []
   (say "Now where did I put my helmet?")
@@ -815,7 +980,7 @@
 (fn all.turk-photo []
   (set poster-count (+ poster-count 1)) ; allow cheating after six counts
   (describe "Only Turk would have a poster of"
-            "himself in his quarters."))
+            "himself in his quarters..."))
 
 (set chars.bridge-screen {:x 100 :y 16 :w 3})
 (fn all.bridge-screen []
