@@ -562,14 +562,16 @@
   (describe "This is Carrie's mech."
             "There's evidence of recent repair"
             "work on the rear flank's armor."))
+(var launch-cheat false)
 (fn all.mech-nikita []
   (describe "This is your mech.")
   (when (= "Yes" (ask "Are you ready to launch?" ["Yes" "No"]))
       (reply "Let's do this!")
-      (enter-launch)))
+      (enter-launch launch-cheat)))
 
 (set chars.turk-photo {:x 13 :y 200 :spr 190 :w 2 :h 2})
 (fn all.turk-photo []
+  (set launch-cheat true)
   (describe "Only Turk would have a poster of"
             "himself in his quarters."))
 
@@ -587,10 +589,15 @@
 (set chars.mech-repair {:x 200 :y 272})
 (fn all.mech-repair []
   (say "Rhinocelator diagnostics system...")
-  (let [m (ask "" ["Gold Mech" "Blue Mech" "Pink Mech"
-                   "Purple Mech" "Black Mech"])]
+  (let [mechs ["Gold Mech" "Blue Mech" "Pink Mech"
+               "Purple Mech" "Black Mech"]
+        m (ask "" mechs)]
     (say (.. m " is fully operational")
-         "and ready to launch.")))
+         "and ready to launch.")
+    (when launch-cheat
+      (each [i mech (pairs mechs)]
+        (when (= mech m)
+          (set launch-cheat i))))))
 
 (set chars.bridge-station {:x 56 :y 22})
 (fn all.bridge-station []
