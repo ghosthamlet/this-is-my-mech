@@ -4,8 +4,8 @@
                           :Turk [85 215]
                           :Hank [264 16]
                           :Carrie [84 300]
-                          ; :Nikita [39 304]
-                          :Nikita [289 14]
+                          :Nikita [39 304]
+                          ;:Nikita [289 14]
                           })
 
 (set chars.Adam {:name "Adam" :spr 290 :portrait 288 :helmet 291})
@@ -13,11 +13,6 @@
 (set chars.Hank {:name "Hank" :spr 354 :portrait 352 :helmet 355})
 (set chars.Carrie {:name "Carrie" :spr 386 :portrait 384 :helmet 387})
 (set chars.Nikita {:name "Nikita" :spr 258 :portrait 256 :helmet 259})
-
-;; near adam, for debugging
-(global a (fn []
-            (set chars.Nikita.x 34)
-            (set chars.Nikita.y 62)))
 
 (set chars.alert {:x 0 :y 0 :name "alert" :portrait 420})
 
