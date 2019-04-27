@@ -223,15 +223,14 @@
        "Rhinocelator! It utilizes machine"
        "learning algorithms and block chain"
        "validation!")
-  (say "It works by applying techno babble"
+  (say "It works by applying pytorch nets"
        "to mainframe databases through a"
        "triangulated Thoralin pipe!")
   (reply "...oh, nice!")
   (describe "You nod with...|'understanding'")
-  (say "It's still a prototype, but with"
-       "suitable data, it could be quite"
-       "revolutionary! Our next mission is"
-       "an ideal opportunity to perform"
+  (say "We have a chance to revolutionize"
+       "mech combat here. Our next mission is"
+       "the ideal opportunity to perform"
        "research and install it!")
   (say "With a little effort, I believe our"
        "damage output will increase by"
@@ -468,7 +467,7 @@
            "so, even these projected numbers"
            "carry a high risk.")
     (if nikita-is-mean
-      (reply "Your idea sucks and you know it.")
+      (reply "Your idea sucks and you should" "know better.")
       (reply "Look, I'm not saying it's a bad idea."
              "I just think we need to proceed"
              "with some caution."))
@@ -529,7 +528,7 @@
       (do
         (reply "You have a kick-ass idea, Hank!"
                "But I think we may have a more"
-               "rationale approach to this.")
+               "rational approach to this.")
         (reply "What if we run your system in"
                "parallel with our existing system,"
                "gather telemtry, then present this"
