@@ -850,3 +850,7 @@
 (set chars.door2 {:x 106 :y 231})
 (fn all.door1 [] (describe "Locked."))
 (set all.door2 all.door1)
+
+(set chars.airlock {:x 162 :y -14})
+(fn all.airlock []
+  (describe "It's an airlock. Better not" "open it."))
