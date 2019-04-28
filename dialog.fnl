@@ -117,7 +117,7 @@
     (when (< 1 (math.random 8))
       (let [duration (math.random 12)]
         (set talk-sound duration)
-        (sfx 1 50 duration)))))
+        (sfx 1 50 duration 0 8)))))
 
 (fn draw-dialog [portrait-key]
   (when said
