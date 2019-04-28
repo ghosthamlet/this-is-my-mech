@@ -81,22 +81,26 @@
         (do (say "Well... I got a bit flustered and"
                  "forgot my password, and now I'm"
                  "locked out of the system!")
-            (say "I really need to get a tactical"
-                 "analysis of the beast so I'm"
-                 "prepared to lead the team and"
-                 "be the head.")
-            (let [r2 (ask "" ["Why do you need to be the head?"
-                              "I think I can help with the analysis."])]
-              (if (= r2 "Why do you need to be the head?")
-                  (adam-mention-turk)
-                  (= r2 "I think I can help with the analysis.")
-                  (do (reply "I noticed the screen on the other"
-                             "side of the room is already showing"
-                             "the tactical analysis. Does that"
-                             "have what you need?")
-                      (say "Oh, that might do it! Let me check.")
-                      (move-to :Adam 48 32 109 32 109 24)
-                      (set convos.Adam all.Adam3))))))))
+            (set convos.Adam all.Adam25)
+            (all.Adam25)))))
+
+(fn all.Adam25 []
+  (say "I really need to get a tactical"
+       "analysis of the beast so I'm"
+       "prepared to lead the team and"
+       "be the head.")
+  (let [r2 (ask "" ["Why do you need to be the head?"
+                    "I think I can help with the analysis."])]
+    (if (= r2 "Why do you need to be the head?")
+        (adam-mention-turk)
+        (= r2 "I think I can help with the analysis.")
+        (do (reply "I noticed the screen on the other"
+                   "side of the room is already showing"
+                   "the tactical analysis. Does that"
+                   "have what you need?")
+            (say "Oh, that might do it! Let me check.")
+            (move-to :Adam 48 32 109 32 109 24)
+            (set convos.Adam all.Adam3)))))
 
 (fn all.Adam3 []
   (when (not events.adam-screen)
@@ -112,6 +116,10 @@
   (reply "What's that supposed to mean?")
   (when (not events.adam-mentions-turk)
     (adam-mention-turk))
+  (set convos.Adam all.Adam4)
+  (all.Adam4))
+
+(fn all.Adam4 []
   (say "Remember last time Turk formed"
        "the head? You don't want a"
        "repeat of that, do you?")
@@ -164,7 +172,7 @@
   (move-to :Turk 180 60 164 61 164 2)
   (set convos.Turk (partial say "..."))
   (fn wait3 []
-    (for [_ 1 256] (coroutine.yield))
+    (for [_ 1 200] (coroutine.yield))
     (set convos.Turk all.Turk3))
   (table.insert coros (coroutine.create wait3)))
 
@@ -195,7 +203,7 @@
             (turk-make-call))
         (= answer "You're really full of yourself.")
         (do (say "Who asked you?")
-            (set events.annoyed-turk true)
+            (set events.turk-annoyed true)
             (say "Anyway, I gotta go make this call.")
             (turk-make-call true)))))
 
@@ -226,11 +234,13 @@
             (say "Yeah, I'll talk to him.")
             ;; TODO: uuuhuhhhhhh ... yeah. fill this out more.
             (set events.turk-agreed true))
-        (if (= answer "Maybe Carrie can help."))
-        (do (say "I don't know if Carrie likes me"
-                 "all that much.")
-            ;; TODO: uuuuuhhhhhhhh.h.h.h
-            ))))
+        (and (= answer "Maybe Carrie can help.") events.turk-annoyed)
+        (say "I don't know if Carrie likes me"
+             "all that much.")
+        (= answer "Maybe Carrie can help.")
+        (do (say "Well, maybe. I'll talk to her.")
+            ;; TODO: uh........h.hhh...
+            (set events.turk-agreed true)))))
 
 ;; for testing; remove this:
 ;; (set all.Turk all.Turk2)
@@ -609,11 +619,11 @@
         (say "I wished it could be this mission, but"
              "you make a compelling argument."
              "|Better safe than sorry.")
-        (say "Now if you can help me convince Carrie,"
-             "I think we've got a plan.")
+        (say "Now if you can help me convince"
+             "Carrie, I think we've got a plan.")
         (reply "Okay. I'll chat with her and see what"
-               "she thinks. Keep the good ideas coming,"
-               "Hank!")
+               "she thinks. Keep the good ideas"
+               "coming, Hank!")
         (describe "He flashes a wry smile, then returns"
                   "to his work. Way to compromise, girl.")
         (set events.hank-agreed true)))))
@@ -675,8 +685,9 @@
                158 154
                226 154
                229 194))
+    ;; TODO: is this supposed to happen?
     (let [answer (ask "Greetings. How can I help?"
-                      ["Carrie should be the head"] ["Nevermind"])]
+                      ["Carrie should be the head" "Nevermind"])]
       (if (= answer "Carrie should be the head")
           (= answer "Nevermind")))))
 
