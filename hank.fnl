@@ -1,46 +1,31 @@
 (fn all.Hank []
-  (if (not events.debug)
-    (do
-      (update-hank-disposition 5)
-      (set events.hank-is-willing-to-compromise true)
-      (set events.hank-has-explained-his-idea true)
-      (set events.debug true)
-      (hank-conversations.advocate-for-carrie "What's that?"))
+  (if
+    (>= hank-state.disposition 0)
     (if
-      (>= hank-state.disposition 0)
-      (if
-        (has-happened :hank-has-explained-his-idea)
-        (hank-conversations.follow-up-conversation)
-        (do
-          (say "Oh, it's you. Hi Nikita.")
-          (let [answer (ask "Have I told you about my project?"
-                            ["Let's hear it!" "Maybe later"])]
-            (if (= answer "Let's hear it!")
-              (hank-conversations.explain-idea)
-              (= answer "Maybe later")
-              (do
-                (reply "Ah, I gotta prepare to fight the"
-                       "space beast. Maybe later, okay?")
-                (say "Sure!"))))))
-      (< hank-state.disposition 0)
-      (if
-        (has-happened :nikita-talked-to-pissed-off-hank)
-        (if (has-happened :nikita-shit-on-hanks-idea)
-          (reply "Ha, I better leave him alone.")
-          (reply "I better leave him alone."))
-        (do
-          (publish {:event :nikita-talked-to-pissed-off-hank})
-          (reply "Hank?")
-          (say "...")
-          (describe "He's ignoring you.")))
-      (events.nikita-frustrated-hank)
-      (if (events.nikita-talked-to-frustrated-hank)
-        (if (events.nikita-shit-on-hanks-idea)
-          (reply "Haha, I better leave him alone.")
-          (reply "I better leave him alone."))
-        (do
-          (set events.nikita-talked-to-frustrated-hank true)
-          (say "Look, I'm not in the mood to talk, okay?"))))))
+      (has-happened :hank-has-explained-his-idea)
+      (hank-conversations.follow-up-conversation)
+      (do
+        (say "Oh, it's you. Hi Nikita.")
+        (let [answer (ask "Have I told you about my project?"
+                          ["Let's hear it!" "Maybe later"])]
+          (if (= answer "Let's hear it!")
+            (hank-conversations.explain-idea)
+            (= answer "Maybe later")
+            (do
+              (reply "Ah, I gotta prepare to fight the"
+                     "space beast. Maybe later, okay?")
+              (say "Sure!"))))))
+    (< hank-state.disposition 0)
+    (if
+      (has-happened :nikita-talked-to-pissed-off-hank)
+      (if (has-happened :nikita-shit-on-hanks-idea)
+        (reply "Ha, I better leave him alone.")
+        (reply "I better leave him alone."))
+      (do
+        (publish {:event :nikita-talked-to-pissed-off-hank})
+        (reply "Hank?")
+        (say "...")
+        (describe "He's ignoring you.")))))
 
 
 (fn hank-conversations.explain-idea []
@@ -157,14 +142,14 @@
           (do
             (update-hank-disposition -2)
             (reply "Don't be a dick, Hank. Carrie is"
-                   "just being realistic. Plus you"
-                   "know how pretentious you can get."
-                   "Let's cut the shit.")
-            (say "|!!!")
+                   "just being realistic.")
+            (reply "Plus you're being a bit pretentious"
+                   "right now. |Cut the shit.")
             (describe "Hank frowns and almost says"
                       "something, but slowly closes his"
                       "mouth instead."
-                      "|He glares through you.")
+                      "|"
+                      "He glares through you.")
             (say "...")
             (describe "He returns to his work.")
             (reply "Well. That pissed him off."))
@@ -213,8 +198,8 @@
        "not support me. ...just like"
        "everyone else.")
   (let [questions ["Reassure him" "Present Facts" "Of course I don't support you" "..."]
-        nikita-is-mean (has-happened :nikita-shit-on-hanks-idea)
-        _ (when nikita-is-mean (table.remove questions 1))
+        nikita-is-mean? (has-happened :nikita-shit-on-hanks-idea)
+        _ (when nikita-is-mean? (table.remove questions 1))
         answer (ask "" questions)]
         (if (= answer "Reassure him")
             (do
@@ -228,9 +213,9 @@
                     "that's all.")
               (describe "He won't show it, but he appreciated"
                         "that.")
-              (hank-conversations.present-facts))
+              (hank-conversations.present-facts nikita-is-mean?))
             (= answer "Present Facts")
-            (hank-conversations.present-facts)
+            (hank-conversations.present-facts nikita-is-mean?)
             (= answer "Of course I don't support you")
             (do
               (update-hank-disposition -1)
@@ -253,18 +238,20 @@
               (describe "Hank scoffs.")
               (move-to :Hank 303 8)))))
 
-(fn hank-conversations.present-facts []
+(fn hank-conversations.present-facts [nikita-is-mean?]
   (do
-    (reply "You're a smart guy. Let's take a look"
-           "at your data so I can show you"
-           "my concerns.")
+    (if nikita-is-mean?
+      (reply "Okay dumbass, let's look at your" "data.")
+      (reply "You're a smart guy. Let's take a look"
+             "at your data so I can show you"
+             "my concerns."))
     (do
       (move-to :Hank 289 14)
       (move-to :Nikita 302 8))
     (reply "You mentioned machine learning"
            "algorithms to generate the"
            "Thoralin pipe, right?")
-    (if nikita-is-mean
+    (if nikita-is-mean?
       (do
         (reply "Like I was saying, we would need"
                "millions of samples for the"
@@ -284,7 +271,7 @@
     (reply "Without proper training, we can't"
            "be certain of the Thoralin pipe's"
            "durability under stress.")
-    (if nikita-is-mean
+    (if nikita-is-mean?
       (reply "If it collapses, then we obviously"
              "have bigger problems.")
       (reply "If it collapses, then we would have"
@@ -295,16 +282,17 @@
            "plumbus set up in half the suits,"
            "so, even these projected numbers"
            "carry a high risk.")
-    (if nikita-is-mean
+    (if nikita-is-mean?
       (reply "Your idea sucks and you should" "know better.")
       (reply "Look, I'm not saying it's a bad idea."
              "I just think we need to proceed"
              "with some caution."))
     (if (>= hank-state.disposition 2)
       (hank-conversations.willing-to-negotiate)
-      (if nikita-is-mean
+      (if nikita-is-mean?
         (do
-          (say "You're an idiot.")
+          (say "Evidently, you don't have the"
+               "capacity to understand.")
           (update-hank-disposition -1)
           (move-to :Hank 303 8))
         (do
@@ -389,9 +377,7 @@
 
 (fn hank-conversations.supported-hanks-idea-follow-up []
   (if
-    (not (or
-           events.nikita-agreed-to-convince-carrie-of-hanks-plan
-           events.nikita-frustrated-hank))
+    (not events.nikita-agreed-to-convince-carrie-of-hanks-plan)
     (do
       (say "Hey Nikita! Good to see you."
            "I've got a request.")
@@ -410,18 +396,21 @@
           (= answer "I changed my mind.")
           (do
             (reply "I'm not so sure any more Hank."
-                   "I better not.|I'd prefer to sit"
-                   "this one out.")
-            (say "I don't understand; I thought you"
-                 "supported me?")
-            (reply "I do! I just like you both and I'd"
-                   "rather not get in the middle of this.")
+                   "I like you both and I don't want"
+                   "to get in the middle.")
+            (reply "I'd prefer to sit this one out.")
+            (say "I don't understand."
+                 "I thought you supported me?")
+            (reply "I do!"
+                   "|"
+                   "I just don't want to get in the"
+                   "middle of this.")
             (say "Alright, fine.| Whatever.")
-            (set events.nikita-frustrated-hank true)
-            (move-to :Hank 264 16))))))
-    (events.nikita-agreed-to-convince-carrie-of-hanks-plan)
+            (set convos.Hank hank-conversations.frustrated-hank)
+            (move-to :Hank 264 16)))))
+    events.nikita-agreed-to-convince-carrie-of-hanks-plan
     (if
-      (events.carrie-rejects-hanks-plan)
+      events.carrie-rejects-hanks-plan
       (do
         (say "Hey Nikita! Any news?")
         (reply "No good news, I'm afraid.")
@@ -430,11 +419,11 @@
                "she rejected your idea.")
         (say "...great. Why am I not surprised?"
              "Thanks for trying.")
-        (set events.nikita-frustrated-hank true)
+        (set convos.Hank hank-conversations.frustrated-hank)
         (move-to :Hank 264 16))
       (do
         (say "Hey Nikita. Any word from Carrie?")
-        (reply "Not yet; I'll keep you posted."))))
+        (reply "Not yet; I'll keep you posted.")))))
 
 (fn hank-conversations.follow-up-conversation []
   (if
@@ -525,6 +514,16 @@
 (fn hank-conversations.busy []
   (say "I'm busy. I'd rather not talk"
        "right now."))
+
+(fn hank-conversations.frustrated-hank []
+  (if events.nikita-talked-to-frustrated-hank
+      (if events.nikita-shit-on-hanks-idea
+        (reply "Haha, I better leave him alone.")
+        (reply "I better leave him alone."))
+      (do
+        (set events.nikita-talked-to-frustrated-hank true)
+        (say "Look, I'm not in the mood to talk,"
+             "|okay?"))))
 
 (fn hank-conversations.installing-telemetry []
   (describe "The clattering of keys, levers, and"

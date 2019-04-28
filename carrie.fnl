@@ -48,6 +48,7 @@
         (set events.carrie-found-her-helmet true)
         (table.insert questions "Nevermind"))
       (do
+        ;; TODO: She probably shouldn't smile if carrie-rejects-hanks-plan
         (describe "She's reviewing the owner's manual"
                   "for her mech. She looks up and"
                   "smiles.")
@@ -77,27 +78,31 @@
 (fn carrie-conversations.convince-carrie-of-hanks-plan []
   (reply "So Hank has a new targeting system.")
   (describe "She rolls her eyes.")
-  (say "So I've heard. Did he try convincing you"
-       "as well?")
-  (reply "Well he did, actually. Look, even a 25%"
-         "improvement to our damage output could"
-         "give us an edge in this battle. Even"
-         "Adam can't do that much damage.")
-  (say "...|Are you serious? We're going"
-       "into battle,| where we could *die*,"
-       "|and you both want to gut our targeting"
-       "systems for an experiment?"
-       "I can't support that.")
+  (say "So I've heard. Did he try convincing"
+       "you as well?")
+  (reply "Well he did, actually.")
+  (reply "Look, even a 25% improvement to"
+         "our damage output could give us"
+         "give us an edge in this battle"
+         "and his system promises more"
+         "than that.")
+  (reply "Even Adam can't do that much damage.")
+  (say "...|Are you serious?")
+  (say "We're going into battle,| where we"
+       "could *die*, |and you both want to"
+       "gut our targeting systems for"
+       "an experiment")
+  (say "I can't support that.")
   (reply "But-")
-  (say "Come on! You know this isn't the right"
-       "time for trying new systems. We can't"
-       "risk it!")
+  (say "Come on! You know this isn't the"
+       "right time for trying new systems!"
+       "We can't risk it.")
   (reply "Please reconsider. I really think-")
   (say "Sorry, but the answer is no, Nikita."
-       "Tell him we can try after this battle,"
-       "but it really doesn't make sense.")
-  (describe "She shakes her head a bit and"
-            "turns around.")
+       "*Maybe* we can try after this battle,"
+       "but now is not the time.")
+  (describe "She shakes her head and turns"
+            "around.")
   (set events.carrie-rejects-hanks-plan true)
   (set convos.Hank all.Hank))
 
