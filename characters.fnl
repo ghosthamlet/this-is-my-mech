@@ -1,13 +1,13 @@
 ;;; character positioning, state, and dialog
 
 (local initial-positions {:Adam [48 64]
-                          :Turk [179 96]
-                          ; :Turk [85 215]
+                          ; :Turk [179 96]
+                          :Turk [85 215]
                           :Hank [264 16]
-                          ; :Carrie [84 300]
-                          :Carrie [142 302]
-                          ; :Nikita [39 304]
-                          :Nikita [289 14]
+                          :Carrie [84 300]
+                          ; :Carrie [142 302]
+                          :Nikita [39 304]
+                          ; :Nikita [289 14]
                           })
 
 (set chars.Adam {:name "Adam" :spr 290 :portrait 288 :helmet 291})
