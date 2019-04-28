@@ -2,8 +2,10 @@
   (if
     (>= hank-state.disposition 0)
     (if
-      (has-happened :hank-has-explained-his-idea)
+      (has-happened :nikita-and-hank-discussed-idea)
       (hank-conversations.follow-up-conversation)
+      prev-events.hank-explained-idea
+      (hank-conversations.explain-idea)
       (do
         (say "Oh, it's you. Hi Nikita.")
         (let [answer (ask "Have I told you about my project?"
@@ -29,60 +31,66 @@
 
 
 (fn hank-conversations.explain-idea []
-  (say "Check it out!")
-  (do
-    (move-to :Hank 264 2)
-    (move-to :Nikita 276 8))
-  (say "I built a new targeting system for"
-       "Rhinocelator! It utilizes machine"
-       "learning algorithms and block chain"
-       "validation!")
-  (say "It works by applying pytorch nets"
-       "to mainframe databases through a"
-       "triangulated Thoralin pipe!")
-  (reply "...oh, nice!")
-  (describe "You nod with...|'understanding'")
-  (say "We have a chance to revolutionize"
-       "mech combat here. Our next mission is"
-       "the ideal opportunity to perform"
-       "research and install it!")
-  (say "With a little effort, I believe our"
-       "damage output will increase by"
-       "at least 57%!")
+  (when (not prev-events.hank-explained-idea)
+    (do
+      (say "Check it out!")
+      (do
+        (move-to :Hank 264 2)
+        (move-to :Nikita 276 8))
+      (say "I built a new targeting system for"
+           "Rhinocelator! It utilizes machine"
+           "learning algorithms and block chain"
+           "validation!")
+      (say "It works by applying pytorch nets"
+           "to mainframe databases through a"
+           "triangulated Thoralin pipe!")
+      (reply "...oh, nice!")
+      (describe "You nod with...|'understanding'")
+      (say "We have a chance to revolutionize"
+           "mech combat here. Our next mission is"
+           "the ideal opportunity to perform"
+           "research and install it!")
+      (say "With a little effort, I believe our"
+           "damage output will increase by"
+           "at least 57%!")))
   (let [answer
-        (ask "What do you think?"
-             ["Well..." "Great idea!" "Thoralin pipe?" "What a crock."])]
-          (if (= answer "Thoralin pipe?")
-              (hank-conversations.ask-more-about-idea)
-              (= answer "Great idea!")
-              (hank-conversations.support-idea)
-              (= answer "Well...")
-              (do
-                (reply "Well.. I'm not so sure.")
-                (say "What do you mean you're not"
-                     "sure?")
-                (reply "I'm not sure if you've noticed,"
-                       "but I think Earth might be under"
-                       "attack or something.")
-                (reply "Something about space beasts"
-                       "and warnings?")
-                (hank-conversations.do-not-support-idea))
-              (= answer "What a crock.")
-              (do
-                (publish {:event :nikita-shit-on-hanks-idea})
-                (update-hank-disposition -1)
-                (reply "You know you just said a lot of"
-                       "techno babble bullshit, right?")
-                (say "Egad! First off-")
-                (reply "And don't you need like, tens of"
-                       "thousands of samples to train a"
-                       "machine learning algorithm?")
-                (say "Well, I mean..| it depends!")
-                (describe "Hank's cheeks are practically"
-                          "bleeding from blushing."
-                          "|"
-                          "Someone call the doc.")
-                (hank-conversations.do-not-support-idea)))))
+         (ask (if
+                prev-events.hank-explained-idea
+                "What do you think of my targeting system?"
+                "What do you think?")
+              ["Well..." "Great idea!" "Thoralin pipe?" "What a crock."])]
+    (if (= answer "Thoralin pipe?")
+      (hank-conversations.ask-more-about-idea)
+      (= answer "Great idea!")
+      (hank-conversations.support-idea)
+      (= answer "Well...")
+      (do
+        (reply "Well.. I'm not so sure.")
+        (say "What do you mean you're not"
+             "sure?")
+        (reply "I'm not sure if you've noticed,"
+               "but I think Earth might be under"
+               "attack or something.")
+        (reply "Something about space beasts"
+               "and warnings?")
+        (hank-conversations.do-not-support-idea))
+      (= answer "What a crock.")
+      (do
+        (publish {:event :nikita-shit-on-hanks-idea})
+        (update-hank-disposition -1)
+        (reply "You know you just said a lot of"
+               "techno babble bullshit, right?")
+        (say "Egad! First off-")
+        (reply "And don't you need like, tens of"
+               "thousands of samples to train a"
+               "machine learning algorithm?")
+        (say "Well, I mean..| it depends!")
+        (describe "Hank's cheeks are practically"
+                  "bleeding from blushing."
+                  "|"
+                  "Someone call the doc.")
+        (hank-conversations.do-not-support-idea))))
+  (set events.hank-explained-idea true))
 
 (fn hank-conversations.ask-more-about-idea []
   (update-hank-disposition 1)
@@ -117,7 +125,7 @@
 
 (fn hank-conversations.support-idea []
   (publish {:event :supported-hanks-idea}
-           {:event :hank-has-explained-his-idea})
+           {:event :nikita-and-hank-discussed-idea})
   (reply "Wow, great idea! I know it could be"
          "burdensome to us at first, but our"
          "next fight is as good as any!")
@@ -193,7 +201,7 @@
 
 (fn hank-conversations.do-not-support-idea []
   (publish {:event :didnt-support-hanks-idea}
-           {:event :hank-has-explained-his-idea})
+           {:event :nikita-and-hank-discussed-idea})
   (say "Ugh, I should have known you would"
        "not support me. ...just like"
        "everyone else.")
