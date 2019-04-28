@@ -1,5 +1,5 @@
 # an incomplete list; add more to here as we use them to make check work
-TIC_GLOBALS=mget,btn,btnp,map,spr,rect,rectb,trace,pix,mset,cls,line,sfx
+TIC_GLOBALS=mget,btn,btnp,map,music,spr,rect,rectb,trace,pix,mset,cls,line,sfx
 
 SRC=header.fnl \
 		dialog.fnl \
