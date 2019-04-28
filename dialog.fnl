@@ -10,6 +10,7 @@
 
 (local convos {})
 (local events {})
+(local prev-events {}) ; has this happened on a prev playthru?
 
 (fn distance* [ax ay bx by]
   (let [dx (- ax bx)

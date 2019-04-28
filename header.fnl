@@ -13,3 +13,5 @@
 (var coros []) ; things to run in the background
 
 (var restart-count (or (pmem 0) 0))
+
+(var last-losing nil)
