@@ -217,9 +217,9 @@
   (say "Now how am I going to pay off my" "student loans?")
   (describe "You recall that mech pilot school"
             "was not particularly affordable.")
-  (let [answer (ask "" ["Maybe Hank can help."
-                        "Maybe Carrie can help."
-                        "I dunno; that sucks."])]
+  (let [answer (ask "" ["I dunno; that sucks."
+                        "Maybe Hank can help."
+                        "Maybe Carrie can help."])]
     (if (= answer "Maybe Hank can help.")
         (do (say "You think so?")
             (reply "Well, he's good with finances.")
@@ -683,7 +683,15 @@
 ;; CARRIE
 
 (fn all.Carrie []
-  (if (= 0 restart-count)
+  (if (= :hank last-losing)
+      (say "I hope we can run just a normal"
+           "mission without it turning into"
+           "some half-baked plan.")
+      (. {:adam-turk true :adam true :turk true} last-losing)
+      (say "If only Turk and Adam would stop"
+           "fighting over who gets to be"
+           "the head.")
+      :else
       (do
         (say "Uh oh, not another space beast.")
         (reply "Are you worried?")
@@ -693,10 +701,7 @@
         (say "We got lucky in our last battle when"
              "MegaMoth ran into that huge solar" "collector.")
         (say "But if we fail to form Rhinocelator"
-             "again this time..."))
-      (say "If only Turk and Adam would stop"
-           "fighting over who gets to be"
-           "the head."))
+             "again this time...")))
   (say "Well, I better get my gear.")
   (move-to :Carrie 142 302)
   (set convos.Carrie carrie-conversations.looking-for-helmet))

@@ -110,19 +110,20 @@
   (hit-check)
   (draw-launch))
 
-(fn launch-talk-default []
+(fn launch-talk-hank []
   (say-as :Hank "Finally, let's see how this new" "targeting system works.")
   (say-as :Carrie "You're testing that right now?!")
   (say-as :Hank "It'll be fine! I just need to" "form the head so I can pull"
           "down combined sensor readings.")
   (say-as :Adam "This is a space combat situation,"
-          "not an app store alpha test!")
+          "not an app store beta test!")
   (say-as :Hank "I'm getting pretty tired of you" "telling me what I can't do.")
-  (set attacking? true)
   (say-as :Turk "Uh, guys? That space beast is" "looking pretty hungry.")
+  ;; need more jokes here!
+  (set attacking? true)
   (say-as :Carrie "And our beams aren't having" "the slightest effect."))
 
-(fn launch-talk-hank []
+(fn launch-talk-adam-turk []
   (say-as :Adam "Yeah! Time to assemble Rhinocelator!")
   (say-as :Adam "Enter standard formation\nso I can form the head.")
   (say-as :Turk "What?! No way.\nI'm going to form the head this time.")
@@ -132,33 +133,41 @@
   (say-as :Carrie "*sighs deeply*")
   (say-as :Nikita "Our weapons aren't strong enough.\nWe need to form up!")
   (set attacking? true)
-  (say-as :Carrie "Look out, it's attacking!")
-  (when (<= 1 restart-count)
-    (say-as :Hank "We'll never win at this rate.")))
+  (say-as :Carrie "Look out, it's attacking!"))
 
-(fn launch-talk-hank-turk []
+(fn launch-talk-adam []
   (say-as :Adam "Time to assemble Rhinocelator!")
   (say-as :Adam "Enter standard formation\nso I can form the head.")
   (say-as :Turk "Wait a minute; slow down."
           "Who said you get to form the head?")
   (say-as :Adam "I'm the leader!")
   (say-as :Turk "Well, I never voted for you.")
-  (say-as :Hank "We're wasting time here!")
+  (say-as :Adam "This isn't a democracy! I worked"
+          "hard to get to this position.")
+  (say-as :Hank "Oh, so you're saying it's not"
+          "just because you're the one white"
+          "dude on the team?")
   (set attacking? true)
-  (say-as :Adam "Uh oh. Here it comes." "Evasive action!"))
+  (say-as :Carrie "Pay attention--here it comes!" "Evasive action.")
+  (say-as :Hank "We'll never win at this rate."))
 
-(fn launch-talk-hank-adam []
+(fn launch-talk-turk []
   (say-as :Turk "Aw yeah, that's what I'm" "talking about!")
   (say-as :Turk "Let's make this happen!"
           "Watch out, space beast, you're"
           "about to get Rhinocelated!")
   (say-as :Hank "What does that even mean?")
-  (say-as :Adam "Can we just focus for even" "one minute?")
+  (say-as :Turk "Watch and see how it's done!"
+          "I'm gonna form the head!")
+  (say-as :Adam "I don't think so.")
+  (say-as :Turk "You're just jealous that I'm"
+          "the clear fan favorite.")
   (set attacking? true)
-  (say-as :Adam "Blast it down!")
+  (say-as :Hank "Watch out! Blast that thing.")
   (say-as :Carrie "It's not helping!"))
 
-(fn lose-with [talk]
+(fn lose-with [talk key]
+  (set last-losing key)
   (set-dialog talk)
   (var lt -136)
   (global TIC (fn  []
@@ -179,16 +188,16 @@
       (tset mechs name :dx 0)
       (tset mechs name :dy 0)))
   (if (not (or events.hank-agreed path))
-      (lose-with launch-talk-default)
+      (lose-with launch-talk-hank :hank)
       (or (= path 2)
           (and events.hank-agreed (not events.turk-agreed) (not events.adam-agreed)))
-      (lose-with launch-talk-hank)
+      (lose-with launch-talk-adam-turk :adam-turk)
       (or (= path 3)
           (and events.hank-agreed events.turk-agreed (not events.adam-agreed)))
-      (lose-with launch-talk-hank-turk)
+      (lose-with launch-talk-adam :adam)
       (or (= path 4)
           (and events.hank-agreed (not events.turk-agreed) events.adam-agreed))
-      (lose-with launch-talk-hank-adam)
+      (lose-with launch-talk-turk :turk)
       (or (= path 5)
           (and events.adam-agreed events.turk-agreed events.hank-agreed))
       (enter-win)))
