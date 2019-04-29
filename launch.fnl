@@ -162,6 +162,7 @@
   (say-as :Adam "I don't think so.")
   (say-as :Turk "You're just jealous that I'm"
           "the clear fan favorite.")
+  (say-as :Adam "You're not even--")
   (set attacking? true)
   (say-as :Hank "Watch out! Blast that thing.")
   (say-as :Carrie "It's not helping!"))

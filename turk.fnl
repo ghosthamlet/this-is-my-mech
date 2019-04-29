@@ -14,13 +14,15 @@
   (when (not skip?)
     (say "Now if you'll excuse me, I gotta"
          "make a call.")
-    (say "...|Hello?"
-         "|"
-         "...|HEEELLO!?")
-    (say "Tay, are you THERE!?")
-    (say "Ugh; this station gets the worst"
-         "cell reception. Maybe I can get a"
-         "signal over by the airlock."))
+    (when (not prev.events.turk-called)
+        (say "...|Hello?"
+             "|"
+             "...|HEEELLO!?")
+        (say "Tay, are you THERE!?")
+        (say "Ugh; this station gets the worst"
+             "cell reception. Maybe I can get a"
+             "signal over by the airlock.")))
+  (set events.turk-called true)
   (move-to :Turk 180 60 164 61 164 2)
   (set convos.Turk (partial say "..."))
   (fn wait3 []
