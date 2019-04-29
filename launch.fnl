@@ -68,7 +68,15 @@
   (set dmx (math.min (+ dmx (* (if (< mx tmx) 0.1 -0.1) (math.random))) 1.2))
   (set dmy (math.min (+ dmy (* (if (< my tmy) 0.3 -0.1) (math.random))) max-delta))
   (when attacking?
-    (set (tmx tmy) (values mechs.Nikita.x (- mechs.Nikita.y 32)))))
+    (do
+      ; (let [random (math.random)
+      ;       _ (trace (math.floor (* random 20))) ]
+      ;   (when (= 3 (math.floor (* random 15)))
+      ;     (sfx 0
+      ;          (+ (math.floor (* random 25)) 15)
+      ;          (+ (math.floor (* random 15)) 12)
+      ;          3)))
+      (set (tmx tmy) (values mechs.Nikita.x (- mechs.Nikita.y 32))))))
 
 (fn game-over []
   (global TIC (fn []
@@ -83,12 +91,17 @@
 (fn hit-check []
   (when (and (<= mx mechs.Nikita.x (+ mx 32))
              (<= my mechs.Nikita.y (+ my 48)))
-    (set hits (+ hits 1)))
+    (do
+      (sfx 0
+           (+ (math.floor (* (math.random) 15)) 15)
+           (+ (math.floor (* (math.random) 15)) 12)
+           3)
+      (set hits (+ hits 1))))
   (when (= hits 8)
     (set-dialog (fn []
                   (say-as :Nikita "I'm taking damage!")
                   (set attacking? true))))
-  (when (= hits 42)
+  (when (= hits 65)
     (game-over)))
 
 (fn launch-input []
