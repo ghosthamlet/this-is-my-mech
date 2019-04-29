@@ -39,18 +39,20 @@
   (say "The life of a hero is demanding!")
   (let [answer (ask "" ["I, uh, never thought of it that way."
                         "Being a pilot isn't about showing off."
-                        "You're really full of yourself."])]
+                        "Wow, pretentious much?"])]
     (if (= answer "I, uh, never thought of it that way.")
         (do (say "Not that I'm complaining! I'm a"
                  "natural in the spotlight, but you"
                  "knew that already!")
+            (describe "Surely I'm not the only one"
+                      "who wants to vomit.")
             (turk-make-call))
         (= answer "Being a pilot isn't about showing off.")
         (do (say "Err--I mean... Sure. But why not have"
                  "a bit of fun with it if you can?")
             (describe "He flashes a wide grin.")
             (turk-make-call))
-        (= answer "You're really full of yourself.")
+        (= answer "Wow, pretentious much?")
         (do (say "Who asked you?")
             (set events.turk-annoyed true)
             (say "Anyway, I gotta go make this call.")
@@ -80,7 +82,10 @@
     (if (= answer "Maybe Hank can help.")
         (do (say "You think so?")
             (reply "Well, he's good with finances.")
-            (say "Yeah, I'll talk to him.")
+            (reply "He's the reason we could"
+                   "re-finance two of our-")
+            (say "Yeah, yeah, I'll talk to him."
+                 "Thanks a bunch!")
             ;; TODO: uuuhuhhhhhh ... yeah. fill this out more.
             (set events.turk-agreed true))
         (and (= answer "Maybe Carrie can help.") events.turk-annoyed)
@@ -92,6 +97,6 @@
             (set events.turk-agreed true)))))
 
 ;; for testing; remove this:
-;; (set all.Turk all.Turk2)
-;; (set initial-positions.Turk [179 96])
-;; (set initial-positions.Nikita [170 96])
+; (set all.Turk all.Turk2)
+(set initial-positions.Turk [179 96])
+(set initial-positions.Nikita [170 96])
