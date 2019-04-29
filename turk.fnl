@@ -14,7 +14,7 @@
   (when (not skip?)
     (say "Now if you'll excuse me, I gotta"
          "make a call.")
-    (when (not prev.events.turk-called)
+    (when (not prev-events.turk-called)
         (say "...|Hello?"
              "|"
              "...|HEEELLO!?")
