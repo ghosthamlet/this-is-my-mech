@@ -57,6 +57,9 @@
       (say "With a little effort, I believe our"
            "damage output will increase by"
            "at least 57%!")))
+  (when (prev-events.supported-hanks-idea)
+    (describe "Hank's idea doesn't really seem"
+              "realistic.."))
   (let [answer
          (ask (if
                 prev-events.hank-explained-idea
