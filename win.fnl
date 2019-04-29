@@ -47,7 +47,6 @@
   (each [name mech (pairs mechs)]
     (set mech.x (lerp mech.x 120 0.009))
     (set mech.y (- mech.y 1)))
-  (pmem 0 0) ; reset restart-counter back to zero
   (draw-win))
 
 (set enter-win

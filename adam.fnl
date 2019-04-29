@@ -91,5 +91,4 @@
                "I don't see how you're going to do"
                "that though.")
           (set events.adam-agreed true)
-          (set convos.Adam (partial describe
-                                    "He's examining tactical data."))))))
+          (set convos.Adam (partial describe "He's examining tactical data."))))))

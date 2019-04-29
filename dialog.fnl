@@ -1,5 +1,3 @@
-;;; general-purpose dialog engine
-
 (local chars {})
 
 (var said nil)
@@ -10,7 +8,7 @@
 
 (local convos {})
 (local events {})
-(local prev-events {}) ; has this happened on a prev playthru?
+(local prev-events {})
 
 (fn distance* [ax ay bx by]
   (let [dx (- ax bx)
@@ -18,7 +16,6 @@
     (math.sqrt (+ (* dx dx) (* dy dy)))))
 
 (fn distance [a b]
-  ;; check all the corners of b but not of a since a is always the player
   (let [w (* 8 (or b.w 1))
         h (* 8 (or b.h 1))]
     (math.min (distance* a.x a.y b.x b.y)
@@ -98,8 +95,6 @@
             (coroutine.resume current-talk)))))
   (and current-talk {:said said :who who :choices choices}))
 
-;; This can be useful for launch-mode where there's really only one conversation
-;; going on instead of walking around among multiple characters.
 (fn set-dialog [f]
   (set current-talk (coroutine.create f))
   (set who (. chars :Nikita))
@@ -129,15 +124,12 @@
       (rect 0 0 238 box-height 13)
       (rectb 1 1 236 (- box-height 2) 15))
     (when (~= last-reveal said)
-      (set said-reveal (# said))
-      ;; nice slow reveal, but it's a bit annoying after a while
-      ;; (set said-reveal 1)
-      )
+      (set said-reveal (# said)))
     (when (and (= reveal-delay 0) (= "|" (: said :sub said-reveal said-reveal)))
       (set reveal-delay 30))
     (print (-> said
                (: :sub 1 said-reveal)
-               (: :gsub "|" "")) ; pipes used as delay markers
+               (: :gsub "|" ""))
            38 6)
     (when (<= said-reveal (# said))
       (play-talk-sound)

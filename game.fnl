@@ -1,4 +1,3 @@
-;;; game code, tying it all together
 
 (local (w h) (values 240 136))
 (local (center-x center-y) (values (/ w 2) (/ h 2)))
@@ -21,7 +20,7 @@
            (= 0 (# (filter (partial hit? px py) chars))))))
 
 (fn can-move? [x y thru-chars?]
-  (or (btn 7) ; S key is noclip; for debugging only!
+  (or (btn 7)
       (and (can-move-point? x y thru-chars?)
            (can-move-point? (+ x 6) y thru-chars?)
            (can-move-point? x (+ y 7) thru-chars?)
@@ -60,7 +59,7 @@
             "All mech pilots,| prepare for launch."))
   (set-dialog opening)
   (music 1 0)
-  (each [name (pairs chars)] ; set up initial convos
+  (each [name (pairs chars)]
     (tset convos name (. all name))))
 
 (fn draw []
@@ -73,23 +72,21 @@
   (each [name c (pairs chars)]
     (when c.spr
       (spr c.spr (+ cam-x c.x) (+ cam-y c.y) 0 1 0 0 (or c.w 1) (or c.h 2))))
-  ;; render Nikita last so she's over top of any others
   (let [c chars.Nikita]
     (spr c.spr (+ cam-x c.x) (+ cam-y c.y) 0 1 0 0 (or c.w 1) (or c.h 2)))
   (draw-dialog :portrait))
 
-;; the walk-around-and-talk section of the game
 (fn main []
   (cls)
   (draw)
-  (when (btnp 6) (trace (.. chars.Nikita.x " " chars.Nikita.y))) ; for debug
+  (when (btnp 6) (trace (.. chars.Nikita.x " " chars.Nikita.y)))
   (if (and said (< said-reveal (# said)) (or (btnp 5) (btnp 4)))
       (set said-reveal (# said))
       (let [talking-to (dialog chars.Nikita.x chars.Nikita.y (btnp 4))]
         (if (and talking-to (btnp 0)) (choose -1)
             (and talking-to (btnp 1)) (choose 1)
             (not talking-to) (move))))
-  (when (and (btn 4) (btn 6)) (enter-launch)) ; for debugging
+  (when (and (btn 4) (btn 6)) (enter-launch))
   (for [i (# coros) 1 -1]
     (assert (coroutine.resume (. coros i)))
     (when (= :dead (coroutine.status (. coros i)))
@@ -99,15 +96,14 @@
   (cls)
   (draw-stars cam-x cam-y)
   (print "t  h  i  s        i  s        m  y" 24 10)
-  (map 92 55 14 4 10 26 0 2) ; MECH pixel-art
+  (map 92 55 14 4 10 26 0 2)
   (set cam-x (+ cam-x 2))
   (print "(work-in-progress!)" 48 100 5)
   (print "by Emma Bukacek and Phil Hagelberg" 28 110)
-  (print "press Z" (+ (* 128 ; bounce!
-                         (- 1 (math.abs (- 1 (math.fmod (/ cam-x 100) 2)))))
+  (print "press Z" (+ (* 128 (- 1 (math.abs (- 1 (math.fmod (/ cam-x 100) 2)))))
                       32) 124 2)
   (for [i 0 5]
-    (when (btnp i) ; lol jk you can press any key
+    (when (btnp i)
       (set cam-x 96)
       (global TIC main))))
 
@@ -115,10 +111,4 @@
 (trace "This is the console; type run to start.")
 (trace "Press ESC for the art, code, and sound.")
 (global TIC intro)
-(set restart (fn []
-               (init)
-               (set restart-count (+ restart-count 1))
-               ;; This persists the restart count across playthrus.
-               ;; I'm not sure it's a great idea?
-               (pmem 0 restart-count)
-               (global TIC main)))
+(set restart (fn [] (init) (global TIC main)))

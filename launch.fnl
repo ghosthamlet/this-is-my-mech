@@ -114,7 +114,6 @@
   (when (and (btn 3) (< mechs.Nikita.x (- 240 32)))
     (set mechs.Nikita.x (+ mechs.Nikita.x 1))))
 
-;; when the game is in launch mode, this becomes the TIC updater
 (fn launch []
   (launch-input)
   (dialog 0 0 (btnp 4))
@@ -132,7 +131,6 @@
           "not an app store beta test!")
   (say-as :Hank "I'm getting pretty tired of you" "telling me what I can't do.")
   (say-as :Turk "Uh, guys? That space beast is" "looking pretty hungry.")
-  ;; need more jokes here!
   (set attacking? true)
   (say-as :Carrie "And our beams aren't having" "the slightest effect."))
 
@@ -220,6 +218,4 @@
       (and events.adam-agreed events.turk-agreed events.hank-agreed)
       (enter-win)))
 
-;; you can run this in the console to debug the endings
-;; eval (e 2) etc then resume
 (global e enter-launch)

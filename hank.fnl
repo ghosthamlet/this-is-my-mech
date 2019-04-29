@@ -8,10 +8,6 @@
       (hank-conversations.explain-idea)
       (do
         (say "Oh, it's you. Hi Nikita.")
-        ;; TODO - Stretch Goal
-        ;; Add option when you "agree" to ask Hank for help
-        ;; for Turk and have it fail hard, then Turk gets
-        ;; pissy.
         (let [answer (ask "Have I told you about my project?"
                           ["Let's hear it!" "Maybe later"])]
           (if (= answer "Let's hear it!")

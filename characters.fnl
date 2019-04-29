@@ -1,14 +1,6 @@
 ;;; character positioning, state, and dialog
 
-(local initial-positions {:Adam [48 64]
-                          ; :Turk [179 96]
-                          :Turk [85 215]
-                          :Hank [264 16]
-                          :Carrie [84 300]
-                          ; :Carrie [142 302]
-                          :Nikita [39 304]
-                          ; :Nikita [289 14]
-                          })
+(local initial-positions {:Adam [48 64] :Turk [85 215] :Hank [264 16] :Carrie [84 300] :Nikita [39 304]})
 
 (set chars.Adam {:name "Adam" :spr 290 :portrait 288 :helmet 291})
 (set chars.Turk {:name "Turk" :spr 322 :portrait 320  :helmet 323})
@@ -86,7 +78,7 @@
 (var poster-count 0)
 (set chars.turk-photo {:x 13 :y 200 :spr 190 :w 2 :h 2})
 (fn all.turk-photo []
-  (set poster-count (+ poster-count 1)) ; allow cheating after six counts
+  (set poster-count (+ poster-count 1))
   (describe "Only Turk would have a poster of"
             "himself in his quarters..."))
 
@@ -138,8 +130,3 @@
 (set chars.airlock {:x 162 :y -14})
 (fn all.airlock []
   (describe "It's an airlock. Better not" "open it."))
-
-;; for testing; remove this:
-;; (set all.Turk all.Turk2)
-;; (set initial-positions.Turk [179 96])
-;; (set initial-positions.Nikita [170 96])
