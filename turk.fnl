@@ -94,9 +94,13 @@
           (say "What am I going to do!?")
           (say "For all intensive purposes,"
                "I'm screwed!")))
+      ;; TODO - Stretch goal
+      ;; * Set it up so that Adam can help Turk out as well
+      ;;   as Hank.
+      ;; * Set up path where you ask Carrie to help Turk,
+      ;;   but it fails.
       (let [questions ["That sucks."
-                       "Maybe Hank can help."
-                       "Maybe Carrie can help."]
+                       "Maybe Hank can help."]
             _ (if
                 (and events.hank-agrees-to-help-turk)
                 (do
