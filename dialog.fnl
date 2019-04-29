@@ -129,7 +129,10 @@
       (rect 0 0 238 box-height 13)
       (rectb 1 1 236 (- box-height 2) 15))
     (when (~= last-reveal said)
-      (set said-reveal 1))
+      (set said-reveal (# said))
+      ;; nice slow reveal, but it's a bit annoying after a while
+      ;; (set said-reveal 1)
+      )
     (when (and (= reveal-delay 0) (= "|" (: said :sub said-reveal said-reveal)))
       (set reveal-delay 30))
     (print (-> said
