@@ -63,9 +63,9 @@
             (set mech.laser (- mech.laser 1)))))))
 
 (fn fly-monster []
-  (set mx (+ mx dmx))
+  (set mx (math.max -40 (+ mx dmx)))
   (set my (+ my dmy))
-  (set dmx (math.min (+ dmx (* (if (< mx tmx) 0.1 -0.1) (math.random))) max-delta))
+  (set dmx (math.min (+ dmx (* (if (< mx tmx) 0.1 -0.1) (math.random))) 1.2))
   (set dmy (math.min (+ dmy (* (if (< my tmy) 0.3 -0.1) (math.random))) max-delta))
   (when attacking?
     (set (tmx tmy) (values mechs.Nikita.x (- mechs.Nikita.y 32)))))
