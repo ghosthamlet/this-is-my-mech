@@ -52,6 +52,7 @@
 
 (set enter-win
      (fn []
+       (music 0 0)
        (set (scroll-x rx rdx mx my) (values 0 16 0.5 168 28))
        (let [init-ys {:Adam 8 :Turk 8 :Carrie 0 :Hank 12 :Nikita 12}
              init-xs {:Adam 100 :Turk 40 :Carrie 68 :Hank 15 :Nikita 120}]
