@@ -77,20 +77,18 @@
   (draw-dialog :portrait))
 
 (fn main []
-  (cls)
-  (draw)
-  (when (btnp 6) (trace (.. chars.Nikita.x " " chars.Nikita.y)))
-  (if (and said (< said-reveal (# said)) (or (btnp 5) (btnp 4)))
-      (set said-reveal (# said))
-      (let [talking-to (dialog chars.Nikita.x chars.Nikita.y (btnp 4))]
-        (if (and talking-to (btnp 0)) (choose -1)
-            (and talking-to (btnp 1)) (choose 1)
-            (not talking-to) (move))))
-  (when (and (btn 4) (btn 6)) (enter-launch))
-  (for [i (# coros) 1 -1]
-    (assert (coroutine.resume (. coros i)))
-    (when (= :dead (coroutine.status (. coros i)))
-      (table.remove coros i))))
+ (cls)
+ (draw)
+ (when (btnp 6) (trace (.. chars.Nikita.x " " chars.Nikita.y)))
+ (let [talking-to (dialog chars.Nikita.x chars.Nikita.y (btnp 4))]
+  (if (and talking-to (btnp 0)) (choose -1)
+   (and talking-to (btnp 1)) (choose 1)
+   (not talking-to) (move)))
+ (when (and (btn 4) (btn 6)) (enter-launch))
+ (for [i (# coros) 1 -1]
+  (assert (coroutine.resume (. coros i)))
+  (when (= :dead (coroutine.status (. coros i)))
+   (table.remove coros i))))
 
 (fn intro []
   (cls)

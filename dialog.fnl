@@ -100,50 +100,21 @@
   (set who (. chars :Nikita))
   (coroutine.resume current-talk))
 
-(var said-reveal 1)
-(var last-reveal nil)
-(var talk-sound 0)
-(var reveal-delay 0)
-
-(fn play-talk-sound []
-  (set talk-sound (- talk-sound 1))
-  (when (and (<= talk-sound 0) who)
-    (when (< 1 (math.random 8))
-      (let [duration (math.random 12)]
-        (set talk-sound duration)
-        (sfx 1 50 duration 0 8)))))
-
 (fn draw-dialog [portrait-key]
-  (when said
-    (let [box-height (if (and choices (> (# choices) 3))
-                         (+ 12 (* (# choices) 10))
-                         42)
-          box-height (if (= said "")
-                         (math.max (- box-height 10) 42)
-                         box-height)]
-      (rect 0 0 238 box-height 13)
-      (rectb 1 1 236 (- box-height 2) 15))
-    (when (~= last-reveal said)
-      (set said-reveal (# said)))
-    (when (and (= reveal-delay 0) (= "|" (: said :sub said-reveal said-reveal)))
-      (set reveal-delay 30))
-    (print (-> said
-               (: :sub 1 said-reveal)
-               (: :gsub "|" ""))
-           38 6)
-    (when (<= said-reveal (# said))
-      (play-talk-sound)
-      (when (<= reveal-delay 1)
-        (set said-reveal (+ said-reveal 1)))
-      (when (< 0 reveal-delay)
-        (set reveal-delay (- reveal-delay 1))))
-    (when (and who (. who portrait-key))
-      (print who.name 5 26)
-      (spr (. who portrait-key) 8 6 0 1 0 0 2 2))
-    (when choices
-      (each [i ch (ipairs choices)]
-        (let [choice-y (if (= said "") 0 8)]
-          (when (= i choice)
-            (print ">" 32 (+ choice-y (* 8 i))))
-          (print ch 38 (+ choice-y (* 8 i))))))
-    (set last-reveal said)))
+ (when said
+  (let [box-height (if (and choices (> (# choices) 3))
+                    (+ 12 (* (# choices) 10)) 42)
+        box-height (if (= said "")
+                    (math.max (- box-height 10) 42) box-height)]
+   (rect 0 0 238 box-height 13)
+   (rectb 1 1 236 (- box-height 2) 15))
+  (print (: said :gsub "|" "") 38 6)
+  (when (and who (. who portrait-key))
+   (print who.name 5 26)
+   (spr (. who portrait-key) 8 6 0 1 0 0 2 2))
+  (when choices
+   (each [i ch (ipairs choices)]
+    (let [choice-y (if (= said "") 0 8)]
+     (when (= i choice)
+      (print ">" 32 (+ choice-y (* 8 i))))
+     (print ch 38 (+ choice-y (* 8 i))))))))
