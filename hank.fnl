@@ -1,4 +1,5 @@
 (fn all.Hank []
+  
   (if
     (>= hank-state.disposition 0)
     (if
@@ -449,9 +450,10 @@
            "...I owe you one.")
       (reply "It's no problem. |I look forward to"
              "seeing your progress!")
-      ;; TODO SFX?
-      (describe "Your high five with Hank shattered"
-                "a window somewhere.")
+      (do
+        (sfx 4 45 12 0 8)
+        (describe "Your high five with Hank shattered"
+                  "a window somewhere."))
       (say "...|And hey, I'm glad you convinced"
            "me on Carrie. She will do a great job"
            "at rallying us together.")
