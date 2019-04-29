@@ -28,8 +28,9 @@
            (can-move-point? (+ x 6) (+ y 7) thru-chars?))))
 
 (fn move []
-  (let [dx (if (btn 2) -1 (btn 3) 1 0)
-        dy (if (btn 0) -1 (btn 1) 1 0)
+  (let [amt (if (btn 5) 1.7 1)
+        dx (if (btn 2) (- amt) (btn 3) amt 0)
+        dy (if (btn 0) (- amt) (btn 1) amt 0)
         x chars.Nikita.x
         y chars.Nikita.y]
     (if (can-move? (+ x dx) (+ y dy 8))
@@ -83,12 +84,11 @@
   (when (btnp 6) (trace (.. chars.Nikita.x " " chars.Nikita.y))) ; for debug
   (if (and said (< said-reveal (# said)) (or (btnp 5) (btnp 4)))
       (set said-reveal (# said))
-      (let [talking-to (dialog chars.Nikita.x chars.Nikita.y (btnp 4) (btnp 5))]
+      (let [talking-to (dialog chars.Nikita.x chars.Nikita.y (btnp 4))]
         (if (and talking-to (btnp 0)) (choose -1)
             (and talking-to (btnp 1)) (choose 1)
             (not talking-to) (move))))
-  (when (and (btn 4) (btn 5) (btn 6)) (enter-launch)) ; for debugging
-  (when (and (btn 4) (btn 6)) (enter-win))
+  (when (and (btn 4) (btn 6)) (enter-launch)) ; for debugging
   (for [i (# coros) 1 -1]
     (assert (coroutine.resume (. coros i)))
     (when (= :dead (coroutine.status (. coros i)))

@@ -82,7 +82,7 @@
                     (math.max 1)
                     (math.min (# choices))))))
 
-(fn dialog [x y act? cancel?]
+(fn dialog [x y act?]
   (when act?
     (if current-talk
         (do (assert (coroutine.resume current-talk
@@ -95,8 +95,6 @@
             (set current-talk (coroutine.create convo))
             (set who char)
             (coroutine.resume current-talk)))))
-  (when cancel?
-    (set current-talk nil))
   (and current-talk {:said said :who who :choices choices}))
 
 ;; This can be useful for launch-mode where there's really only one conversation
