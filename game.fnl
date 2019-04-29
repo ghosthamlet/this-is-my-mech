@@ -59,6 +59,7 @@
     (say-as :alert "Warning! Hostile space beast" "detected inbound!" ""
             "All mech pilots,| prepare for launch."))
   (set-dialog opening)
+  (music 1 0)
   (each [name (pairs chars)] ; set up initial convos
     (tset convos name (. all name))))
 
