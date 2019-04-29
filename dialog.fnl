@@ -8,6 +8,8 @@
 (var choice nil)
 (var current-talk nil)
 
+(music 0 0)
+
 (local convos {})
 (local events {})
 (local prev-events {}) ; has this happened on a prev playthru?
