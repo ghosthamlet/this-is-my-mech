@@ -332,7 +332,7 @@
        "What do you recommend we do here?")
   (let [answer (ask "" ["Experiment in your own time"
                         "Let's try later"
-                        "Let's gather test data"])]
+                        "Let's gather test data first"])]
     (if
       (= answer "Experiment in your own time")
       (do
@@ -361,7 +361,7 @@
              "again, fails to understand me.")
         (describe "He turns around before you can"
                   "say anything."))
-      (= answer "Let's gather test data")
+      (= answer "Let's gather test data first")
       (do
         (reply "You have a kick-ass idea, Hank!"
                "But I think we may have a more"

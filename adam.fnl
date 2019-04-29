@@ -1,11 +1,11 @@
 (fn all.Adam []
-  (say "I... um. Hang on.")
-  (move-to :Adam 48 25)
-  (set convos.bridge-station all.bridge-station-auth)
-  (set convos.Adam (fn []
-                     (say "Oops.")
-                     (set convos.Adam all.Adam2)
-                     (all.Adam2))))
+ (say "I... um. Hang on.")
+ (move-to :Adam 48 25)
+ (set convos.bridge-station all.bridge-station-auth)
+ (set convos.Adam (fn []
+                   (say "Oops.")
+                   (set convos.Adam all.Adam2)
+                   (all.Adam2))))
 
 (fn adam-mention-turk []
   (say "If I don't form the head, then"
@@ -17,8 +17,8 @@
        "doesn't take his job seriously.")
   (set events.adam-mentions-turk true))
 
-(fn all.Adam2 []
-  (say "Hey, sorry about that.")
+(fn all.Adam2 [skip-sorry?]
+  (when (not skip-sorry?) (say "Hey, sorry about that."))
   (let [r (ask "What's up?" ["What are you doing?" "Where's the restroom?"])]
     (if (= r "Where's the restroom?")
         (say "You can pee in your pilot suit; isn't"

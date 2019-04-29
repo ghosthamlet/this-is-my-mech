@@ -44,23 +44,33 @@
         (set chars.Nikita.y (+ y dy)))))
 
 (fn init []
-  (each [k (pairs hank-state)] (tset hank-state k nil))
-  (each [k v (pairs events)]
-    (tset prev-events k v)
-    (tset events k nil))
-  (set hank-state.disposition 0)
-  (math.randomseed (time))
-  (each [name pos (pairs initial-positions)]
-    (let [[x y] pos]
-      (tset (. chars name) :x x)
-      (tset (. chars name) :y y)))
-  (fn opening []
-    (say-as :alert "Warning! Hostile space beast" "detected inbound!" ""
-            "All mech pilots,| prepare for launch."))
-  (set-dialog opening)
-  (music 1 0)
-  (each [name (pairs chars)]
-    (tset convos name (. all name))))
+ (each [k (pairs hank-state)] (tset hank-state k nil))
+ (each [k v (pairs events)]
+  (tset prev-events k v)
+  (tset events k nil))
+ (set hank-state.disposition 0)
+ (set choices nil)
+ (math.randomseed (time))
+ (each [name pos (pairs initial-positions)]
+  (let [[x y] pos]
+   (tset (. chars name) :x x)
+   (tset (. chars name) :y y)))
+ (fn opening []
+  (say-as :alert "Warning! Hostile space beast" "detected inbound!" ""
+   "All mech pilots,| prepare for launch."))
+ (set-dialog opening)
+ (music 1 0)
+ (each [name (pairs chars)]
+  (tset convos name (. all name)))
+ (when last-losing
+  (set chars.Nikita.x 157)
+  (set chars.Nikita.y 153)
+  (set chars.Turk.x 157)
+  (set chars.Turk.y 127)
+  (set chars.Carrie.x 102)
+  (set chars.Adam.y 25)
+  (set convos.Adam (partial all.Adam2 true)))
+ (for [i (# coros) 1 -1] (table.remove coros i)))
 
 (fn draw []
   (set cam-x (math.min center-x (lerp cam-x (- center-x chars.Nikita.x) 0.05)))
