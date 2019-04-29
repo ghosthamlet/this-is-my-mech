@@ -1,5 +1,4 @@
 (fn all.Hank []
-  
   (if
     (>= hank-state.disposition 0)
     (if

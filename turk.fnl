@@ -79,9 +79,10 @@
 (fn all.Turk-hub [skip-intro? refuses-help?]
   (if
     refuses-help?
-    (say "I don't need any help."
-         "Turk Tucker has never failed"
-         "himself.")
+    (do
+      (say "I don't need any help.")
+      (say "Turk Tucker has never failed"
+           "himself."))
     (do
       (if
         (not skip-intro?)
