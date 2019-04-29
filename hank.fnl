@@ -489,7 +489,7 @@
         (= answer "Carrie should be the head")
         (do
 
-          (reply "Soo, hey.| I think Carrie should be"
+          (reply "I think Carrie should be"
                  "the head for this next fight.")
           (reply "She's always overlooked by the rest"
                  "of us, but we both know she's"
