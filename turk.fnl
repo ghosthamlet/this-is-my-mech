@@ -153,11 +153,4 @@
               (reply "Bu-")
               (say "Kay, thaaaaanks!")
               (describe "...|...ugh!")
-              (set events.nikita-will-ask-hank-to-help-turk true))
-            (and (= answer "Maybe Carrie can help.") events.turk-annoyed)
-            (say "I don't know if Carrie likes me"
-                 "all that much.")
-            (= answer "Maybe Carrie can help.")
-            (do (say "Well, maybe. I'll talk to her.")
-                ;; TODO: uh........h.hhh...
-                (set events.turk-agreed true))))))
+              (set events.nikita-will-ask-hank-to-help-turk true))))))
