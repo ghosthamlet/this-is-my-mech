@@ -29,6 +29,7 @@
 (fn move-to [character-name ...]
   (let [char (assert (. chars character-name) (.. character-name " not found"))
         coords [...]]
+    (set char.moving? true)
     (fn mover []
         (let [[tx ty] coords
                       dx (- tx char.x) dy (- ty char.y)]
@@ -38,8 +39,9 @@
           (when (and (<= (math.abs dx) 1) (<= (math.abs dy) 1))
             (table.remove coords 1)
             (table.remove coords 1))
-          (when (. coords 1)
-            (mover))))
+          (if (. coords 1)
+              (mover)
+              (set char.moving? false))))
     (table.insert coros (coroutine.create mover))))
 
 (local all {})

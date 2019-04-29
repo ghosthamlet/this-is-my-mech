@@ -70,7 +70,8 @@
   (each [name c (pairs chars)]
     (when (and (. convos name)
                (< (distance {:x x :y y} c)
-                  target-dist))
+                  target-dist)
+               (not c.moving?))
       (set target name)
       (set target-dist (distance {:x x :y y} c))
       (set char c)))
