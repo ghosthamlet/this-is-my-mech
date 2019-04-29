@@ -9,6 +9,10 @@
       (hank-conversations.explain-idea)
       (do
         (say "Oh, it's you. Hi Nikita.")
+        ;; TODO - Stretch Goal
+        ;; Add option when you "agree" to ask Hank for help
+        ;; for Turk and have it fail hard, then Turk gets
+        ;; pissy.
         (let [answer (ask "Have I told you about my project?"
                           ["Let's hear it!" "Maybe later"])]
           (if (= answer "Let's hear it!")
@@ -430,9 +434,32 @@
              "Thanks for trying.")
         (set convos.Hank hank-conversations.frustrated-hank)
         (move-to :Hank 264 16))
-      (do
-        (say "Hey Nikita. Any word from Carrie?")
-        (reply "Not yet; I'll keep you posted.")))))
+      (if
+        (and events.nikita-will-ask-hank-to-help-turk
+             (not events.hank-agrees-to-help-turk))
+        (let [answer (ask "Hey Nikita. Any word from Carrie?"
+                            ["Not yet."
+                             "Actually, Turk could use your help."])]
+          (if
+            (= answer "Not yet.")
+            (reply "Not yet; I'll keep you posted.")
+            (= answer "Actually, Turk could use your help.")
+            (do
+              (reply "Hey actually, Turk's having some"
+                     "financial troubles and he was hoping"
+                     "you could help.")
+              (reply "Think you might be help him out?"
+                     "|"
+                     "I know you've got a knack"
+                     "for finances.")
+              (say "...Well, assuming you can get"
+                   "Carrie on board with my idea,"
+                   "then I suppose I could help"
+                   "Turk after the fight.")
+              (set events.hank-agrees-to-help-turk true))))
+        (do
+          (say "Hey Nikita. Any word from Carrie?")
+          (reply "Not yet; I'll keep you posted."))))))
 
 (fn hank-conversations.follow-up-conversation []
   (if

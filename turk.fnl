@@ -74,57 +74,88 @@
   (set convos.Turk all.Turk-hub)
   (all.Turk-hub))
 
-(fn all.Turk-hub [skip-intro?]
+(fn all.Turk-hub [skip-intro? refuses-help?]
   (if
-    (not skip-intro?)
+    refuses-help?
+    (say "I don't need any help."
+         "Turk Tucker has never failed"
+         "himself.")
     (do
-      (say "Now how am I going to pay off my" "student loans?")
-      (describe "You recall that mech pilot school"
-                "was not particularly affordable."))
-    (say "What am I going to do!?"))
-  (let [questions ["That sucks."
-                   "Maybe Hank can help."
-                   "Maybe Carrie can help."]
-        _ (when events.turk-says-he-will-talk-to-hank
-            (do
-              (table.remove questions 2)
-              (table.insert questions 2 "Have you talked to Hank yet?")))
-        _ (when skip-intro? (table.remove questions 1))
-        answer (ask "" questions)]
-    (if (= answer "That sucks.")
       (if
-        events.turk-annoyed
-        (say "Yeah.| It does.")
-        (say "Yeah, it does Nikita! Why do"
-             "only bad things happen to me?")
-        (set convos.Turk (partial all.Turk-hub true)))
-      (= answer "Maybe Hank can help.")
-      (do (say "You think so?")
-        (reply "Well, he's good with finances.")
-        (reply "He's the reason we could"
-               "re-finance two of our-")
-        (say "Yeah, yeah, I'll talk to him."
-             "Thanks a bunch!")
-        (set convos.Turk (partial all.Turk-hub true))
-        (set events.turk-says-he-will-talk-to-hank true)
-        ;; TODO: uuuhuhhhhhh ... yeah. fill this out more.
-        (set events.turk-agreed true))
-      (= answer "Have you talked to Hank yet?")
-      (do
-        (say "Nooo..I haven't found a chance."
-             "Could you go and talk to him"
-             "for me!?")
-        (reply "Bu-")
-        (say "Kay, thaaaaanks!")
-        (describe "...|...ugh!")
-        (set events.nikita-will-ask-hank-to-help-turk true))
-      (and (= answer "Maybe Carrie can help.") events.turk-annoyed)
-      (say "I don't know if Carrie likes me"
-           "all that much.")
-      (= answer "Maybe Carrie can help.")
-      (do (say "Well, maybe. I'll talk to her.")
-        ;; TODO: uh........h.hhh...
-        (set events.turk-agreed true)))))
+        (not skip-intro?)
+        (do
+          (say "Now how am I going to pay off my" "student loans?")
+          (describe "You recall that mech pilot school"
+                    "was not particularly affordable."))
+        (do
+          (say "What am I going to do!?")
+          (say "For all intensive purposes,"
+               "I'm screwed!")))
+      (let [questions ["That sucks."
+                       "Maybe Hank can help."
+                       "Maybe Carrie can help."]
+            _ (if
+                (and events.hank-agrees-to-help-turk)
+                (do
+                  (table.remove questions 2)
+                  (table.insert questions 2 "So I caught up with Hank."))
+                events.turk-says-he-will-talk-to-hank
+                (do
+                  (table.remove questions 2)
+                  (table.insert questions 2 "Have you talked to Hank yet?")))
+            _ (when skip-intro? (table.remove questions 1))
+            answer (ask "" questions)]
+        (if (= answer "That sucks.")
+          (do
+            (if
+              events.turk-annoyed
+              (say "Yeah.| It does.")
+              (say "Yeah, it does Nikita! Why do"
+                   "only bad things happen to me?"))
+            (set convos.Turk (partial all.Turk-hub true)))
+          (= answer "Maybe Hank can help.")
+          (do (say "You think so?")
+            (reply "Well, he's good with finances.")
+            (reply "He's the reason we could"
+                   "re-finance two of our-")
+            (say "Yeah, yeah, I'll talk to him."
+                 "Thanks a bunch!")
+            (set convos.Turk (partial all.Turk-hub true))
+            (set events.turk-says-he-will-talk-to-hank true)
+            ;; TODO: uuuhuhhhhhh ... yeah. fill this out more.
+            (set events.turk-agreed true))
+          (= answer "So I caught up with Hank.")
+          (do
+            (say "Oo, what did he say!?")
+            (reply "He said he'll help you, but only"
+                   "if Carrie will back his new"
+                   "targeting system.")
+            (say "Delightful!|...|wait.")
+            (say "Did you say new targeting system?")
+            (reply "Well, yeah.")
+            (say "Great."
+                 "|"
+                 "I won't hold my breath.")
+            (say "Guess I'll have to solve my"
+                 "own problems. No problem is"
+                 "too big for me!")
+            (set convos.Turk (partial all.Turk-hub true true)))
+          (= answer "Have you talked to Hank yet?")
+          (do
+            (say "Nooo..I haven't found a chance."
+                 "Could you go and talk to him"
+                 "for me!?")
+            (reply "Bu-")
+            (say "Kay, thaaaaanks!")
+            (describe "...|...ugh!")
+            (set events.nikita-will-ask-hank-to-help-turk true))
+          (and (= answer "Maybe Carrie can help.") events.turk-annoyed)
+          (say "I don't know if Carrie likes me"
+               "all that much.")
+          (= answer "Maybe Carrie can help.")
+          (do (say "Well, maybe. I'll talk to her.")
+            ;; TODO: uh........h.hhh...
+            (set events.turk-agreed true)))))))
 
 ;; for testing; remove this:
 (set all.Turk all.Turk2)
