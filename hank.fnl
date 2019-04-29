@@ -25,8 +25,17 @@
     (if
       (has-happened :nikita-talked-to-pissed-off-hank)
       (if (has-happened :nikita-shit-on-hanks-idea)
-        (reply "Ha, I better leave him alone.")
-        (reply "I better leave him alone."))
+          (reply "Ha, I better leave him alone.")
+          (do (reply "Hey actually, Turk's having some"
+                     "financial troubles and he was hoping"
+                     "you could help.")
+              (reply "Think you might be help him out?"
+                     "|"
+                     "I know you've got a knack"
+                     "for finances.")
+              (say "I guess I could give him a"
+                   "hand after the next mission.")
+              (set events.hank-agrees-to-help-turk true)))
       (do
         (publish {:event :nikita-talked-to-pissed-off-hank})
         (reply "Hank?")
@@ -390,6 +399,20 @@
         (reply "Oh, and Hank, one more thing.")
         (hank-conversations.advocate-for-carrie "What's that?")))))
 
+(fn ask-hank-for-turk1 []
+  (reply "Hey actually, Turk's having some"
+         "financial troubles and he was hoping"
+         "you could help.")
+  (reply "Think you might be able to help him?"
+         "|"
+         "I know you've got a knack"
+         "for finances.")
+  (say "...Well, assuming you can get"
+       "Carrie on board with my idea,"
+       "then I suppose I could help"
+       "Turk after the fight.")
+  (set events.hank-agrees-to-help-turk true))
+
 (fn hank-conversations.supported-hanks-idea-follow-up []
   (if
     (not events.nikita-agreed-to-convince-carrie-of-hanks-plan)
@@ -446,19 +469,7 @@
             (= answer "Not yet.")
             (reply "Not yet; I'll keep you posted.")
             (= answer "Actually, Turk could use your help.")
-            (do
-              (reply "Hey actually, Turk's having some"
-                     "financial troubles and he was hoping"
-                     "you could help.")
-              (reply "Think you might be help him out?"
-                     "|"
-                     "I know you've got a knack"
-                     "for finances.")
-              (say "...Well, assuming you can get"
-                   "Carrie on board with my idea,"
-                   "then I suppose I could help"
-                   "Turk after the fight.")
-              (set events.hank-agrees-to-help-turk true))))
+            (ask-hank-for-turk1)))
         (do
           (say "Hey Nikita. Any word from Carrie?")
           (reply "Not yet; I'll keep you posted."))))))
@@ -513,6 +524,9 @@
               (table.insert questions "Carrie should be the head")
               (table.insert questions "Nevermind."))
             (table.insert questions "Nothing yet."))
+        _ (when (and events.nikita-will-ask-hank-to-help-turk
+                     (not events.hank-agrees-to-help-turk))
+            (table.insert questions "Actually, Turk could use your help."))
         answer (ask greeting questions)]
       (if
         (= answer "Carrie should be the head")
@@ -545,10 +559,12 @@
               (say "Sorry.| You won't get my support.")
               (describe "He returns to his work.")
               (set convos.Hank hank-conversations.busy))))
-          (= answer "Nevermind.")
-          (describe "Hank nods and returns to his work.")
-          (= answer "Nothing yet.")
-          (say "Well, keep me posted."))))
+        (= answer "Actually, Turk could use your help.")
+        (ask-hank-for-turk1)
+        (= answer "Nevermind.")
+        (describe "Hank nods and returns to his work.")
+        (= answer "Nothing yet.")
+        (say "Well, keep me posted."))))
 
 (fn hank-conversations.busy []
   (say "I'm busy. I'd rather not talk"
@@ -568,4 +584,19 @@
   (describe "The clattering of keys, levers, and"
             "beeps indicates Hank is going ham"
             "on his software.")
-  (reply "Better leave him to it."))
+  (if (and events.nikita-will-ask-hank-to-help-turk
+           (not events.hank-agrees-to-help-turk))
+      (do (reply "Hey so I was talking with Turk and"
+                 "he said he's having some financial"
+                 "troubles. I told him you might be"
+                 "able to help.")
+          (reply "Think you might be able to help?"
+                 "|"
+                 "I know you've got a knack"
+                 "for finances.")
+          (say "...Well, I think I might be able"
+               "to find some time for that after"
+               "the next mission, in between"
+               "working on the targeting system.")
+          (set events.hank-agrees-to-help-turk true))
+      (reply "Better leave him to it.")))
