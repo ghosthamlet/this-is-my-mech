@@ -138,3 +138,8 @@
 (set chars.airlock {:x 162 :y -14})
 (fn all.airlock []
   (describe "It's an airlock. Better not" "open it."))
+
+;; for testing; remove this:
+;; (set all.Turk all.Turk2)
+;; (set initial-positions.Turk [179 96])
+;; (set initial-positions.Nikita [170 96])

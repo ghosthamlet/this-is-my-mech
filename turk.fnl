@@ -163,8 +163,3 @@
           (do (say "Well, maybe. I'll talk to her.")
             ;; TODO: uh........h.hhh...
             (set events.turk-agreed true)))))))
-
-;; for testing; remove this:
-(set all.Turk all.Turk2)
-(set initial-positions.Turk [179 96])
-(set initial-positions.Nikita [170 96])

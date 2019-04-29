@@ -179,6 +179,11 @@
                 (when (< 136 lt)
                   (global TIC launch)))))
 
+(local paths [[launch-talk-hank :hank]
+              [launch-talk-adam-turk :adam-turk]
+              [launch-talk-adam :adam]
+              [launch-talk-turk :turk]])
+
 (fn enter-launch [path]
   (set (scroll-x mx my) (values 0 (/ 136 2) 0 200 32))
   (set (tmx tmy dmx dmy attacking? hits) (values 210 48 0 0 false 0))
@@ -188,15 +193,18 @@
       (tset mechs name :y y)
       (tset mechs name :dx 0)
       (tset mechs name :dy 0)))
-  (if (or (= path 1) (and (not events.turk-agreed) (not events.adam-agreed)))
-      (lose-with launch-talk-adam-turk :adam-turk)
-      (or (= path 2) (and events.turk-agreed (not events.adam-agreed)))
-      (lose-with launch-talk-adam :adam)
-      (or (= path 3) (and (not events.turk-agreed) events.adam-agreed))
-      (lose-with launch-talk-turk :turk)
-      (or (= path 4) events.hank-agreed)
+  (if (= path 5) (enter-win)
+      path (lose-with (table.unpack (. paths path)))
+
+      (not events.hank-agreed)
       (lose-with launch-talk-hank :hank)
-      (or (= path 5) (and events.adam-agreed events.turk-agreed events.hank-agreed))
+      (and (not events.turk-agreed) (not events.adam-agreed))
+      (lose-with launch-talk-adam-turk :adam-turk)
+      (and events.turk-agreed (not events.adam-agreed))
+      (lose-with launch-talk-adam :adam)
+      (and (not events.turk-agreed) events.adam-agreed)
+      (lose-with launch-talk-turk :turk)
+      (and events.adam-agreed events.turk-agreed events.hank-agreed)
       (enter-win)))
 
 ;; you can run this in the console to debug the endings
