@@ -50,9 +50,6 @@
       (say "With a little effort, I believe our"
            "damage output will increase by"
            "at least 57%!")))
-  (when prev-events.supported-hanks-idea
-    (describe "Hank's idea doesn't really seem"
-              "realistic.."))
   (let [answer
          (ask (if
                 prev-events.hank-explained-idea
@@ -81,6 +78,7 @@
         (reply "You know you just said a lot of"
                "techno babble bullshit, right?")
         (say "Egad! First off-")
+        (set next-tip 1)
         (reply "And don't you need like, tens of"
                "thousands of samples to train a"
                "machine learning algorithm?")
@@ -550,6 +548,7 @@
               (reply "Come on, Hank.")
               (say "Sorry.| You won't get my support.")
               (describe "He returns to his work.")
+              (set next-tip 2)
               (set convos.Hank hank-conversations.busy))))
         (= answer "Actually, Turk could use your help.")
         (ask-hank-for-turk-success)

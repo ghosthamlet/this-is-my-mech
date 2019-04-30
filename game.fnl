@@ -59,7 +59,7 @@
   (say-as :alert "Warning! Hostile space beast" "detected inbound!" ""
    "All mech pilots,| prepare for launch.")
   (when last-losing
-   (let [tip-to-show (if next-tip next-tip (+ (math.floor (* (math.random) 4)) 1))]
+   (let [tip-to-show (if next-tip next-tip (+ (math.floor (* (math.random) 5)) 1))]
     (set next-tip nil)
     (if (= tip-to-show 1)
      (describe "HINT: Don't forget, you need to"
@@ -69,7 +69,8 @@
      (= tip-to-show 2)
      (describe "HINT: Hank is sensitive, but he will"
       "respect you more if you're honest"
-      "about the feasibility of his ideas.")
+      "about the feasibility of his ideas."
+      "It doesn't hurt ot reassure him, either")
      (= tip-to-show 3)
      (describe "HINT: Damn, did we make this game"
      "too difficult? Just know that Turk"
