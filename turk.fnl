@@ -75,7 +75,8 @@
 
 (fn all.Turk-refuse []
   (say "I don't need any help.")
-  (say "Turk Tucker has never failed" "himself."))
+  (say "Turk Tucker has never failed" "himself.")
+  (when events.carrie-rejects-hanks-plan (force-fail)))
 
 (fn all.Turk-hub [skip-intro?]
   (if (not skip-intro?)
