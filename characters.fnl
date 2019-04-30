@@ -122,6 +122,10 @@
        "account is locked. Please contact a"
        "system administrator."))
 
+(set chars.station-computer-lab {:x 378 :y 42})
+(fn all.station-computer-lab []
+ (describe "The screensaver shows toasters" "flying across the screen."))
+
 (set chars.door1 {:x 56 :y 160})
 (set chars.door2 {:x 106 :y 231})
 (fn all.door1 [] (describe "Locked."))

@@ -90,7 +90,12 @@
 (fn main []
  (cls)
  (draw)
- (when (btnp 6) (trace (.. chars.Nikita.x " " chars.Nikita.y)))
+ (when (btnp 6)
+  (set-dialog (fn []
+               (set who nil)
+               (let [choice (ask "" ["Restart" "Cancel"])]
+                (when (= choice "Restart")
+                 (restart))))))
  (let [talking-to (dialog chars.Nikita.x chars.Nikita.y (btnp 4))]
   (if (and talking-to (btnp 0)) (choose -1)
    (and talking-to (btnp 1)) (choose 1)
@@ -106,11 +111,13 @@
   (draw-stars cam-x cam-y)
   (print "t  h  i  s        i  s        m  y" 24 10)
   (map 92 55 14 4 10 26 0 2)
-  (set cam-x (+ cam-x 2))
-  (print "(work-in-progress!)" 48 100 5)
-  (print "by Emma Bukacek and Phil Hagelberg" 28 110)
-  (print "press Z" (+ (* 128 (- 1 (math.abs (- 1 (math.fmod (/ cam-x 100) 2)))))
-                      32) 124 2)
+  (set cam-x (+ cam-x 1))
+  (print "by Emma Bukacek and Phil Hagelberg" 28 100)
+ (print "press Z to act"
+  (+ (* 128 (- 1 (math.abs (- 1 (math.fmod (/ cam-x 75) 2))))) 32) 116 2)
+ (print "press A to restart"
+  (+ (* 128 (- 1 (math.abs (- 1 (math.fmod (/ (+ cam-x 45) 75) 2))))) 10)
+  128 2)
   (for [i 0 5]
     (when (btnp i)
       (set cam-x 96)
