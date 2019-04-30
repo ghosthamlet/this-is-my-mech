@@ -1,4 +1,3 @@
-
 (local (w h) (values 240 136))
 (local (center-x center-y) (values (/ w 2) (/ h 2)))
 (var (cam-x cam-y) (values center-x center-y))
@@ -16,15 +15,13 @@
 
 (fn can-move-point? [px py thru-chars?]
   (and (= 1 (mget (// px 8) (// py 8)))
-       (or thru-chars?
-           (= 0 (# (filter (partial hit? px py) chars))))))
+       (or thru-chars? (= 0 (# (filter (partial hit? px py) chars))))))
 
 (fn can-move? [x y thru-chars?]
-  (or (btn 7)
-      (and (can-move-point? x y thru-chars?)
-           (can-move-point? (+ x 6) y thru-chars?)
-           (can-move-point? x (+ y 7) thru-chars?)
-           (can-move-point? (+ x 6) (+ y 7) thru-chars?))))
+ (and (can-move-point? x y thru-chars?)
+  (can-move-point? (+ x 6) y thru-chars?)
+  (can-move-point? x (+ y 7) thru-chars?)
+  (can-move-point? (+ x 6) (+ y 7) thru-chars?)))
 
 (fn move []
   (let [amt (if (btn 5) 1.7 1)
@@ -114,7 +111,6 @@
  (cls)
  (draw)
  (when (btnp 6)
-  (trace (.. chars.Nikita.x " " chars.Nikita.y))
   (set-dialog (fn []
                (set who nil)
                (let [choice (ask "" ["Restart" "Cancel"])]
@@ -124,7 +120,6 @@
   (if (and talking-to (btnp 0)) (choose -1)
    (and talking-to (btnp 1)) (choose 1)
    (not talking-to) (move)))
- (when (and (btn 4) (btn 6)) (enter-launch))
  (for [i (# coros) 1 -1]
   (assert (coroutine.resume (. coros i)))
   (when (= :dead (coroutine.status (. coros i)))
