@@ -126,6 +126,7 @@
 (fn hank-conversations.support-idea []
   (publish {:event :supported-hanks-idea}
            {:event :nikita-and-hank-discussed-idea})
+  (set next-tip 2)
   (reply "Wow, great idea! I know it could be"
          "burdensome to us at first, but our"
          "next fight is as good as any!")
@@ -237,6 +238,7 @@
               (say "...I don't understand why you find"
                    "being a jerk so appealing.")
               (describe "He shakes his head.")
+              (set next-tip 1)
               (move-to :Hank 303 8))
             (= answer "...")
             (do
