@@ -68,15 +68,7 @@
   (set dmx (math.min (+ dmx (* (if (< mx tmx) 0.1 -0.1) (math.random))) 1.2))
   (set dmy (math.min (+ dmy (* (if (< my tmy) 0.3 -0.1) (math.random))) max-delta))
   (when attacking?
-    (do
-      ; (let [random (math.random)
-      ;       _ (trace (math.floor (* random 20))) ]
-      ;   (when (= 3 (math.floor (* random 15)))
-      ;     (sfx 0
-      ;          (+ (math.floor (* random 25)) 15)
-      ;          (+ (math.floor (* random 15)) 12)
-      ;          3)))
-      (set (tmx tmy) (values mechs.Nikita.x (- mechs.Nikita.y 32))))))
+    (do (set (tmx tmy) (values mechs.Nikita.x (- mechs.Nikita.y 32))))))
 
 (fn game-over []
   (global TIC (fn []
