@@ -96,8 +96,8 @@
     "that though.")
   (set events.adam-agreed true)
   (when events.turk-agreed
-    (reply "Actually, Turk agreed!")
+    (reply "Actually, Turk already agreed!")
     (say "Really? Well, in that case it works" "for me.")
     (say "I better go get ready!")
-    (move-to :Adam 109 59 158 59 158 157 225 157 233 126)
+    (move-to :Adam 109 59 158 59 158 157 225 157 233 122)
     (set convos.Adam (partial describe "He's preparing for launch."))))

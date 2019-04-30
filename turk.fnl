@@ -167,7 +167,7 @@
          (say "YAY! Thanks!")
          (say "Now if you'll excuse me, I need"
               "to answer fan mail. Bye, Nikita!")
-         (move-to :Turk 157 106 157 153 227 159 235 172 260 169)
+         (move-to :Turk 157 106 157 153 227 159 235 172 268 171)
          (set convos.Turk all.Turk-has-been-helped))
      (set convos.Turk all.Turk-refuse)))
    (= answer "Have you talked to Hank yet?")

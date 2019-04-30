@@ -161,7 +161,7 @@
        "...thanks for advocating for me.")
   (say "You're a good friend.")
   (describe "She smiles softly and gathers"
-            "the rest of her things")
+            "the rest of her things.")
   (set events.carrie-accepts-hanks-compromise true)
   (set convos.Hank all.Hank)
   (fn wait-carrie []
