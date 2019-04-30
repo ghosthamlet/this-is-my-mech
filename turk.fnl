@@ -83,7 +83,7 @@
   (let [questions ["Carrie should form the head" "Nevermind"]
                   _  (when events.turk-agreed (table.remove questions 1))
                   answer (ask "Nikita! What up?" questions)]
-    (if 
+    (if
       (= answer "Nevermind")
       (say "Catch you on the flip!")
       (= answer "Carrie should form the head")
@@ -111,8 +111,7 @@
         (say "Probably means he's working his" "nerd magic!" "|" "Thanks to you.")
         (say "Let her know ol' Turk Tucker"
              "has been pulling for her all along.")
-        (describe "There's that cheeky grin, again.")
-        (set events.turk-agreed true)))))
+        (describe "There's that cheeky grin, again.")))))
 
 (fn all.Turk-hub [skip-intro?]
   (if (not skip-intro?)
@@ -168,6 +167,7 @@
          (say "Now if you'll excuse me, I need"
               "to answer fan mail. Bye, Nikita!")
          (move-to :Turk 157 106 157 153 227 159 235 172 268 171)
+         (set events.turk-agreed true)
          (set convos.Turk all.Turk-has-been-helped))
      (set convos.Turk all.Turk-refuse)))
    (= answer "Have you talked to Hank yet?")
