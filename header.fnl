@@ -12,3 +12,5 @@
 
 (var coros [])
 (var last-losing nil)
+
+(var next-tip nil)
