@@ -1,6 +1,3 @@
-;;; the end-game sequence where the mechs launch
-
-;; mx and my are monster x/y; dmx/dmy is velocity. tmx/tmy is target coords.
 (var (scroll-x mx my) nil)
 (var (tmx tmy dmx dmy attacking? hits) nil)
 
@@ -40,7 +37,7 @@
       (laser mech.x mech.y)))
   (when (btn 5)
     (laser mechs.Nikita.x mechs.Nikita.y))
-  (spr 268 mx my 0 1 0 0 4 6) ; monster
+  (spr 268 mx my 0 1 0 0 4 6)
   (draw-dialog :helmet))
 
 (local max-delta 2)
