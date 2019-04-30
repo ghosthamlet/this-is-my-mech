@@ -142,3 +142,5 @@
   "All mech pilots report to your" "mechs immediately and launch.")
  (when (not no-chat?) (say "Well, no time to chat."))
  (enter-launch))
+
+(global eset (fn [event] (tset events event true))) ; debug

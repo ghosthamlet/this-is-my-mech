@@ -91,6 +91,7 @@
  (cls)
  (draw)
  (when (btnp 6)
+  (trace (.. chars.Nikita.x " " chars.Nikita.y))
   (set-dialog (fn []
                (set who nil)
                (let [choice (ask "" ["Restart" "Cancel"])]

@@ -84,11 +84,20 @@
           (say "I don't know... maybe that's true, but"
                "Turk won't see it that way. If I don't"
                "form the head, he'll do it!")
-          (reply "What if Turk agreed to let Carrie"
-                 "form the head?")
-          (say "Huh... yeah, that could work. I mean,"
-               "as long as you can convince him."
-               "I don't see how you're going to do"
-               "that though.")
-          (set events.adam-agreed true)
-          (set convos.Adam (partial describe "He's examining tactical data."))))))
+          (set convos.Adam all.Adam5)
+          (all.Adam5)))))
+
+(fn all.Adam5 []
+  (reply "What if Turk agreed to let Carrie"
+    "form the head?")
+  (say "Huh... yeah, that could work. I mean,"
+    "as long as you can convince him."
+    "I don't see how you're going to do"
+    "that though.")
+  (set events.adam-agreed true)
+  (when events.turk-agreed
+    (reply "Actually Turk has already agreed.")
+    (say "Really? Well, in that case it works" "for me.")
+    (say "I better go get ready!")
+    (move-to :Adam 109 59 158 59 158 157 225 157 233 126)
+    (set convos.Adam (partial describe "He's preparing for launch."))))
