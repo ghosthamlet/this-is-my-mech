@@ -184,6 +184,4 @@
     (if (= 0 (% random 2))
       (move-to :Carrie 141 315)
       (move-to :Carrie 149 288)))
-  (describe "She apparently hasn't found her"
-            "helmet yet..")
-  (move-to :Carrie 142 302))
+  (describe "She apparently hasn't found her" "helmet yet.."))
