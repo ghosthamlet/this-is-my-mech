@@ -36,11 +36,15 @@
         (set mx (+ mx (* rdx 1.2))))
     (spr 261 rx 16 0 1 0 0 6 8)
     (spr 268 mx my 0 1 0 0 4 6)
-    (when (< 240 rx)
+    (when (<= mechs.Nikita.y -255)
+      (set-dialog (fn [] (say-as :Carrie "That's right; you better run!"))))
+    (when (< 300 rx)
+      (set said nil)
       (print "Earth is safe" 46 16 15 false 2)
       (print "YOU WIN" 42 48 15 false 4)
       (print "thanks for playing!" 68 120 2)
-      (print "press ESC to see how the game was made" 16 130 2))))
+      (print "press ESC to see how the game was made" 16 130 2)))
+  (draw-dialog :helmet))
 
 (fn win []
   (set scroll-x (- scroll-x 3))
@@ -52,6 +56,7 @@
 (set enter-win
      (fn []
        (music 0 0)
+       (set said nil)
        (set (scroll-x rx rdx mx my) (values 0 16 0.5 168 28))
        (let [init-ys {:Adam 8 :Turk 8 :Carrie 0 :Hank 12 :Nikita 12}
              init-xs {:Adam 100 :Turk 40 :Carrie 68 :Hank 15 :Nikita 120}]
