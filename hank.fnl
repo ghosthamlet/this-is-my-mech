@@ -393,6 +393,22 @@
        "Turk after the fight.")
   (set events.hank-agrees-to-help-turk true))
 
+(fn ask-hank-for-turk-success []
+  (reply "Hey actually, Turk's having some"
+         "financial troubles and he was hoping"
+         "you could help.")
+  (reply "Think you might be able to help him?"
+         "I know you've got a knack" "for finances.")
+  (say "...Well, well.|"
+       "I knew he would need my help one"
+       "day.")
+  (describe "You can practically taste the"
+            "inevitable 'I told you so.'")
+  (say "After we get the data for my"
+       "targeting system, I'm sure I can"
+       "find some time for Turk.")
+  (set events.hank-agrees-to-help-turk true))
+
 (fn hank-conversations.supported-hanks-idea-follow-up []
   (if (not events.nikita-agreed-to-convince-carrie-of-hanks-plan)
     (do
@@ -534,7 +550,7 @@
               (describe "He returns to his work.")
               (set convos.Hank hank-conversations.busy))))
         (= answer "Actually, Turk could use your help.")
-        (ask-hank-for-turk1)
+        (ask-hank-for-turk-success)
         (= answer "Nevermind.")
         (describe "Hank nods and returns to his work.")
         (= answer "Nothing yet.")
@@ -561,17 +577,22 @@
             "on his software.")
   (if (and events.nikita-will-ask-hank-to-help-turk
            (not events.hank-agrees-to-help-turk))
-      (do (reply "Hey so I was talking with Turk and"
-                 "he said he's having some financial"
-                 "troubles. I told him you might be"
-                 "able to help.")
-          (reply "Think you might be able to help?"
-                 "|"
-                 "I know you've got a knack"
-                 "for finances.")
-          (say "...Well, I think I might be able"
-               "to find some time for that after"
-               "the next mission, in between"
-               "working on the targeting system.")
-          (set events.hank-agrees-to-help-turk true))
-      (reply "Better leave him to it.")))
+    (do
+      (reply "Hey Hank!")
+      (describe "He barely notices you.")
+      (reply "I was talking with Turk and"
+             "he said he's having some financial"
+             "troubles.")
+      (reply "I told him you might be able"
+             "to help.")
+      (reply "...could you?"
+             "|"
+             "I know you've got a knack"
+             "for finances.")
+      (say "Uh-huh, sure. Whatever you say.")
+      (reply "Well, alriiight. I'm sure he'll be"
+             "grateful.")
+      (say "Mm.")
+      (describe "And the clattering continues.")
+      (set events.hank-agrees-to-help-turk true))
+    (reply "Better leave him to it.")))
