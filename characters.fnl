@@ -130,3 +130,11 @@
 (set chars.airlock {:x 162 :y -14})
 (fn all.airlock []
   (describe "It's an airlock. Better not" "open it."))
+
+(fn force-fail [no-chat?]
+ (describe "...")
+ (say-as :alert
+  "The space beast is approaching!" ""
+  "All mech pilots report to your" "mechs immediately and launch.")
+ (when (not no-chat?) (say "Well, no time to chat."))
+ (enter-launch))

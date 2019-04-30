@@ -18,25 +18,13 @@
                      "space beast. Maybe later, okay?")
               (say "Sure!"))))))
     (< hank-state.disposition 0)
-    (if
-      (has-happened :nikita-talked-to-pissed-off-hank)
-      (if (has-happened :nikita-shit-on-hanks-idea)
-          (reply "Ha, I better leave him alone.")
-          (do (reply "Hey actually, Turk's having some"
-                     "financial troubles and he was hoping"
-                     "you could help.")
-              (reply "Think you might be help him out?"
-                     "|"
-                     "I know you've got a knack"
-                     "for finances.")
-              (say "I guess I could give him a"
-                   "hand after the next mission.")
-              (set events.hank-agrees-to-help-turk true)))
-      (do
-        (publish {:event :nikita-talked-to-pissed-off-hank})
-        (reply "Hank?")
-        (say "...")
-        (describe "He's ignoring you.")))))
+    (if (has-happened :nikita-talked-to-pissed-off-hank)
+      (do (reply "Ha, I better leave him alone.")
+          (force-fail true))
+      (do (publish {:event :nikita-talked-to-pissed-off-hank})
+          (reply "Hank?")
+          (say "...")
+          (describe "He's ignoring you.")))))
 
 
 (fn hank-conversations.explain-idea []
@@ -309,23 +297,23 @@
              "with some caution."))
     (if (>= hank-state.disposition 2)
       (hank-conversations.willing-to-negotiate)
-      (if nikita-is-mean?
-        (do
-          (say "Evidently, you don't have the"
-               "capacity to understand.")
-          (update-hank-disposition -1)
-          (move-to :Hank 303 8))
-        (do
-          (say "Say what you wanna say, but I"
-               "have complete confidence in my"
-               "data.")
-          (say "I already have at least"
-               "one thousand, three-hundred and"
-               "thirty-seven datasets that I"
-               "collated myself!")
-          (say "Now if you'll kindly leave me"
-               "alone.")
-          (update-hank-disposition -1))))))
+      nikita-is-mean?
+      (do
+        (say "Evidently, you don't have the"
+          "capacity to understand.")
+        (update-hank-disposition -1)
+        (move-to :Hank 303 8))
+      (do
+        (say "Say what you wanna say, but I"
+          "have complete confidence in my"
+          "data.")
+        (say "I already have at least"
+          "one thousand, three-hundred and"
+          "thirty-seven datasets that I"
+          "collated myself!")
+        (say "Now if you'll kindly leave me"
+          "alone.")
+        (update-hank-disposition -1)))))
 
 (fn hank-conversations.willing-to-negotiate []
   (say "Okay, Nikita. Say you're not wrong."
@@ -388,9 +376,7 @@
         (reply "Thanks for hearing me out, Hank."
                "Keep the good ideas coming!")
         (describe "He flashes a wry smile, then returns"
-                  "to his work."
-                  "|"
-                  "Way to compromise, girl.")
+                  "to his work." "" "Way to compromise, girl.")
         (set events.hank-is-willing-to-compromise true)
         (reply "Oh, and Hank, one more thing.")
         (hank-conversations.advocate-for-carrie "What's that?")))))
@@ -400,9 +386,7 @@
          "financial troubles and he was hoping"
          "you could help.")
   (reply "Think you might be able to help him?"
-         "|"
-         "I know you've got a knack"
-         "for finances.")
+         "I know you've got a knack" "for finances.")
   (say "...Well, assuming you can get"
        "Carrie on board with my idea,"
        "then I suppose I could help"
@@ -410,11 +394,9 @@
   (set events.hank-agrees-to-help-turk true))
 
 (fn hank-conversations.supported-hanks-idea-follow-up []
-  (if
-    (not events.nikita-agreed-to-convince-carrie-of-hanks-plan)
+  (if (not events.nikita-agreed-to-convince-carrie-of-hanks-plan)
     (do
-      (say "Hey Nikita! Good to see you."
-           "I've got a request.")
+      (say "Hey Nikita! Good to see you." "I've got a request.")
       (reply "Oh?")
       (say "I know you like my idea, but if"
            "we have any chance of success, we"
@@ -455,14 +437,11 @@
              "Thanks for trying.")
         (set convos.Hank hank-conversations.frustrated-hank)
         (move-to :Hank 264 16))
-      (if
-        (and events.nikita-will-ask-hank-to-help-turk
-             (not events.hank-agrees-to-help-turk))
+      (if (and events.nikita-will-ask-hank-to-help-turk
+               (not events.hank-agrees-to-help-turk))
         (let [answer (ask "Hey Nikita. Any word from Carrie?"
-                            ["Not yet."
-                             "Actually, Turk could use your help."])]
-          (if
-            (= answer "Not yet.")
+                            ["Not yet." "Actually, Turk could use your help."])]
+          (if (= answer "Not yet.")
             (reply "Not yet; I'll keep you posted.")
             (= answer "Actually, Turk could use your help.")
             (ask-hank-for-turk1)))
@@ -527,7 +506,6 @@
       (if
         (= answer "Carrie should be the head")
         (do
-
           (reply "I think Carrie should be"
                  "the head for this next fight.")
           (reply "She's always overlooked by the rest"
@@ -563,18 +541,19 @@
         (say "Well, keep me posted."))))
 
 (fn hank-conversations.busy []
-  (say "I'm busy. I'd rather not talk"
-       "right now."))
+  (say "I'm busy. I'd rather not talk" "right now.")
+  (force-fail true))
 
 (fn hank-conversations.frustrated-hank []
   (if events.nikita-talked-to-frustrated-hank
-      (if events.nikita-shit-on-hanks-idea
-        (reply "Haha, I better leave him alone.")
-        (reply "I better leave him alone."))
+      (do (if events.nikita-shit-on-hanks-idea
+            (reply "Haha, I better leave him alone.")
+            (reply "I better leave him alone.")
+            (force-fail)))
       (do
         (set events.nikita-talked-to-frustrated-hank true)
-        (say "Look, I'm not in the mood to talk,"
-             "|okay?"))))
+        (say "Look, I'm not in the mood to talk," "okay?")))
+  (force-fail true))
 
 (fn hank-conversations.installing-telemetry []
   (describe "The clattering of keys, levers, and"
