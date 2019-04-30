@@ -161,10 +161,19 @@
        "||"
        "...thanks for advocating for me.")
   (say "You're a good friend.")
-  (describe "She smiles softly and returns"
-            "to her manual.")
+  (describe "She smiles softly and gathers"
+            "the rest of her things")
   (set events.carrie-accepts-hanks-compromise true)
-  (set convos.Hank all.Hank))
+  (set convos.Hank all.Hank)
+  (fn wait-carrie []
+    (for [_ 1 200] (coroutine.yield))
+    (move-to :Carrie 85 301 85 157 223 157 233 235 272 232)
+    (set convos.Carrie all.Carrie-bay))
+  (table.insert coros (coroutine.create wait-carrie)))
+
+(fn all.Carrie-bay []
+  (describe "Carrie meticulously walks thru the"
+            "pre-flight checklist."))
 
 (fn carrie-conversations.looking-for-helmet []
   (say "Now where did I put my helmet?")
