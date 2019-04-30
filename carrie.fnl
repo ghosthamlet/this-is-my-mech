@@ -48,7 +48,6 @@
         (set events.carrie-found-her-helmet true)
         (table.insert questions "Nevermind"))
       (do
-        ;; TODO: She probably shouldn't smile if carrie-rejects-hanks-plan
         (describe "She's reviewing the owner's manual"
                   "for her mech. She looks up and"
                   "smiles.")
