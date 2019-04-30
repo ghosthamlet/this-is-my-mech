@@ -1,13 +1,10 @@
 (fn all.Turk []
- (when (not last-losing)
-  (say "Did you hear that? We got company!"
-   "This is perfect; my chance to shine!"))
+ (say "Did you hear that? We got company!"
+  "This is perfect; my chance to shine!")
  (say "See you in the launch bay in a few."
   "I got a couple things to do first.")
  (set convos.Turk all.Turk2)
- (if (= chars.Turk.y 127)
-  (move-to :Turk 156 96 179 96)
-  (move-to :Turk 85 153 156 153 156 96 179 96)))
+ (move-to :Turk 85 153 156 153 156 96 179 96))
 
 (fn turk-make-call [skip?]
   (when (not skip?)

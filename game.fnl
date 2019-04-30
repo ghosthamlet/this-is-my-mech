@@ -65,11 +65,12 @@
  (when last-losing
   (set chars.Nikita.x 157)
   (set chars.Nikita.y 153)
-  (set chars.Turk.x 157)
-  (set chars.Turk.y 127)
+  (set chars.Turk.x 179)
+  (set chars.Turk.y 96)
   (set chars.Carrie.x 102)
   (set chars.Adam.y 25)
-  (set convos.Adam (partial all.Adam2 true)))
+  (set convos.Adam (partial all.Adam2 true))
+  (set convos.Turk all.Turk2))
  (for [i (# coros) 1 -1] (table.remove coros i)))
 
 (fn draw []
