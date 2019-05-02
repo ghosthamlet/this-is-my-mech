@@ -8,6 +8,22 @@ Problem is, they can't really get their act together.
 
 https://m.youtube.com/watch?v=EMgsAD3D948
 
+Written in [Fennel](https://fennel-lang.org) using
+[TIC-80](https://tic.computer). Winner of the
+[2019 Lisp Game Jam](https://itch.io/jam/lisp-game-jam-2019/results).
+
+You can [play the game in your browser](https://technomancy.itch.io/this-is-my-mech).
+
+To run from source, install TIC-80 and run `make`. Changes to the .fnl
+source files in the repository will be reloaded into the game when you
+re-run it from the TIC-80 console.
+
+Copyright © 2019 [Emma Bukacek](https://emmabukacek.com) and [Phil Hagelberg](https://technomancy.us)
+
+Released under the GNU General Public License version 3; see the file LICENSE.
+
+## Design notes
+
 ## Characters
 
 ### ADAM Goldman (Gold Rhino)
@@ -168,25 +184,3 @@ overly simplistic. We can distract from the fact that it's just flags
 by modeling some interaction between them. For instance, you only
 realize that Hank will try to take over if you launch after convincing
 Adam and Turk.
-
-## End states
-
-### Convincing no one
-
-* Adam and Turk just bicker over who's going to form the head
-* Hank makes sarcastic comments
-* Carrie tries to get them to stop fighting but can't
-
-### Convincing Adam
-
-...
-
-### Convincing Turk
-
-### Convincing Hank
-
-### Convincing Adam and Turk
-
-### Convincing Turk and Hank
-
-### Convincing Adam and Hank
