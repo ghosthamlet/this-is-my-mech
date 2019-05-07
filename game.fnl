@@ -67,7 +67,8 @@
      (describe "HINT: Hank is sensitive, but he will"
       "respect you more if you're honest"
       "about the feasibility of his ideas."
-      "It doesn't hurt ot reassure him, either")
+      "It doesn't hurt to reassure him,"
+      "either.")
      (= tip-to-show 3)
      (describe "HINT: Damn, did we make this game"
      "too difficult? Just know that Turk"
